@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --success: #10b981;
+            --glass: rgba(255, 255, 255, 0.8);
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            --accent-gradient: linear-gradient(135deg, #2563eb, #0ea5e9);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #f8fafc;
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar --- */
+        .sidebar {
+            width: 280px;
+            background: var(--dark);
+            color: white;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar .logo { font-size: 1.5rem; font-weight: 800; margin-bottom: 50px; color: white; text-decoration: none; }
+        .sidebar .logo span { color: var(--secondary); }
+
+        .nav-menu { list-style: none; flex-grow: 1; }
+        .nav-item { margin-bottom: 10px; }
+        .nav-link {
+            display: flex; align-items: center; gap: 15px; padding: 15px 20px;
+            color: #94a3b8; text-decoration: none; border-radius: 15px;
+            transition: 0.3s; font-weight: 500; cursor: pointer;
+        }
+
+        .nav-link:hover, .nav-link.active { background: rgba(255, 255, 255, 0.1); color: white; }
+        .nav-link.active { background: var(--primary); }
+
+        /* --- Main Content --- */
+        .main-content { margin-left: 280px; flex-grow: 1; padding: 40px; }
+
+        /* Section Visibility Logic */
+        .page-section { display: none; animation: fadeIn 0.4s ease-out; }
+        .page-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+
+        .user-profile {
+            display: flex; align-items: center; gap: 15px; background: white;
+            padding: 8px 20px; border-radius: 100px; box-shadow: var(--card-shadow);
+        }
+        .user-profile img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+
+        /* --- Dashboard Grid Components --- */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .stat-card { background: white; padding: 30px; border-radius: 24px; box-shadow: var(--card-shadow); border: 1px solid #f1f5f9; }
+        .stat-card .value { font-size: 2rem; font-weight: 800; color: var(--dark); }
+        
+        .appointments-container, .content-card {
+            background: white; border-radius: 24px; padding: 30px; box-shadow: var(--card-shadow); margin-bottom: 30px;
+        }
+
+        .appointment-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .appointment-table th { text-align: left; padding: 15px; color: var(--text-light); border-bottom: 1px solid #f1f5f9; }
+        .appointment-table td { padding: 20px 15px; border-bottom: 1px solid #f1f5f9; }
+
+        /* --- AI Panel --- */
+        .ai-panel { background: var(--accent-gradient); color: white; border-radius: 24px; padding: 30px; display: flex; flex-direction: column; gap: 15px; }
+        .ai-btn { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 12px; border-radius: 12px; cursor: pointer; }
+
+        /* --- Form Styles for Settings --- */
+        .settings-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        input, select { padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; background: #f8fafc; }
+
+        .status-badge { padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+        .status-confirmed { background: #dcfce7; color: #166534; }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <a href="#" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        
+        <nav class="nav-menu">
+            <div class="nav-item"><a class="nav-link active" onclick="showSection('dashboard')"><i class="fas fa-th-large"></i> Dashboard</a></div>
+            <div class="nav-item"><a class="nav-link" onclick="showSection('patients')"><i class="fas fa-user-injured"></i> Patients</a></div>
+            <div class="nav-item"><a class="nav-link" onclick="showSection('schedule')"><i class="fas fa-calendar-alt"></i> Schedule</a></div>
+            <div class="nav-item"><a class="nav-link" onclick="showSection('reports')"><i class="fas fa-file-medical"></i> Reports</a></div>
+            <div class="nav-item"><a class="nav-link" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</a></div>
+        </nav>
+
+        <div class="nav-item" style="margin-top: auto;">
+            <a href="index.html" class="nav-link" style="color: #ef4444;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <div>
+                <h1 id="section-title">Dashboard Overview</h1>
+                <p id="section-subtitle" style="color: var(--text-light);">Welcome back, Dr. Aris</p>
+            </div>
+            <div class="user-profile">
+                <i class="fas fa-bell"></i>
+                <div style="text-align: right;">
+                    <div style="font-weight: 700; font-size: 0.9rem;">Dr. Aris Thorne</div>
+                    <div style="font-size: 0.75rem; color: var(--text-light);">Neurosurgeon</div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=200" alt="Doctor">
+            </div>
+        </header>
+
+        <section id="dashboard" class="page-section active">
+            <div class="dashboard-grid">
+                <div class="stat-card"><h4>Active Patients</h4><div class="value">1,284</div></div>
+                <div class="stat-card"><h4>Avg. Rating</h4><div class="value">4.9/5</div></div>
+                <div class="stat-card"><h4>Consultations</h4><div class="value">42</div></div>
+                
+                <div class="appointments-container" style="grid-column: span 2;">
+                    <h3>Today's Schedule</h3>
+                    <table class="appointment-table">
+                        <tr><td>Elena Gilbert</td><td>09:30 AM</td><td><span class="status-badge status-confirmed">Confirmed</span></td></tr>
+                        <tr><td>Stefan Salvatore</td><td>10:15 AM</td><td><span class="status-badge status-confirmed">Confirmed</span></td></tr>
+                    </table>
+                </div>
+
+                <div class="ai-panel">
+                    <h3>AI Diagnostic</h3>
+                    <p>No anomalies detected in latest MRI uploads.</p>
+                    <button class="ai-btn">Run New Analysis</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="patients" class="page-section">
+            <div class="content-card">
+                <h3>Patient Directory</h3>
+                <input type="text" placeholder="Search by name or ID..." style="margin: 20px 0; width: 100%;">
+                <table class="appointment-table">
+                    <thead><tr><th>Patient</th><th>Last Visit</th><th>Condition</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Bonnie Bennett</strong></td><td>April 12, 2026</td><td>Migraine</td><td>Stable</td></tr>
+                        <tr><td><strong>Caroline Forbes</strong></td><td>April 10, 2026</td><td>Post-Op</td><td>Recovering</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="schedule" class="page-section">
+            <div class="content-card">
+                <h3>Weekly Planner</h3>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <div style="flex: 1; background: #f1f5f9; padding: 20px; border-radius: 15px;"><strong>Mon</strong><p>4 Slots</p></div>
+                    <div style="flex: 1; background: var(--primary-light); padding: 20px; border-radius: 15px;"><strong>Tue</strong><p>8 Slots</p></div>
+                    <div style="flex: 1; background: #f1f5f9; padding: 20px; border-radius: 15px;"><strong>Wed</strong><p>2 Slots</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reports" class="page-section">
+            <div class="dashboard-grid">
+                <div class="stat-card"><h3>Monthly Revenue</h3><div class="value">$12,400</div></div>
+                <div class="stat-card"><h3>Patient Growth</h3><div class="value">+15%</div></div>
+                <div class="stat-card"><h3>Surgery Success</h3><div class="value">99.2%</div></div>
+            </div>
+        </section>
+
+        <section id="settings" class="page-section">
+            <div class="content-card">
+                <h3>Profile Settings</h3>
+                <form class="settings-form" style="margin-top: 20px;">
+                    <div class="form-group"><label>Display Name</label><input type="text" value="Dr. Aris Thorne"></div>
+                    <div class="form-group"><label>Specialization</label><input type="text" value="Neurosurgeon"></div>
+                    <div class="form-group"><label>Available Hours</label><select><option>09:00 AM - 05:00 PM</option></select></div>
+                    <button type="button" class="ai-btn" style="background: var(--primary); margin-top: 20px;">Save Changes</button>
+                </form>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function showSection(sectionId) {
+            // Remove active class from all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Add active class to clicked section
+            document.getElementById(sectionId).classList.add('active');
+
+            // Update Sidebar Links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Update Headers
+            const titles = {
+                dashboard: "Dashboard Overview",
+                patients: "Patient Directory",
+                schedule: "Calendar & Slots",
+                reports: "Analytics & Growth",
+                settings: "Portal Settings"
+            };
+            document.getElementById('section-title').innerText = titles[sectionId];
+        }
+    </script>
+</body>
+</html>

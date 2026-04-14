@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Specialities | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --radius-xl: 40px;
+            --radius-lg: 24px;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --accent: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: #f8fafc;
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Background Orbs --- */
+        .orb {
+            position: fixed;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.2;
+            animation: moveOrb 20s infinite alternate;
+        }
+        .orb-1 { background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { background: var(--secondary); bottom: -100px; right: -100px; animation-delay: -5s; }
+
+        @keyframes moveOrb {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(80px, 80px) scale(1.1); }
+        }
+
+        /* --- Fixed Navbar --- */
+        nav {
+            padding: 15px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 92%;
+            margin: 20px 4%;
+            top: 0;
+            z-index: 1000;
+            border-radius: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--primary); }
+        
+        nav ul { display: flex; list-style: none; gap: 15px; align-items: center; }
+        nav ul li { position: relative; }
+        
+        nav ul li a { 
+            text-decoration: none; 
+            color: var(--text-main); 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            padding: 10px 8px;
+            transition: 0.3s;
+        }
+        
+        nav ul li a:hover { color: var(--primary); }
+
+        /* --- FIXED DROPDOWN STYLES --- */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(15px);
+            background: white;
+            min-width: 230px;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            padding: 12px 0;
+            display: none;
+            z-index: 1001;
+            border: 1px solid #f1f5f9;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            display: block;
+            animation: slideUp 0.3s ease forwards;
+        }
+
+        /* This fixes the blue letter issue */
+        .dropdown-menu a {
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px !important;
+            color: var(--text-main) !important; /* Explicitly set to dark gray */
+            text-decoration: none;
+            font-weight: 500 !important;
+            font-size: 0.85rem !important;
+        }
+
+        .dropdown-menu a i {
+            color: var(--primary);
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-menu a:hover {
+            background: #f8fafc;
+            color: var(--primary) !important; /* Turns blue ONLY on hover */
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(25px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(15px); }
+        }
+
+        .btn-fill { 
+            padding: 12px 24px; border-radius: 100px; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; border: none; font-weight: 700; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 8px 15px var(--primary-glow); font-size: 0.8rem;
+        }
+
+        /* --- Content Sections --- */
+        .header-section {
+            padding: 150px 8% 40px;
+            text-align: center;
+        }
+
+        .specialties-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; 
+            padding: 20px 8% 50px; 
+        }
+
+        .flip-card { 
+            background-color: transparent; 
+            height: 300px; 
+            perspective: 1000px; 
+        }
+
+        .flip-card-inner { 
+            position: relative; 
+            width: 100%; 
+            height: 100%; 
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            transform-style: preserve-3d; 
+        }
+
+        .flip-card:hover .flip-card-inner { transform: rotateY(180deg); }
+
+        .flip-card-front, .flip-card-back { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            backface-visibility: hidden; 
+            border-radius: 24px; 
+            padding: 35px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.02);
+        }
+
+        .flip-card-front { background: white; }
+        .flip-card-back { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; 
+            transform: rotateY(180deg); 
+            text-align: center;
+        }
+
+        .btn-load { 
+            display: block; 
+            margin: 0 auto 100px; 
+            padding: 15px 45px; 
+            background: var(--dark); 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            transition: 0.3s;
+        }
+        .btn-load:hover { background: var(--primary); transform: translateY(-3px); }
+
+        /* --- Footer --- */
+        footer { background: var(--dark); color: white; margin: 40px 20px; border-radius: 40px; padding: 80px 8% 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 50px; margin-bottom: 50px; }
+        .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+        .footer-col ul li a:hover { color: white; padding-left: 5px; }
+        .newsletter input { padding: 15px 20px; border-radius: 50px; border: none; width: 100%; margin-bottom: 15px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.85rem; }
+
+        @media (max-width: 1200px) {
+            nav ul { display: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav id="navbar">
+    <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+    <ul>
+        <li><a href="aboutus.html">About Us</a></li>
+        
+        <li class="dropdown">
+            <a href="#speciality">Speciality <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+            <div class="dropdown-menu">
+                <a href="cardiology.html"><i class="fas fa-heartbeat"></i> Cardiology</a>
+                <a href="nurology.html"><i class="fas fa-brain"></i> Neurology</a>
+                <a href="orthopadic.html"><i class="fas fa-bone"></i> Orthopaedics</a>
+                <a href="oncology.html"><i class="fas fa-ribbon"></i> Oncology</a>
+                <a href="gastroscience.html"><i class="fas fa-utensils"></i> Gastrosciences</a>
+                <a href="specialties.html" class="view-all" style="border-top: 1px solid #eee; margin-top: 5px; padding-top: 10px;">View All Departments</a>
+            </div>
+        </li>
+
+        <li class="dropdown">
+            <a href="#">Women's Health <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+            <div class="dropdown-menu">
+                <a href="mensuration.html"><i class="fas fa-calendar-alt"></i> Menstrual Period</a>
+                <a href="pregency.html"><i class="fas fa-person-pregnant"></i> Pregnancy Care</a>
+            </div>
+        </li>
+
+       <li class="dropdown">
+    <a href="#library">Health Library <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+    <div class="dropdown-menu">
+        <a href="treatments2.html"><i class="fas fa-stethoscope"></i> Treatments</a>
+        <a href="tech.html"><i class="fas fa-microchip"></i> Technologies</a>
+        <a href="ailments.html"><i class="fas fa-heart-circle-exclamation"></i> Ailments</a>
+        <a href="kc.html"><i class="fas fa-book-open"></i> Knowledge Center</a>
+        <a href="event.html"><i class="fas fa-calendar-check"></i> Events</a>
+        <a href="dow.html"><i class="fas fa-download"></i> Downloads</a>
+    </div>
+</li>
+        <li><a href="service.html">Services</a></li>
+        <li class="nav-item dropdown">
+    <a href="service.html" class="nav-link">
+        Store <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+    </a>
+    <div class="dropdown-menu">
+        <a href="store.html" class="dropdown-item">
+            <i class="fas fa-user-md"></i>
+            <span>For Doctors</span>
+        </a>
+        <a href="medicine.html" class="dropdown-item">
+            <i class="fas fa-user-injured"></i>
+            <span>For Patients</span>
+        </a>
+    </div>
+</li>
+        <li><a href="Careers.html">Careers</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+    </ul>
+    <a href="booking.html" style="text-decoration: none;">
+    <button class="btn-fill">Book Appointment</button>
+</a>
+</nav>
+
+    <section class="header-section">
+        <h1 style="font-size: 2.8rem; margin-bottom: 15px; color: var(--dark); font-weight: 800;">Our Clinical Specialties</h1>
+        <p style="color: var(--text-light); max-width: 650px; margin: 0 auto;">
+            Access world-class medical expertise across 16+ specialized disciplines. We combine human compassion with advanced AI-driven diagnostics in Lucknow.
+        </p>
+    </section>
+
+    <section class="specialties-grid" id="grid"></section>
+    
+    <button class="btn-load" id="loadMore">View More Specialties</button>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare in Lucknow.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="aboutus.html">About Us</a></li><li><a href="booking.html">Find Doctors</a></li><li><a href="service.html">Services</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul><li><a href="contactus.html">Contact Us</a></li><li><a href="ques.html">FAQs</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter"><input type="email" placeholder="Your Email"><button class="btn-fill" style="width: 100%;">Subscribe</button></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+    <script>
+        const specs = [
+            { name: "Cardiac Care", icon: "fa-heartbeat", link: "cardiology.html" }, 
+            { name: "Cancer Care", icon: "fa-ribbon", link: "oncology.html" },
+            { name: "Neurosciences", icon: "fa-brain", link: "nurology.html" }, 
+            { name: "Gastrosciences", icon: "fa-utensils", link: "gastroscience.html" },
+            { name: "Orthopaedics", icon: "fa-bone", link: "orthopadic.html" }, 
+            { name: "Renal Care", icon: "fa-droplet", link: "renalcare.html" },
+            { name: "Liver Transplant", icon: "fa-hospital", link: "livertransplant.html" }, 
+            { name: "Bone Marrow", icon: "fa-dna", link: "bonenorrow.html" },
+            { name: "Lung Transplant", icon: "fa-lungs", link: "lungs.html" }, 
+            { name: "Gynaecology", icon: "fa-venus", link: "gayana.html" }, 
+            { name: "Paediatric Care", icon: "fa-baby", link: "pc.html" },
+        ];
+
+        const grid = document.getElementById('grid');
+        const loadMoreBtn = document.getElementById('loadMore');
+        let visibleCount = 8;
+
+        function render() {
+            grid.innerHTML = '';
+            specs.slice(0, visibleCount).forEach(s => {
+                grid.innerHTML += `
+                    <div class="flip-card">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <i class="fas ${s.icon}" style="font-size:3.5rem; color:var(--primary); margin-bottom:25px;"></i>
+                                <h3 style="font-weight:700; color:var(--dark);">${s.name}</h3>
+                            </div>
+                            <div class="flip-card-back">
+                                <p style="margin-bottom: 25px; font-size:0.95rem;">Leading ${s.name} excellence with state-of-the-art technology and expert care.</p>
+                                <a href="${s.link}" 
+                                   style="padding: 12px 25px; background: white; color: var(--primary); 
+                                   text-decoration: none; border-radius: 50px; font-weight: 800; font-size: 0.8rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                   VIEW DETAILS
+                                </a>
+                            </div>
+                        </div>
+                    </div>`;
+            });
+
+            if (visibleCount >= specs.length) {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        loadMoreBtn.onclick = () => {
+            visibleCount += 8;
+            render();
+        };
+
+        render();
+    </script>
+</body>
+</html>

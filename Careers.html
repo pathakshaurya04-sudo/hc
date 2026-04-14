@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | HealthCare+ Lucknow</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --radius-xl: 40px;
+            --radius-lg: 24px;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --accent: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Background Animation --- */
+        .orb {
+            position: fixed;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.2;
+            animation: moveOrb 25s infinite alternate;
+        }
+        .orb-1 { background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { background: var(--secondary); bottom: -100px; right: -100px; animation-delay: -5s; }
+
+        @keyframes moveOrb {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(150px, 150px) scale(1.2); }
+        }
+
+        /* --- Navbar --- */
+        nav {
+            padding: 20px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 92%;
+            margin: 20px 4%;
+            top: 0;
+            z-index: 1000;
+            border-radius: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--primary); }
+
+        nav ul { display: flex; list-style: none; gap: 20px; align-items: center; }
+        nav ul a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.85rem; transition: 0.3s; }
+        nav ul a:hover { color: var(--primary); }
+
+        .btn-fill { 
+            padding: 12px 24px; border-radius: 100px; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; border: none; font-weight: 700; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 8px 15px var(--primary-glow); font-size: 0.8rem;
+        }
+
+        /* --- Header Section --- */
+        .page-header { padding: 180px 8% 60px; text-align: center; }
+        .hero-badge { 
+            background: rgba(37, 99, 235, 0.1); color: var(--primary); 
+            padding: 8px 20px; border-radius: 100px; font-weight: 700; 
+            display: inline-block; margin-bottom: 20px; border: 1px solid rgba(37, 99, 235, 0.2); 
+        }
+
+        /* --- Filter Bar --- */
+        .filter-bar {
+            max-width: 1100px;
+            margin: -30px auto 50px;
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 0.5fr;
+            gap: 15px;
+            border: 1px solid #e2e8e0;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* --- Job Table --- */
+        .matrix-container { overflow-x: auto; margin-top: 30px; border-radius: 20px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; background: white; text-align: left; }
+        th { background: #f1f5f9; padding: 20px; font-weight: 700; color: var(--dark); border-bottom: 2px solid #e2e8f0; }
+        td { padding: 20px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
+        .tag { padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .tag-full { background: #dcfce7; color: #166534; }
+        .tag-shift { background: #fef9c3; color: #854d0e; }
+
+        /* --- Career AI Widget --- */
+        .career-ai { position: fixed; bottom: 30px; right: 30px; z-index: 5000; }
+        #ai-toggle {
+            width: 65px; height: 65px; border-radius: 50%; border: none;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; font-size: 26px; cursor: pointer;
+            box-shadow: 0 10px 25px var(--primary-glow); transition: 0.3s;
+        }
+        #ai-toggle:hover { transform: scale(1.1); }
+        #ai-box {
+            width: 350px; height: 480px; background: white; border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: absolute;
+            bottom: 80px; right: 0; display: none; flex-direction: column; overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .ai-header { background: var(--primary); color: white; padding: 15px; font-weight: 700; text-align: center; }
+        .tab-content { flex: 1; overflow-y: auto; padding: 15px; }
+        .status-box { background: #f0f9ff; padding: 12px; border-radius: 12px; margin-top: 10px; font-size: 13px; color: var(--primary-dark); border: 1px solid #bae6fd; }
+        
+        input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #e2e8f0; border-radius: 8px; font-family: inherit; }
+        .action-btn { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 700; }
+
+        /* --- Integrated Footer (Same as Contact Us) --- */
+        footer { background: var(--dark); color: white; margin: 40px 20px; border-radius: 40px; padding: 80px 8% 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 50px; margin-bottom: 50px; }
+        .footer-col h4 { margin-bottom: 25px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; }
+        .footer-col ul li a:hover { color: white; padding-left: 5px; }
+        .newsletter input { padding: 15px 20px; border-radius: 50px; border: none; width: 100%; margin-bottom: 15px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.85rem; }
+
+        @media (max-width: 1200px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 850px) {
+            .filter-bar { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <ul>
+            <li><a href="lifeathc+.html">Life at HC+</a></li>
+            <li><a href="benefits.html">Benefits</a></li>
+            <li><a href="openroles.html">Open Roles</a></li>
+            <li><a href="contactus.html">Contact HR</a></li>
+        </ul>
+        <button class="btn-fill">Upload Resume</button>
+    </nav>
+
+    <header class="page-header">
+        <span class="hero-badge">Careers at HealthCare+</span>
+        <h1>Shape the Future <br> of Lucknow's Healthcare</h1>
+        <p style="color: var(--text-light); max-width: 700px; margin: 25px auto; font-size: 1.1rem; line-height: 1.7;">
+            Join a legacy of excellence. At HealthCare+, we combine clinical compassion with cutting-edge technology to redefine medical care in Uttar Pradesh.
+        </p>
+    </header>
+
+    <div class="filter-bar">
+        <input type="text" placeholder="Search Role (e.g. Doctor)">
+        <select>
+            <option>All Departments</option>
+            <option>Clinical</option>
+            <option>IT & Admin</option>
+            <option>Nursing</option>
+        </select>
+        <select>
+            <option>All Locations</option>
+            <option>Lucknow Central</option>
+            <option>Gomti Nagar Hub</option>
+        </select>
+        <button class="action-btn">Search</button>
+    </div>
+
+    <main style="padding: 0 8% 100px;">
+        <section id="life" style="background: white; padding: 50px; border-radius: var(--radius-xl); box-shadow: 0 20px 50px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; margin-bottom: 80px;">
+            <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center;">
+                <div>
+                    <h2 style="font-size: 2rem; margin-bottom: 20px;">Life at HealthCare+</h2>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">
+                        We believe that happy professionals provide better care. Our culture is built on transparency, innovation, and a commitment to work-life balance for Lucknow's finest medical minds.
+                    </p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div style="background: #eff6ff; padding: 20px; border-radius: 15px; border-left: 4px solid var(--primary);">
+                            <h4 style="color: var(--primary);">Tech-Enabled</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-light);">Leverage real-time tracking and AI diagnostics.</p>
+                        </div>
+                        <div style="background: #fffbeb; padding: 20px; border-radius: 15px; border-left: 4px solid var(--accent);">
+                            <h4 style="color: var(--accent);">Learning First</h4>
+                            <p style="font-size: 0.85rem; color: var(--text-light);">Quarterly workshops and CME certification.</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; background: #fafafa; padding: 30px; border-radius: 30px;">
+                    <i class="fas fa-heart-pulse" style="font-size: 4rem; color: var(--primary); opacity: 0.2;"></i>
+                    <p style="margin-top: 15px; font-weight: 700;">Clinical Pulse</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light);">Join 500+ professionals in our network.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="roles">
+            <h3 style="margin-bottom: 15px;">Current Openings</h3>
+            <div class="matrix-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Department</th>
+                            <th>Type</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Senior Resident Pharmacist</strong></td>
+                            <td>Pharmacy (HealthCare+)</td>
+                            <td><span class="tag tag-full">Full-Time</span></td>
+                            <td><button style="color: var(--primary); border: none; background: none; font-weight: 700; cursor: pointer;">Apply Now</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Digital UI Designer</strong></td>
+                            <td>IT & Product</td>
+                            <td><span class="tag tag-full">Full-Time</span></td>
+                            <td><button style="color: var(--primary); border: none; background: none; font-weight: 700; cursor: pointer;">Apply Now</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nursing Officer</strong></td>
+                            <td>Gynaecology</td>
+                            <td><span class="tag tag-shift">Rotational Shift</span></td>
+                            <td><button style="color: var(--primary); border: none; background: none; font-weight: 700; cursor: pointer;">Apply Now</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="benefits" style="margin-top: 100px;">
+            <h2 style="text-align: center; margin-bottom: 50px;">Employee Benefits</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+                <div style="background: white; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; text-align: center;">
+                    <i class="fas fa-hospital-user" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                    <h4>Health Insurance</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 10px;">Full medical coverage for employees and direct family.</p>
+                </div>
+                <div style="background: white; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; text-align: center;">
+                    <i class="fas fa-umbrella-beach" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                    <h4>Paid PTO</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 10px;">Generous leave policy including mental health days.</p>
+                </div>
+                <div style="background: white; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; text-align: center;">
+                    <i class="fas fa-piggy-bank" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                    <h4>Retirement Plan</h4>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 10px;">Provident fund and gratuity with performance bonuses.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="career-ai">
+        <button id="ai-toggle"><i class="fas fa-robot"></i></button>
+        <div id="ai-box">
+            <div class="ai-header">HC+ Career Assistant</div>
+            <div class="tab-content">
+                <p style="font-size: 0.85rem; margin-bottom: 15px;">I can help you find the perfect role. What is your primary skill?</p>
+                <label>Field</label>
+                <select id="field">
+                    <option value="med">Clinical</option>
+                    <option value="tech">Tech</option>
+                    <option value="ops">Admin</option>
+                </select>
+                <label>Years of Exp</label>
+                <input type="number" id="exp" placeholder="e.g. 3">
+                <button class="action-btn" onclick="findRole()">Find Matches</button>
+                <div id="aiResult" class="status-box" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+     <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare at your fingertips.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="aboutus.html">About Us</a></li><li><a href="#">Find Doctors</a></li><li><a href="service.html">Services</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Contact Us</a></li><li><a href="#">FAQs</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter">
+                    <input type="email" placeholder="Your Email">
+                    <button class="btn-fill" style="width: 100%;">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+    <script>
+        const box = document.getElementById("ai-box");
+        document.getElementById("ai-toggle").onclick = () => {
+            box.style.display = box.style.display === "flex" ? "none" : "flex";
+        };
+
+        function findRole() {
+            let field = document.getElementById("field").value;
+            let res = document.getElementById("aiResult");
+            res.style.display = "block";
+            res.innerText = field === "tech" ? "Recommended: Digital UI Designer (IT Hub)" : "Recommended: Senior Resident Pharmacist (Main Hub)";
+        }
+    </script>
+</body>
+</html>

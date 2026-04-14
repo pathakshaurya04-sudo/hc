@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #f1f5f9; color: var(--text-main); overflow-x: hidden; }
+
+        /* --- Background Orbs --- */
+        .orb { position: fixed; width: 450px; height: 450px; border-radius: 50%; filter: blur(80px); z-index: -1; opacity: 0.3; }
+        .orb-1 { background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { background: var(--secondary); bottom: -100px; right: -100px; }
+
+        /* --- Header (Same as Main) --- */
+        nav {
+            padding: 20px 4%; display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 20px; z-index: 1000; margin: 20px 4%;
+            border-radius: 100px; background: var(--glass-bg); backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+        }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        nav ul { display: flex; list-style: none; gap: 20px; }
+        nav ul a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.85rem; }
+
+        /* --- Animated Container --- */
+        .main-content { min-height: 80vh; display: flex; justify-content: center; align-items: center; padding: 40px 20px; }
+        
+        .auth-card {
+            background: white;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-step { transition: 0.5s; }
+        .hidden { display: none; opacity: 0; transform: translateX(50px); }
+        
+        h2 { margin-bottom: 10px; font-size: 1.8rem; }
+        p.subtitle { color: var(--text-light); margin-bottom: 30px; font-size: 0.9rem; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.85rem; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 12px 20px; border-radius: 15px; border: 1px solid #e2e8f0;
+            background: #f8fafc; outline: none; transition: 0.3s;
+        }
+        .input-group input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+        .btn-action {
+            width: 100%; padding: 15px; border-radius: 15px; border: none;
+            background: var(--primary); color: white; font-weight: 700; cursor: pointer;
+            transition: 0.3s; margin-top: 10px;
+        }
+        .btn-action:hover { background: var(--primary-dark); transform: scale(1.02); }
+
+        /* Success Animation */
+        .success-check { color: #22c55e; font-size: 4rem; text-align: center; margin-bottom: 20px; }
+
+        /* --- Footer (Same as Main) --- */
+        footer { background: var(--dark); color: white; margin: 40px 20px; border-radius: 40px; padding: 80px 8% 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 50px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; margin-top: 40px; display: flex; justify-content: space-between; color: #64748b; font-size: 0.85rem; }
+        
+        @media (max-width: 900px) { nav ul { display: none; } .footer-grid { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <ul>
+            <li><a href="firstpage.html">Home</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="store.html">Store</a></li>
+        </ul>
+        <button class="btn-fill" onclick="location.reload()">Reset</button>
+    </nav>
+
+    <main class="main-content">
+        <div class="auth-card" id="authCard">
+            <div id="stepLogin" class="form-step">
+                <h2>Welcome Back</h2>
+                <p class="subtitle">Please login to book your hospital node.</p>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" placeholder="name@example.com" id="loginEmail">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" placeholder="••••••••">
+                </div>
+                <button class="btn-action" onclick="showBooking()">Login & Continue</button>
+            </div>
+
+            <div id="stepBooking" class="form-step hidden">
+                <h2>Book Appointment</h2>
+                <p class="subtitle">Fill in the details for your visit.</p>
+                <div class="input-group">
+                    <label>Select Hospital Node</label>
+                    <select id="hospSelect">
+                        <option>Apollo Medics</option>
+                        <option>Medanta Lucknow</option>
+                        <option>Max Super Speciality</option>
+                        <option>Sahara Hospital</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Preferred Date</label>
+                    <input type="date">
+                </div>
+                <div class="input-group">
+                    <label>Department</label>
+                    <select>
+                        <option>Cardiology</option>
+                        <option>Neurology</option>
+                        <option>Oncology</option>
+                        <option>General Medicine</option>
+                    </select>
+                </div>
+                <button class="btn-action" onclick="showSuccess()">Confirm Appointment</button>
+            </div>
+
+            <div id="stepSuccess" class="form-step hidden" style="text-align: center;">
+                <div class="success-check"><i class="fas fa-check-circle"></i></div>
+                <h2>Confirmed!</h2>
+                <p class="subtitle">Your appointment has been successfully scheduled. Check your email for node details.</p>
+                <button class="btn-action" onclick="window.location.href='firstpage.html'">Return Home</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare at your fingertips.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul style="list-style:none"><li><a href="#" style="color:#94a3b8;text-decoration:none">Find Doctors</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul style="list-style:none"><li><a href="#" style="color:#94a3b8;text-decoration:none">Privacy Policy</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter"><input type="email" placeholder="Your Email"><button class="btn-action">Subscribe</button></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+    <script>
+        function showBooking() {
+            const card = document.getElementById('authCard');
+            document.getElementById('stepLogin').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('stepLogin').style.display = 'none';
+                document.getElementById('stepBooking').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('stepBooking').classList.remove('hidden');
+                }, 50);
+            }, 500);
+        }
+
+        function showSuccess() {
+            document.getElementById('stepBooking').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('stepBooking').style.display = 'none';
+                document.getElementById('stepSuccess').style.display = 'block';
+                setTimeout(() => {
+                    document.getElementById('stepSuccess').classList.remove('hidden');
+                }, 50);
+            }, 500);
+        }
+    </script>
+</body>
+</html>

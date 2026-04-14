@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare+ | Hospital Medical Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase & PDF Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #7c3aed;
+            --accent: #00f2fe;
+            --success: #10b981;
+            --dark: #0f172a;
+            --slate: #64748b;
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --grad: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #f8fafc;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(37, 99, 235, 0.03) 0, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(124, 58, 237, 0.03) 0, transparent 50%);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 1rem 5%;
+            position: sticky; top: 0; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: var(--dark); letter-spacing: -0.5px; }
+        .logo span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+
+        .cart-trigger, .auth-trigger { 
+            background: white; border: 1px solid #e2e8f0; 
+            padding: 10px 24px; border-radius: 100px; cursor: pointer;
+            display: flex; align-items: center; gap: 12px; font-weight: 700;
+            transition: all 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .auth-trigger { background: var(--dark); color: white; border: none; }
+
+        /* Layout */
+        .main-container { max-width: 1400px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
+
+        .sidebar {
+            background: white; border: 1px solid #e2e8f0; border-radius: 24px;
+            padding: 30px; height: fit-content; position: sticky; top: 100px;
+        }
+
+        .cat-link {
+            display: flex; align-items: center; padding: 14px 18px; margin: 8px 0;
+            border-radius: 16px; cursor: pointer; transition: 0.3s; font-weight: 600; color: var(--slate);
+        }
+        .cat-link i { margin-right: 12px; width: 20px; text-align: center; }
+        .cat-link:hover, .cat-link.active { background: #f1f5f9; color: var(--primary); }
+        .cat-link.active { background: var(--primary); color: white; }
+
+        /* Dashboard & Auth Modals */
+        .dashboard-view { display: none; }
+        .auth-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            display: none; justify-content: center; align-items: center; z-index: 4000;
+        }
+        .auth-box { background: white; padding: 40px; border-radius: 24px; width: 100%; max-width: 400px; }
+
+        /* History Table */
+        .history-item {
+            background: white; padding: 20px; border-radius: 15px; border: 1px solid #eee;
+            margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; }
+        .card {
+            background: white; border: 1px solid #e2e8f0;
+            border-radius: 28px; padding: 24px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; position: relative;
+        }
+        .card:hover { transform: translateY(-12px); border-color: var(--primary); box-shadow: var(--shadow); }
+        
+        .img-container { 
+            background: #f8fafc; border-radius: 20px; height: 180px; 
+            display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .price-row { display: flex; align-items: center; gap: 10px; margin: 15px 0; }
+        .price { font-size: 1.4rem; font-weight: 800; color: var(--dark); }
+
+        .btn-add {
+            background: var(--dark); color: white; border: none; padding: 14px;
+            border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+        }
+        .btn-add:hover { background: var(--primary); }
+
+        /* Modern Summary Styles */
+        .summary-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; border-bottom: 1px solid #f1f5f9;
+        }
+        .summary-row:last-child { border: none; }
+        .summary-badge { background: #f1f5f9; padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; color: var(--primary); }
+
+        #cartPanel {
+            position: fixed; right: -450px; top: 0; width: 420px; height: 100%;
+            background: white; z-index: 2000; box-shadow: -20px 0 50px rgba(0,0,0,0.05);
+            transition: 0.5s; padding: 40px; display: flex; flex-direction: column;
+        }
+        #cartPanel.active { right: 0; }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 3000;
+        }
+        .checkout-window {
+            background: white; width: 90%; max-width: 500px;
+            padding: 40px; border-radius: 32px; position: relative;
+        }
+
+        .input-group input, .input-group textarea {
+            width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #e2e8f0;
+            background: #f8fafc; font-family: inherit; margin-bottom: 12px; outline: none;
+        }
+
+        #successScreen { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: white; z-index: 100; display: none; 
+            flex-direction: column; align-items: center; justify-content: center; padding: 40px; border-radius: 32px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="firstpage.html" class="logo" onclick="toggleView('shop')">HealthCare<span>+</span></a>
+        <div class="nav-right">
+            <div id="userInfo" style="display:none; font-weight: 700; color: var(--primary);"></div>
+            <button class="auth-trigger" id="authBtn" onclick="openAuth()">Sign In</button>
+            <div class="cart-trigger" onclick="toggleCart()">
+                <i class="fas fa-shopping-basket"></i>
+                <span id="cartCount">0 Items</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h4 style="color:var(--slate); text-transform:uppercase; font-size:0.75rem; letter-spacing:1px; margin-bottom:15px;">Navigation</h4>
+            <div class="cat-link active" id="shopNavLink" onclick="toggleView('shop')"><i class="fas fa-store"></i> Medical Shop</div>
+            <div class="cat-link" id="dashNavLink" onclick="toggleView('dashboard')"><i class="fas fa-columns"></i> My Dashboard</div>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+            <div id="logoutBtn" class="cat-link" style="color: #f87171; display: none;" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+        </aside>
+
+        <main>
+            <div id="shopView">
+                <div class="product-grid" id="productGrid"></div>
+            </div>
+
+            <div id="dashboardView" class="dashboard-view">
+                <h1 style="margin-bottom: 10px;">Welcome, <span id="dashName">User</span></h1>
+                <p style="color: var(--slate); margin-bottom: 30px;">Access your order history and receipts below.</p>
+                
+                <h3>My Transactions</h3>
+                <div id="orderHistory" style="margin-top: 15px;">
+                    <p>No transactions found.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- AUTH MODAL -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-box">
+            <h2 id="authTitle" style="margin-bottom: 10px;">Login</h2>
+            <div id="authFields">
+                <div class="input-group">
+                    <input type="text" id="authName" placeholder="Full Name (Sign up only)" style="display:none">
+                    <input type="email" id="authEmail" placeholder="Email Address">
+                    <input type="password" id="authPassword" placeholder="Password">
+                </div>
+                <button class="btn-add" id="mainAuthBtn" onclick="processAuth()" style="background: var(--grad)">Sign In</button>
+                <p style="margin-top: 20px; text-align: center; font-size: 0.9rem;">
+                    <a href="javascript:void(0)" onclick="toggleAuthMode()" id="toggleText" style="color: var(--primary); font-weight: 700;">Create an account</a>
+                </p>
+                <p style="margin-top: 10px; text-align: center; font-size: 0.8rem;">
+                    <a href="javascript:void(0)" onclick="handleReset()" style="color: var(--slate);">Forgot Password?</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART PANEL -->
+    <div id="cartPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="font-weight: 800;">My Bag</h2>
+            <button onclick="toggleCart()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <div id="cartList" style="flex:1; overflow-y: auto;"></div>
+        <div style="padding-top: 20px; border-top: 1px solid #f1f5f9;">
+            <div style="display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: 800; margin-bottom: 25px;">
+                <span>Total</span>
+                <span id="totalPrice">₹0</span>
+            </div>
+            <button class="btn-add" onclick="openCheckout()" style="background: var(--grad); width:100%; padding:20px; font-size:1.1rem;">Checkout Now</button>
+        </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="checkout-window">
+            <div class="step-content active" id="step1">
+                <h2 style="margin-bottom:20px;">Order Summary</h2>
+                <div id="summaryItems" style="max-height:250px; overflow-y:auto; margin-bottom:20px; border: 1px solid #f1f5f9; border-radius: 16px; background: #fff;"></div>
+                <div style="display:flex; justify-content:space-between; padding: 20px 0; border-top: 1px solid #eee; font-weight:800; font-size:1.3rem;">
+                    <span>Order Total</span>
+                    <span id="summaryTotal" style="color: var(--primary);">₹0</span>
+                </div>
+                <button class="btn-add" style="width:100%; background:var(--grad)" onclick="nextStep(2)">Proceed to Delivery</button>
+            </div>
+
+            <div class="step-content" id="step2" style="display:none;">
+                <h2 style="margin-bottom:20px;">Delivery Details</h2>
+                <div class="input-group">
+                    <input type="text" id="custName" placeholder="Recipient Name">
+                    <input type="text" id="custPhone" placeholder="Contact Number">
+                    <textarea id="custAddress" placeholder="Full Delivery Address"></textarea>
+                    
+                    <h4 style="margin: 10px 0">Payment Method</h4>
+                    <select id="paymentMethod" style="width:100%; padding:14px; border-radius:12px; border:1px solid #e2e8f0; background:#f8fafc; margin-bottom:15px; font-family: inherit;">
+                        <option value="UPI">UPI / Instant Pay</option>
+                        <option value="COD">Cash on Delivery</option>
+                        <option value="Card">Online Payment</option>
+                    </select>
+                </div>
+                <button class="btn-add" id="confirmOrderBtn" style="width:100%; background:var(--grad);" onclick="finishOrder()">Place Order Now</button>
+            </div>
+
+            <div id="successScreen">
+                <div style="width:80px; height:80px; background:var(--success); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:2.5rem; margin-bottom:24px; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2 style="color:var(--dark); font-weight:800;">Payment Confirmed!</h2>
+                <p style="color: var(--slate); margin-top: 8px;">Your medical supplies are being packed.</p>
+                <button class="btn-add" style="margin-top:30px; width:100%;" onclick="toggleView('dashboard')">Go to Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SUPABASE CONFIGURATION (Hospital Project) ---
+        const SB_URL = "https://itvbhpvypgfxdksbpnnt.supabase.co";
+        const SB_KEY = "sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5";
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        let cart = [];
+        let isSignUp = false;
+        let currentUser = null;
+
+        const allProducts = [
+            { id: 'M1', name: 'Littmann Classic III Stethoscope', price: 8500, img: 'New folder/1.jpeg' },
+            { id: 'M2', name: 'Digital Blood Pressure Monitor', price: 2450, img: 'New folder/2.jpg' },
+            { id: 'M3', name: 'Pulse Oximeter Pro Plus', price: 1200, img: 'https://5.imimg.com/data5/SELLER/Default/2021/4/ZH/PZ/OW/117248503/oxi-pro-3-e1600343873965-500x500.jpeg' },
+            { id: 'M4', name: 'Accu-Chek Glucometer Kit', price: 1850, img: 'https://m.media-amazon.com/images/I/614kGUJTB8L.jpg' },
+            { id: 'M5', name: 'Infrared Laser Thermometer', price: 999, img: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=400' },
+            { id: 'M6', name: 'Neurological Reflex Hammer', price: 450, img: 'https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?auto=format&fit=crop&w=400' },
+            { id: 'M7', name: 'Surgical Forceps Set (5pcs)', price: 1650, img: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=400' },
+            { id: 'M8', name: 'Portable Wireless ECG Monitor', price: 15500, img: 'https://images.unsplash.com/photo-1576091160550-2173bdd99625?auto=format&fit=crop&w=400' },
+            { id: 'M9', name: 'Emergency Trauma Kit', price: 2500, img: 'https://images.unsplash.com/photo-1603398938378-e54eab446ddd?auto=format&fit=crop&w=400' },
+            { id: 'M10', name: 'LED Fiber-Optic Otoscope', price: 3800, img: 'https://images.unsplash.com/photo-1666214280557-f1b5022eb634?auto=format&fit=crop&w=400' },
+            { id: 'M11', name: 'Medical Skeleton Display', price: 8400, img: 'https://images.unsplash.com/photo-1530210124550-912dc1381cb8?auto=format&fit=crop&w=400' },
+            { id: 'M12', name: 'Silent Mesh Nebulizer', price: 2900, img: 'https://images.unsplash.com/photo-1631217816660-ad444a7789c3?auto=format&fit=crop&w=400' },
+            { id: 'M13', name: 'HD Binocular Microscope', price: 22500, img: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400' },
+            { id: 'M14', name: 'Ergonomic Wheelchair', price: 9800, img: 'https://images.unsplash.com/photo-1597148810058-9635e982c586?auto=format&fit=crop&w=400' },
+            { id: 'M15', name: 'Fowler Electric Hospital Bed', price: 45000, img: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce2?auto=format&fit=crop&w=400' },
+            { id: 'M16', name: 'Stainless Steel IV Stand', price: 1850, img: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=400' },
+            { id: 'M17', name: 'Portable Oxygen Concentrator', price: 42000, img: 'https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?auto=format&fit=crop&w=400' },
+            { id: 'M18', name: 'Clinical Exam Lamp', price: 14400, img: 'https://images.unsplash.com/photo-1588776814546-1ffce47267a5?auto=format&fit=crop&w=400' },
+            { id: 'M19', name: 'Smart Defibrillator (AED)', price: 48000, img: 'https://images.unsplash.com/photo-1583947581924-860bda6a26df?auto=format&fit=crop&w=400' },
+            { id: 'M20', name: 'Multi-Parameter Vitals Monitor', price: 32000, img: 'https://images.unsplash.com/photo-1579154235884-332c3263c965?auto=format&fit=crop&w=400' },
+            { id: 'M21', name: 'Sterile Surgical Gowns (Box)', price: 3500, img: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=400' },
+            { id: 'M22', name: 'Biohazard Waste Bin (20L)', price: 1200, img: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&w=400' },
+            { id: 'M23', name: 'Titanium Orthopedic Drills', price: 125000, img: 'https://images.unsplash.com/photo-1583947581924-860bda6a26df?auto=format&fit=crop&w=400' },
+            { id: 'M24', name: 'Anesthesia Face Mask Set', price: 4500, img: 'https://images.unsplash.com/photo-1584982724471-8391ee2c0d39?auto=format&fit=crop&w=400' },
+            { id: 'M25', name: 'Infusion Pump Module', price: 18000, img: 'https://images.unsplash.com/photo-1576091160550-2173bdd99625?auto=format&fit=crop&w=400' },
+            { id: 'M26', name: 'X-Ray View Box (Dual)', price: 7200, img: 'https://images.unsplash.com/photo-1530210124550-912dc1381cb8?auto=format&fit=crop&w=400' },
+            { id: 'M27', name: 'Anatomical Heart Model', price: 2100, img: 'https://images.unsplash.com/photo-1579154235884-332c3263c965?auto=format&fit=crop&w=400' },
+            { id: 'M28', name: 'Hospital Patient Trolley', price: 15600, img: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce2?auto=format&fit=crop&w=400' },
+            { id: 'M29', name: 'Handheld Ultrasound Scanner', price: 210000, img: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400' },
+            { id: 'M30', name: 'Fetal Doppler Monitor', price: 4900, img: 'https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?auto=format&fit=crop&w=400' }
+        ];
+
+        async function checkUser() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            currentUser = session?.user || null;
+            if (currentUser) {
+                document.getElementById('userInfo').innerText = `Dr. ${currentUser.user_metadata.full_name || 'User'}`;
+                document.getElementById('userInfo').style.display = 'block';
+                document.getElementById('authBtn').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = 'flex';
+                document.getElementById('dashName').innerText = currentUser.user_metadata.full_name || 'User';
+                fetchOrderHistory();
+            }
+        }
+
+        function openAuth() { document.getElementById('authModal').style.display = 'flex'; }
+        
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            document.getElementById('authTitle').innerText = isSignUp ? 'Create Account' : 'Login';
+            document.getElementById('mainAuthBtn').innerText = isSignUp ? 'Sign Up' : 'Sign In';
+            document.getElementById('authName').style.display = isSignUp ? 'block' : 'none';
+            document.getElementById('toggleText').innerText = isSignUp ? 'Back to Login' : 'Create an account';
+        }
+
+        async function processAuth() {
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const full_name = document.getElementById('authName').value;
+            try {
+                if (isSignUp) {
+                    const { error } = await _supabase.auth.signUp({ email, password, options: { data: { full_name } } });
+                    if (error) throw error;
+                    alert("Account created! Check email if confirmation is required.");
+                } else {
+                    const { error } = await _supabase.auth.signInWithPassword({ email, password });
+                    if (error) throw error;
+                    location.reload();
+                }
+            } catch (error) { alert(error.message); }
+        }
+
+        async function handleLogout() { await _supabase.auth.signOut(); location.reload(); }
+        
+        async function handleReset() {
+            const email = document.getElementById('authEmail').value;
+            if (!email) return alert("Type your email address first.");
+            const { error } = await _supabase.auth.resetPasswordForEmail(email);
+            alert(error ? error.message : "Reset link sent to inbox!");
+        }
+
+        function toggleView(view) {
+            document.getElementById('shopView').style.display = 'none';
+            document.getElementById('dashboardView').style.display = 'none';
+            
+            document.getElementById('shopNavLink').classList.remove('active');
+            document.getElementById('dashNavLink').classList.remove('active');
+
+            if(view === 'dashboard' && !currentUser) { openAuth(); return; }
+            
+            document.getElementById(view + 'View').style.display = 'block';
+            document.getElementById(view + 'NavLink').classList.add('active');
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.getElementById('authModal').style.display = 'none';
+            
+            if(view === 'dashboard') fetchOrderHistory();
+        }
+
+        function initData() {
+            document.getElementById('productGrid').innerHTML = allProducts.map(p => `
+                <div class="card">
+                    <div class="img-container"><img src="${p.img}" onerror="this.src='https://via.placeholder.com/400x300?text=Medical+Equipment'"></div>
+                    <h3 style="font-size: 1.1rem; margin: 8px 0; min-height: 2.6rem;">${p.name}</h3>
+                    <div class="price-row"><span class="price">₹${p.price.toLocaleString()}</span></div>
+                    <button class="btn-add" onclick="addToCart('${p.id}')">Add to Bag</button>
+                </div>
+            `).join('');
+            checkUser();
+        }
+
+        function addToCart(id) {
+            const item = allProducts.find(p => p.id === id);
+            cart.push({...item});
+            document.getElementById('cartCount').innerText = `${cart.length} Items`;
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const list = document.getElementById('cartList');
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            list.innerHTML = cart.map((item, idx) => `
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
+                    <div style="flex:1"><h4 style="font-size:0.9rem;">${item.name}</h4><strong style="color:var(--primary)">₹${item.price.toLocaleString()}</strong></div>
+                    <i class="fas fa-trash" style="color:#f87171; cursor:pointer;" onclick="removeFromCart(${idx})"></i>
+                </div>
+            `).join('');
+            document.getElementById('totalPrice').innerText = `₹${total.toLocaleString()}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            document.getElementById('cartCount').innerText = `${cart.length} Items`;
+            updateCartUI();
+        }
+
+        function toggleCart() { document.getElementById('cartPanel').classList.toggle('active'); }
+
+        function openCheckout() {
+            if(!currentUser) { openAuth(); return; }
+            if(cart.length === 0) return alert("Your bag is empty.");
+            
+            document.getElementById('summaryItems').innerHTML = cart.map((i) => `
+                <div class="summary-row">
+                    <div style="display:flex; flex-direction:column;">
+                        <span style="font-weight: 600; font-size: 0.9rem;">${i.name}</span>
+                        <span style="font-size: 0.8rem; color: var(--slate);">Item ID: ${i.id}</span>
+                    </div>
+                    <span class="summary-badge">₹${i.price.toLocaleString()}</span>
+                </div>
+            `).join('');
+            
+            document.getElementById('summaryTotal').innerText = document.getElementById('totalPrice').innerText;
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('successScreen').style.display = 'none';
+            document.getElementById('modalOverlay').style.display = 'flex';
+        }
+
+        function nextStep(step) {
+            document.getElementById('step1').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+        }
+
+        async function finishOrder() {
+            const name = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const address = document.getElementById('custAddress').value;
+            const method = document.getElementById('paymentMethod').value;
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+
+            if(!name || !phone || !address) return alert("Please fill recipient info.");
+
+            const confirmBtn = document.getElementById('confirmOrderBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.innerText = "Processing...";
+
+            const order_id = 'HC-' + Math.floor(100000 + Math.random() * 900000);
+
+            const { error } = await _supabase.from('orders').insert([{
+                order_id: order_id,
+                customer_name: name,
+                phone: phone,
+                address: address,
+                total: total,
+                payment_method: method,
+                items: cart,
+                user_id: currentUser.id
+            }]);
+
+            if (error) {
+                alert("Database Error: " + error.message);
+                confirmBtn.disabled = false;
+                confirmBtn.innerText = "Place Order Now";
+            } else {
+                document.getElementById('successScreen').style.display = 'flex';
+                document.getElementById('step2').style.display = 'none';
+                cart = [];
+                updateCartUI();
+                document.getElementById('cartCount').innerText = `0 Items`;
+            }
+        }
+
+        async function fetchOrderHistory() {
+            const { data, error } = await _supabase
+                .from('orders')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+
+            const container = document.getElementById('orderHistory');
+            if(data && data.length > 0) {
+                container.innerHTML = data.map(order => `
+                    <div class="history-item">
+                        <div>
+                            <strong>#${order.order_id}</strong><br>
+                            <small>${new Date(order.created_at).toLocaleDateString()} • ${order.items.length} Product(s)</small>
+                        </div>
+                        <div style="font-weight: 800;">₹${order.total.toLocaleString()}</div>
+                        <button onclick='downloadReceipt(${JSON.stringify(order)})' style="background:none; border:1.5px solid var(--primary); color:var(--primary); padding:6px 14px; border-radius:100px; cursor:pointer; font-weight: 700;">
+                            <i class="fas fa-file-invoice"></i> PDF
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = `<p style="text-align:center; padding: 20px; color: var(--slate);">No orders placed yet.</p>`;
+            }
+        }
+
+        function downloadReceipt(order) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFillColor(37, 99, 235);
+            doc.rect(0, 0, 210, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.text("HealthCare+", 15, 25);
+            doc.setFontSize(10);
+            doc.text("Official Medical Equipment Invoice", 15, 32);
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(12);
+            doc.text(`Order ID: ${order.order_id}`, 15, 55);
+            doc.text(`Date: ${new Date(order.created_at).toLocaleString()}`, 15, 62);
+            doc.text(`Customer: ${order.customer_name}`, 15, 75);
+            doc.text(`Address: ${order.address}`, 15, 82);
+            
+            doc.line(15, 90, 195, 90);
+            
+            let y = 100;
+            doc.text("Item Details", 15, y);
+            y += 10;
+            
+            order.items.forEach(item => {
+                doc.text(`- ${item.name}`, 15, y);
+                doc.text(`INR ${item.price.toLocaleString()}`, 160, y);
+                y += 8;
+            });
+            
+            doc.line(15, y + 5, 195, y + 5);
+            doc.setFontSize(14);
+            doc.text(`GRAND TOTAL: INR ${order.total.toLocaleString()}`, 15, y + 15);
+            
+            doc.setFontSize(9);
+            doc.setTextColor(100, 100, 100);
+            doc.text("Thank you for choosing HealthCare+ for your medical needs.", 105, 280, null, null, "center");
+            
+            doc.save(`Receipt_${order.order_id}.pdf`);
+        }
+
+        initData();
+        window.onclick = (e) => { 
+            if (e.target.className === 'auth-modal') document.getElementById('authModal').style.display = 'none'; 
+            if (e.target.className === 'modal-overlay') document.getElementById('modalOverlay').style.display = 'none'; 
+        }
+    </script>
+</body>
+</html>

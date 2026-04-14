@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Center | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --radius-xl: 40px;
+            --radius-lg: 24px;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Animated Background --- */
+        .orb {
+            position: fixed;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.3;
+            animation: moveOrb 30s infinite alternate;
+        }
+        .orb-1 { background: var(--primary); top: -150px; left: -150px; }
+        .orb-2 { background: #10b981; bottom: -150px; right: -150px; animation-delay: -5s; }
+
+        @keyframes moveOrb {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(150px, 150px) scale(1.2); }
+        }
+
+        /* --- Navigation --- */
+        nav {
+            padding: 10px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 92%;
+            left: 4%;
+            top: 20px;
+            z-index: 9999;
+            border-radius: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        nav ul { display: flex; list-style: none; gap: 5px; align-items: center; }
+        nav ul a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.8rem; transition: 0.3s; padding: 10px 15px; display: block; }
+        nav ul a:hover { color: var(--primary); }
+
+        /* --- Dropdown Styling --- */
+        .dropdown { position: relative; }
+        
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 220px;
+            border-radius: 18px;
+            padding: 15px 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid #f1f5f9;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(15px);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
+        }
+
+        .dropdown-menu a {
+            display: flex !important;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px !important;
+            color: var(--text-main) !important;
+            font-size: 0.85rem !important;
+            font-weight: 500;
+        }
+
+        .dropdown-menu a i {
+            width: 20px;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .dropdown-menu a:hover {
+            background: #f8fafc;
+            color: var(--primary) !important;
+            padding-left: 25px !important;
+        }
+
+        .btn-fill { 
+            padding: 12px 24px; border-radius: 100px; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; border: none; font-weight: 700; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 8px 15px var(--primary-glow); font-size: 0.75rem; text-transform: uppercase;
+        }
+
+        /* --- Knowledge Content --- */
+        .hero { padding: 200px 8% 60px; text-align: center; }
+        .badge { background: rgba(16, 185, 129, 0.1); color: #10b981; padding: 8px 20px; border-radius: 100px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        .featured-card {
+            background: white; border-radius: var(--radius-lg); overflow: hidden;
+            display: grid; grid-template-columns: 1.2fr 1fr;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;
+            margin: 0 8% 80px;
+        }
+
+        .featured-img { background: url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800') center/cover; min-height: 400px; }
+        .featured-content { padding: 60px; display: flex; flex-direction: column; justify-content: center; }
+
+        .filter-bar { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 50px; padding: 0 8%; }
+        .filter-btn {
+            padding: 12px 24px; border-radius: 50px; border: 1px solid #e2e8f0;
+            background: white; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.3s;
+        }
+        .filter-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
+
+        .knowledge-grid { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 25px; padding: 0 8% 50px; 
+        }
+
+        .article-card {
+            background: white; border-radius: var(--radius-lg); padding: 35px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: 0.4s;
+            border: 1px solid #f1f5f9; display: flex; flex-direction: column;
+        }
+        .article-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .article-icon { font-size: 2rem; color: var(--primary); margin-bottom: 20px; }
+        .article-link { text-decoration: none; color: var(--primary); font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 20px; cursor: pointer; }
+
+        /* --- Popup Modal --- */
+        .popup-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        .popup-overlay.active { display: flex; }
+        .popup-content {
+            background: white; padding: 40px; border-radius: var(--radius-lg);
+            text-align: center; max-width: 400px; width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: scale(0.9); transition: 0.3s;
+        }
+        .popup-overlay.active .popup-content { transform: scale(1); }
+        .popup-icon { font-size: 3.5rem; color: #f59e0b; margin-bottom: 20px; }
+
+        /* --- Footer --- */
+        footer { 
+            background: var(--dark); color: white; margin: 40px 20px; 
+            border-radius: var(--radius-xl); padding: 80px 8% 40px;
+            position: relative; overflow: hidden;
+        }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 50px; margin-bottom: 60px; position: relative; z-index: 1; }
+        .footer-col h4 { margin-bottom: 25px; color: white; font-weight: 700; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .footer-col ul li a:hover { color: var(--secondary); transform: translateX(5px); }
+        
+        /* FIX: Added missing newsletter input styling */
+        .newsletter input {
+            width: 100%; padding: 14px 20px; border-radius: 100px;
+            border: 1px solid rgba(255,255,255,0.1); font-family: inherit;
+            background: rgba(255,255,255,0.05); color: white;
+            margin-bottom: 15px; outline: none; transition: 0.3s;
+        }
+        .newsletter input:focus { border-color: var(--primary); }
+        
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s all ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 1100px) {
+            nav ul { display: none; }
+        }
+        @media (max-width: 992px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .featured-card { grid-template-columns: 1fr; }
+        }
+        /* FIX: Mobile optimization for the footer */
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav id="navbar">
+        <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <ul>
+            <li><a href="aboutus.html">About Us</a></li>
+            
+            <li class="dropdown">
+                <a href="#speciality">Speciality <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+                <div class="dropdown-menu">
+                    <a href="cardiology.html"><i class="fas fa-heartbeat"></i> Cardiology</a>
+                    <a href="nurology.html"><i class="fas fa-brain"></i> Neurology</a>
+                    <a href="orthopadic.html"><i class="fas fa-bone"></i> Orthopaedics</a>
+                    <a href="oncology.html"><i class="fas fa-ribbon"></i> Oncology</a>
+                    <a href="gastroscience.html"><i class="fas fa-utensils"></i> Gastrosciences</a>
+                    <a href="specialties.html" class="view-all" style="border-top: 1px solid #eee; margin-top: 5px; padding-top: 10px;">View All Departments</a>
+                </div>
+            </li>
+
+            <li class="dropdown">
+                <a href="#">Women's Health <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+                <div class="dropdown-menu">
+                    <a href="mensuration.html"><i class="fas fa-calendar-alt"></i> Menstrual Period</a>
+                    <a href="pregency.html"><i class="fas fa-person-pregnant"></i> Pregnancy Care</a>
+                </div>
+            </li>
+
+           <li class="dropdown">
+                <a href="#library">Health Library <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+                <div class="dropdown-menu">
+                    <a href="treatments2.html"><i class="fas fa-stethoscope"></i> Treatments</a>
+                    <a href="tech.html"><i class="fas fa-microchip"></i> Technologies</a>
+                    <a href="ailments.html"><i class="fas fa-heart-circle-exclamation"></i> Ailments</a>
+                    <a href="kc.html"><i class="fas fa-book-open"></i> Knowledge Center</a>
+                    <a href="event.html"><i class="fas fa-calendar-check"></i> Events</a>
+                    <a href="dow.html"><i class="fas fa-download"></i> Downloads</a>
+                </div>
+            </li>
+            <li><a href="service.html">Services</a></li>
+            <li class="nav-item dropdown">
+                <a href="service.html" class="nav-link">
+                    Store <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <a href="store.html" class="dropdown-item">
+                        <i class="fas fa-user-md"></i>
+                        <span>For Doctors</span>
+                    </a>
+                    <a href="medicine.html" class="dropdown-item">
+                        <i class="fas fa-user-injured"></i>
+                        <span>For Patients</span>
+                    </a>
+                </div>
+            </li>
+            <li><a href="Careers.html">Careers</a></li>
+            <li><a href="contactus.html">Contact Us</a></li>
+        </ul>
+        <a href="booking.html" style="text-decoration: none;">
+            <button class="btn-fill">Book Appointment</button>
+        </a>
+    </nav>
+    <div class="hero reveal">
+        <span class="badge">Medical Education & Insights</span>
+        <h1 style="font-size: 3.5rem; margin-top: 15px;">Knowledge <span style="color: var(--primary);">Center</span></h1>
+        <p style="max-width: 650px; color: var(--text-light); margin: 20px auto; line-height: 1.6;">Access over 50 expert-reviewed articles covering the latest in medical technology, wellness, and research.</p>
+    </div>
+
+    <div class="featured-card reveal">
+        <div class="featured-img"></div>
+        <div class="featured-content">
+            <span style="color: var(--primary); font-weight: 800; font-size: 0.8rem; text-transform: uppercase;">Top Story</span>
+            <h2 style="font-size: 2.2rem; margin: 15px 0; color: var(--dark);">Advancements in Robotic Cardiology</h2>
+            <p style="color: var(--text-light); margin-bottom: 30px; line-height: 1.6;">How 2026 surgical updates are making heart procedures safer and recovery times faster than ever before.</p>
+            <button class="btn-fill" style="background: var(--dark); width: fit-content;" onclick="showPopup(event)">Read Full Report</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="filter-bar reveal">
+            <button class="filter-btn active" onclick="filterArticles('all')">All Resources</button>
+            <button class="filter-btn" onclick="filterArticles('Nutrition')">Nutrition</button>
+            <button class="filter-btn" onclick="filterArticles('Wellness')">Wellness</button>
+            <button class="filter-btn" onclick="filterArticles('Research')">Research</button>
+            <button class="filter-btn" onclick="filterArticles('Tech')">Tech</button>
+        </div>
+        <div class="knowledge-grid" id="articleGrid"></div>
+        <div style="text-align: center; padding-bottom: 80px;" class="reveal">
+            <button id="loadMoreBtn" class="btn-fill" style="background: var(--dark);" onclick="loadMore()">Load More Articles</button>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content">
+            <div class="popup-icon"><i class="fas fa-file-medical-alt"></i></div>
+            <h2 style="margin-bottom: 10px; color: var(--dark);">Not Published Yet</h2>
+            <p style="color: var(--text-light); line-height: 1.6; margin-bottom: 25px;">This specific article is currently undergoing final peer review and will be released in the upcoming volume.</p>
+            <button class="btn-fill" onclick="closePopup()">Got it</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare at your fingertips.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="aboutus.html">About Us</a></li><li><a href="booking.html">Find Doctors</a></li><li><a href="service.html">Services</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul><li><a href="contactus.html">Contact Us</a></li><li><a href="ques.html">FAQs</a></li><li><a href="pp.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter"><input type="email" placeholder="Your Email"><button class="btn-fill" style="width: 100%;">Subscribe</button></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+    <script>
+        const categories = [
+            { name: 'Nutrition', icon: 'fa-apple-whole', color: '#f59e0b', desc: 'Clinical insights into dietary recovery.' },
+            { name: 'Wellness', icon: 'fa-spa', color: '#8b5cf6', desc: 'Holistic physical balance approaches.' },
+            { name: 'Research', icon: 'fa-microscope', color: '#10b981', desc: 'Breakthroughs from global trials.' },
+            { name: 'Tech', icon: 'fa-microchip', color: '#3b82f6', desc: 'The intersection of engineering & medicine.' }
+        ];
+
+        const articleTitles = [
+            "Hydration and Cellular Repair", "The Science of Circadian Rhythms", "AI in Early Cancer Detection",
+            "Microbiome Health and Immunity", "Post-Pandemic Mental Health", "The Role of CRISPR in 2026",
+            "Wearable Tech and Heart Monitoring", "Superfoods for Brain Longevity", "Telemedicine Best Practices",
+            "Managing Chronic Fatigue", "Advances in Spinal Recovery", "Digital Detox for Stress Relief"
+        ];
+
+        let displayedCount = 0;
+        const grid = document.getElementById('articleGrid');
+
+        function showPopup(e) { if(e) e.preventDefault(); document.getElementById('popupOverlay').classList.add('active'); }
+        function closePopup() { document.getElementById('popupOverlay').classList.remove('active'); }
+
+        function populateArticles(count = 12) {
+            const start = displayedCount;
+            for (let i = start; i < start + count && i < articleTitles.length; i++) {
+                const cat = categories[i % categories.length];
+                const card = document.createElement('div');
+                card.className = 'article-card reveal';
+                card.setAttribute('data-category', cat.name);
+                card.innerHTML = `
+                    <div class="article-icon" style="color: ${cat.color}"><i class="fas ${cat.icon}"></i></div>
+                    <span class="badge" style="background: ${cat.color}15; color: ${cat.color}; font-size: 0.65rem;">${cat.name}</span>
+                    <h3 style="margin: 15px 0; font-size: 1.3rem; color: var(--dark);">${articleTitles[i]}</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-light);">${cat.desc}</p>
+                    <a class="article-link" onclick="showPopup(event)">Read Full Access <i class="fas fa-chevron-right"></i></a>
+                `;
+                grid.appendChild(card);
+            }
+            displayedCount += count;
+            if(displayedCount >= articleTitles.length) document.getElementById('loadMoreBtn').style.display = 'none';
+            setTimeout(reveal, 100);
+        }
+
+        // FIX: Added the missing loadMore function that the button was trying to trigger
+        function loadMore() {
+            populateArticles(4); 
+            reveal();
+        }
+
+        function filterArticles(category) {
+            const btns = document.querySelectorAll('.filter-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.article-card').forEach(card => {
+                card.style.display = (category === 'all' || card.dataset.category === category) ? 'flex' : 'none';
+            });
+        }
+
+        function reveal() {
+            document.querySelectorAll(".reveal").forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add("active");
+            });
+        }
+
+        window.onload = () => { populateArticles(8); reveal(); }; // Defaulted to 8 so the load more button actually has articles to load
+        window.onscroll = reveal;
+    </script>
+</body>
+</html>

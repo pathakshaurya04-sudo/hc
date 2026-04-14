@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare+ | Precision Ecosystem</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.15);
+            --bg: #020617;
+            --card: #0f172a;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background: var(--bg); 
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% -20%, #1e1b4b 0%, transparent 50%);
+            overflow-x: hidden;
+        }
+
+        /* --- Modern Navbar --- */
+        nav {
+            padding: 20px 40px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-weight: 800; font-size: 1.4rem; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo i { color: var(--primary); text-shadow: 0 0 20px var(--primary); }
+
+        /* --- Dashboard Layout --- */
+        .dashboard {
+            max-width: 1400px; margin: 40px auto; padding: 0 40px;
+            display: grid; grid-template-columns: 350px 1fr; gap: 40px;
+        }
+
+        /* --- UX: Fixed Info Panel --- */
+        .info-panel {
+            background: var(--card); padding: 35px; border-radius: 32px;
+            border: 1px solid var(--border); height: fit-content;
+            position: sticky; top: 120px;
+        }
+        
+        .ux-tag { font-size: 0.65rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block; }
+        h2 { font-size: 2rem; font-weight: 800; margin-bottom: 30px; letter-spacing: -1px; }
+
+        .input-box { margin-bottom: 25px; }
+        .input-box label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-dim); margin-bottom: 10px; }
+        .input-box input {
+            width: 100%; padding: 16px; background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border); border-radius: 16px; color: #fff;
+            font-size: 1rem; transition: 0.3s;
+        }
+        .input-box input:focus { border-color: var(--primary); outline: none; background: rgba(99, 102, 241, 0.05); }
+
+        /* --- Specialist Bento Grid --- */
+        .specialist-section { display: none; }
+        .specialist-section.active { display: block; animation: fadeIn 0.8s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .category-scroller {
+            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none;
+        }
+        .cat-chip {
+            padding: 12px 24px; border-radius: 100px; background: var(--card);
+            border: 1px solid var(--border); color: var(--text-dim); font-weight: 700;
+            font-size: 0.85rem; cursor: pointer; white-space: nowrap; transition: 0.3s;
+        }
+        .cat-chip:hover { border-color: var(--primary); color: #fff; }
+        .cat-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 0 20px var(--primary-glow); }
+
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        
+        .doc-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 24px;
+            padding: 30px; cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden;
+        }
+        .doc-card:hover { transform: scale(1.03); border-color: var(--primary); background: #1e293b; }
+        .doc-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            transform: translateX(-100%); transition: 0.5s;
+        }
+        .doc-card:hover::before { transform: translateX(100%); }
+
+        .doc-card h4 { font-size: 1.2rem; margin-bottom: 8px; }
+        .doc-card p.dept { color: var(--primary); font-weight: 800; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 12px; }
+        .doc-card p.hosp { color: var(--text-dim); font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+
+        .btn-confirm {
+            width: 100%; padding: 18px; border-radius: 16px; border: none;
+            background: var(--primary); color: #fff; font-weight: 800; font-size: 1rem;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 30px var(--primary-glow);
+        }
+        .btn-confirm:hover { transform: translateY(-3px); box-shadow: 0 15px 40px var(--primary-glow); filter: brightness(1.2); }
+
+        /* --- Success UI --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(20px); display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .ticket {
+            background: #fff; color: #000; width: 400px; border-radius: 40px; padding: 40px;
+            text-align: center; position: relative;
+        }
+        #qr-container { background: #f1f5f9; padding: 20px; border-radius: 24px; display: inline-block; margin-bottom: 20px; }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .info-panel { position: relative; top: 0; }
+        }
+    </style>
+</head>
+<body>
+
+     <nav id="navbar">
+    <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <div style="font-size: 0.7rem; font-weight: 800; color: var(--text-dim);">LKO_NODE_2026.v4</div>
+    </nav>
+
+    <div class="dashboard">
+        <aside class="info-panel">
+            <span class="ux-tag">Booking Engine</span>
+            <h2>Patient Info</h2>
+            
+            <div class="input-box">
+                <label>Full Name</label>
+                <input type="text" id="pName" placeholder="Name">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-box">
+                    <label>Age</label>
+                    <input type="number" id="pAge" placeholder="00">
+                </div>
+                <div class="input-box">
+                    <label>Date</label>
+                    <input type="date" id="pDate">
+                </div>
+            </div>
+
+            <div class="input-box">
+                <label>Mobile</label>
+                <input type="tel" id="pPhone" placeholder="+91">
+            </div>
+
+            <button class="btn-confirm" onclick="revealDoctors()">Find Specialists <i class="fas fa-arrow-right" style="margin-left: 10px;"></i></button>
+        </aside>
+
+        <main class="specialist-section" id="specArea">
+            <h2 style="margin-bottom: 10px;">Select Specialist</h2>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">Choose a verified consultant across our 12 Lucknow nodes.</p>
+            
+            <div class="category-scroller" id="catBar">
+                </div>
+
+            <div class="doc-grid" id="docGrid">
+                </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="successModal">
+        <div class="ticket">
+            <div id="qr-container"></div>
+            <h2 style="color: #000; margin-bottom: 5px;">Slot Reserved</h2>
+            <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 25px;">Verified for Lucknow Medical Hub</p>
+            
+            <div id="summary" style="text-align: left; background: #f8fafc; padding: 20px; border-radius: 20px; font-size: 0.9rem; border: 1px solid #e2e8f0;">
+            </div>
+            
+            <button class="btn-confirm" style="margin-top: 25px;" onclick="location.reload()">Finish & Close</button>
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://itvbhpvypgfxdksbpnnt.supabase.co';
+        const supabaseKey = 'sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        const doctors = [
+            { name: "Dr. Sushil Gattani", dept: "Cardiology", hosp: "Apollo Medics" },
+            { name: "Dr. Naresh Trehan", dept: "Cardiology", hosp: "Medanta Lucknow" },
+            { name: "Dr. (Col) Joy Dev Mukherji", dept: "Neurology", hosp: "Max Super Speciality" },
+            { name: "Dr. Ashok Rajgopal", dept: "Orthopedic", hosp: "Medanta" },
+            { name: "Dr. Roma Pradhan", dept: "Oncology", hosp: "RML Institute" },
+            { name: "Dr. Randhir Sud", dept: "Gastroscience", hosp: "Medanta Lucknow" },
+            { name: "Dr. Neelam Vinay", dept: "Gyanalogy", hosp: "Lucknow City Hospital" },
+            { name: "Dr. Shuchi Kanaujia", dept: "Pediatric", hosp: "Sanjivini" }
+        ];
+
+        let filter = 'All';
+
+        function revealDoctors() {
+            if(!document.getElementById('pName').value) return alert("Enter Patient Name");
+            document.getElementById('specArea').classList.add('active');
+            renderCats();
+            renderDocs();
+        }
+
+        function renderCats() {
+            const cats = ['All', ...new Set(doctors.map(d => d.dept))];
+            document.getElementById('catBar').innerHTML = cats.map(c => `
+                <div class="cat-chip ${filter === c ? 'active' : ''}" onclick="setFilter('${c}')">${c}</div>
+            `).join('');
+        }
+
+        function setFilter(c) {
+            filter = c;
+            renderCats();
+            renderDocs();
+        }
+
+        function renderDocs() {
+            const list = filter === 'All' ? doctors : doctors.filter(d => d.dept === filter);
+            document.getElementById('docGrid').innerHTML = list.map(d => `
+                <div class="doc-card" onclick="finalize('${d.name}', '${d.dept}', '${d.hosp}')">
+                    <p class="dept">${d.dept}</p>
+                    <h4>${d.name}</h4>
+                    <p class="hosp"><i class="fas fa-hospital-user"></i> ${d.hosp}</p>
+                </div>
+            `).join('');
+        }
+
+        async function finalize(d, dept, hosp) {
+            const token = `HC-${Math.floor(1000 + Math.random()*9000)}`;
+            const p = document.getElementById('pName').value;
+            
+            try {
+                const { error } = await _supabase.from('appointments').insert([{ 
+                    patient_name: p, 
+                    doctor_name: d, 
+                    hospital: hosp, 
+                    token: token 
+                }]);
+
+                if(error) throw error;
+
+                document.getElementById('successModal').style.display = 'flex';
+                document.getElementById('summary').innerHTML = `
+                    <b>Patient:</b> ${p}<br>
+                    <b>Doctor:</b> ${d}<br>
+                    <b>Department:</b> ${dept}<br>
+                    <b>Token ID:</b> <span style="color:var(--primary); font-weight:800">${token}</span>
+                `;
+                new QRCode(document.getElementById("qr-container"), { text: token, width: 140, height: 140 });
+
+            } catch(e) { alert(e.message); }
+        }
+    </script>
+</body>
+</html>

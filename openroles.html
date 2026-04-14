@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | HealthCare+ Lucknow</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --radius-xl: 40px;
+            --radius-lg: 24px;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Background Orbs --- */
+        .orb {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.15;
+            animation: moveOrb 25s infinite alternate;
+        }
+        .orb-1 { background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { background: var(--secondary); bottom: -100px; right: -100px; }
+
+        @keyframes moveOrb {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(100px, 100px) scale(1.1); }
+        }
+
+        /* --- Navigation --- */
+        nav {
+            padding: 20px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 92%;
+            margin: 20px 4%;
+            top: 0;
+            z-index: 1000;
+            border-radius: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--primary); }
+        
+        nav ul { display: flex; list-style: none; gap: 25px; align-items: center; }
+        nav ul a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.85rem; transition: 0.3s; }
+        nav ul a:hover { color: var(--primary); }
+
+        .btn-fill { 
+            padding: 12px 24px; border-radius: 100px; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; border: none; font-weight: 700; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 8px 15px var(--primary-glow); font-size: 0.8rem;
+            display: inline-block; text-align: center;
+        }
+        .btn-fill:hover { transform: translateY(-2px); box-shadow: 0 12px 20px var(--primary-glow); }
+
+        /* --- Header & Filters --- */
+        .roles-header { padding: 180px 8% 40px; text-align: center; }
+
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border-radius: 100px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        /* --- Job Cards --- */
+        .jobs-container {
+            max-width: 1000px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        .job-card {
+            background: white;
+            padding: 35px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 25px;
+            border: 1px solid #f1f5f9;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        .job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .job-info h3 { font-size: 1.4rem; color: var(--dark); }
+        .job-description { color: var(--text-light); font-size: 0.95rem; margin-bottom: 20px; }
+
+        .tag { padding: 5px 15px; border-radius: 100px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; display: inline-block; }
+        .tag-tech { background: #eff6ff; color: #1d4ed8; }
+        .tag-med { background: #fff1f2; color: #e11d48; }
+        .tag-ops { background: #f0fdf4; color: #16a34a; }
+        .tag-admin { background: #fefce8; color: #854d0e; }
+
+        /* --- Unified Dark Footer --- */
+        footer { 
+            background: var(--dark); 
+            color: white; 
+            margin: 40px 20px; 
+            border-radius: var(--radius-xl); 
+            padding: 80px 8% 40px; 
+        }
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr 1fr 1.5fr; 
+            gap: 50px; 
+            margin-bottom: 50px; 
+        }
+        .footer-col h4 { margin-bottom: 25px; color: var(--white); font-weight: 700; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+        .footer-col ul li a:hover { color: white; padding-left: 5px; }
+        
+        .footer-logo { font-weight: 800; font-size: 1.4rem; color: white; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+        .footer-logo span { color: var(--primary); }
+        
+        .newsletter input { 
+            padding: 15px 20px; 
+            border-radius: 50px; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            width: 100%; 
+            margin-bottom: 15px; 
+            background: rgba(255,255,255,0.05); 
+            color: white; 
+            outline: none;
+        }
+        .footer-bottom { 
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            padding-top: 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            color: #64748b; 
+            font-size: 0.85rem; 
+        }
+
+        @media (max-width: 992px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 600px) { 
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 15px; text-align: center; }
+            nav ul { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <ul>
+            <li><a href="lifeathc+.html">Life at HC+</a></li>
+            <li><a href="benefits.html">Benefits</a></li>
+            <li><a href="openroles.html">Open Roles</a></li>
+            <li><a href="conncthr.html">Contact HR</a></li>
+        </ul>
+        <a href="apply.html" style="text-decoration: none;">
+            <button class="btn-fill">Upload Resume</button>
+        </a>
+    </nav>
+
+    <header class="roles-header">
+        <h1 style="font-size: 3rem; font-weight: 800;">Current Openings</h1>
+        <p style="color: var(--text-light); margin-top: 10px;">Find your place in Lucknow's health-tech revolution.</p>
+    </header>
+
+    <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">All Departments</button>
+        <button class="filter-btn" data-filter="tech">Technology & Product</button>
+        <button class="filter-btn" data-filter="med">Clinical & Medical</button>
+        <button class="filter-btn" data-filter="ops">Operations & Delivery</button>
+        <button class="filter-btn" data-filter="admin">Administration</button>
+    </div>
+
+    <main class="jobs-container" id="job-list">
+        <div class="job-card" data-dept="tech">
+            <div class="job-header">
+                <div class="job-info">
+                    <span class="tag tag-tech">Technology</span>
+                    <h3>Senior Frontend Developer</h3>
+                </div>
+                <a href="apply.html" style="text-decoration: none;">
+                    <button class="btn-fill">Apply</button>
+                </a>
+            </div>
+            <p class="job-description">Build modern, glassmorphic interfaces for our patient management system using React.js and Framer Motion.</p>
+        </div>
+
+        <div class="job-card" data-dept="med">
+            <div class="job-header">
+                <div class="job-info">
+                    <span class="tag tag-med">Medical</span>
+                    <h3>Consultant Cardiologist</h3>
+                </div>
+                <a href="apply.html" style="text-decoration: none;">
+                    <button class="btn-fill">Apply</button>
+                </a>
+            </div>
+            <p class="job-description">Lead clinical excellence in our heart-health department. Experience with Medanta or Apollo networks preferred.</p>
+        </div>
+
+        <div class="job-card" data-dept="ops">
+            <div class="job-header">
+                <div class="job-info">
+                    <span class="tag tag-ops">Operations</span>
+                    <h3>Logistics Manager</h3>
+                </div>
+                <a href="apply.html" style="text-decoration: none;">
+                    <button class="btn-fill">Apply</button>
+                </a>
+            </div>
+            <p class="job-description">Optimize medicine delivery routes across Lucknow using real-time tracking and Leaflet.js integrations.</p>
+        </div>
+
+        <div class="job-card" data-dept="admin">
+            <div class="job-header">
+                <div class="job-info">
+                    <span class="tag tag-admin">Administration</span>
+                    <h3>HR Operations Lead</h3>
+                </div>
+                <a href="apply.html" style="text-decoration: none;">
+                    <button class="btn-fill">Apply</button>
+                </a>
+            </div>
+            <p class="job-description">Scale our culture and manage talent acquisition for our growing headquarters in Gomti Nagar.</p>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare at your fingertips.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="aboutus.html">About Us</a></li><li><a href="booking.html">Find Doctors</a></li><li><a href="service.html">Services</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul><li><a href="contactus.html">Contact Us</a></li><li><a href="ques.html">FAQs</a></li><li><a href="pp.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter">
+                    <input type="email" placeholder="Your Email">
+                    <button class="btn-fill" style="width: 100%;">Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.job-card');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    const filterValue = button.getAttribute('data-filter');
+
+                    cards.forEach(card => {
+                        const cardDept = card.getAttribute('data-dept');
+
+                        if (filterValue === 'all' || filterValue === cardDept) {
+                            card.style.display = 'block';
+                            card.style.opacity = '0';
+                            setTimeout(() => { 
+                                card.style.transition = 'opacity 0.4s ease';
+                                card.style.opacity = '1'; 
+                            }, 10);
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

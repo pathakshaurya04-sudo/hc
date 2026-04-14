@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare+ | Pro Fleet Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --emergency: #ef4444;
+            --success: #10b981;
+            --bg: #0f172a;
+            --sidebar: #020617;
+            --glass: rgba(15, 23, 42, 0.8);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: #f8fafc; overflow: hidden; }
+
+        /* Report Overlay */
+        #reportOverlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 5000;
+            display: none; align-items: center; justify-content: center; backdrop-filter: blur(10px);
+        }
+        .report-card { background: var(--sidebar); border: 1px solid var(--border); padding: 40px; border-radius: 30px; width: 450px; text-align: center; }
+
+        #emergencyOverlay { position: fixed; inset: 0; background: rgba(239, 68, 68, 0.15); z-index: 2000; display: none; pointer-events: none; animation: pulse-red 1s infinite; }
+        @keyframes pulse-red { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        #loginPage { height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, #1e293b, #0f172a); }
+        .auth-card { padding: 50px; border-radius: 40px; width: 420px; text-align: center; background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); }
+
+        #dashboard { display: none; grid-template-columns: 320px 1fr; height: 100vh; }
+
+        .sidebar { background: var(--sidebar); padding: 25px; display: flex; flex-direction: column; border-right: 1px solid var(--border); overflow-y: auto; }
+        .driver-img { width: 70px; height: 70px; border-radius: 20px; object-fit: cover; border: 2px solid var(--primary); margin-bottom: 12px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 15px; text-align: center; border: 1px solid var(--border); }
+        .stat-box span { display: block; font-size: 1.2rem; font-weight: 800; color: var(--primary); }
+        .stat-box small { font-size: 0.65rem; opacity: 0.5; text-transform: uppercase; }
+
+        .fuel-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid var(--border); }
+        .fuel-bar-container { height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        #fuelLevel { height: 100%; width: 100%; background: linear-gradient(90deg, var(--success), #34d399); transition: 0.5s; }
+        #refuelBtn { display: none; margin-top: 10px; width: 100%; padding: 8px; background: var(--primary); border: none; color: white; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 0.7rem; }
+
+        .history-card { background: rgba(255,255,255,0.05); padding: 18px; border-radius: 20px; margin-top: 20px; border-left: 4px solid var(--success); }
+        .btn-call { display: inline-block; margin-top: 10px; padding: 8px 15px; background: var(--success); color: white; border-radius: 10px; text-decoration: none; font-size: 0.8rem; font-weight: 700; }
+
+        .content { padding: 40px; overflow-y: auto; background: #0f172a; }
+        .request-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 25px; border-radius: 24px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .request-card.emergency { border-left: 8px solid var(--emergency); background: rgba(239, 68, 68, 0.03); }
+
+        .btn-action { padding: 14px 28px; border-radius: 16px; font-weight: 700; cursor: pointer; border: none; color: white; background: var(--primary); }
+        #terminationScreen { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    </style>
+</head>
+
+<body>
+
+    <div id="reportOverlay">
+        <div class="report-card">
+            <h1 style="color:var(--success)">SHIFT SUMMARY</h1>
+            <p id="reportDate" style="opacity:0.5; font-size:0.8rem; margin-bottom:20px;"></p>
+            <div id="reportContent" style="text-align:left; background:rgba(255,255,255,0.03); padding:20px; border-radius:15px; border:1px solid var(--border);"></div>
+            <button class="btn-action" style="margin-top:25px; width:100%;" onclick="document.getElementById('reportOverlay').style.display='none'">Dismiss Report</button>
+        </div>
+    </div>
+
+    <div id="emergencyOverlay"></div>
+    <audio id="standardBell" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+    <audio id="emergencyAlarm" src="https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3" loop></audio>
+
+    <div id="terminationScreen">
+        <i class="fas fa-hand-paper fa-5x" style="color: var(--emergency); margin-bottom: 20px;"></i>
+        <h1>VEHICLE TERMINATED</h1>
+        <p style="opacity: 0.7; margin: 20px 0;">Vehicle Protocol Suspended.</p>
+    </div>
+
+    <div id="loginPage">
+        <div class="auth-card">
+            <div class="logo-main" style="font-size: 2rem; font-weight: 800; margin-bottom:30px;">HealthCare<span style="color:var(--primary)">+ Amb</span></div>
+            <input type="text" id="user" placeholder="Ambulance ID" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; padding:16px; width:100%; border-radius:15px; margin-bottom:15px;">
+            <input type="password" id="pass" placeholder="Password" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); color:#fff; padding:16px; width:100%; border-radius:15px; margin-bottom:20px;">
+            <button class="btn-action" style="width:100%;" onclick="login()">Initialize System</button>
+        </div>
+    </div>
+
+    <div id="dashboard">
+        <aside class="sidebar">
+            <div class="logo-main" style="font-size: 1.1rem; font-weight: 800; margin-bottom:20px;">HealthCare<span style="color:var(--primary)">+ Amb</span></div>
+            
+            <div class="driver-profile">
+                <img src="fd 1.jpg" class="driver-img">
+                <h3 id="driver-name" style="font-size: 1rem;">---</h3>
+                <p id="driver-hospital" style="color: var(--primary); font-size: 0.75rem; font-weight: 700;">---</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box"><span id="monthCount">0</span><small>Monthly</small></div>
+                <div class="stat-box"><span id="yearCount">0</span><small>Yearly</small></div>
+            </div>
+
+            <div class="fuel-card">
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem; font-weight:700;">
+                    <span>FUEL</span> <span id="fuelText">100%</span>
+                </div>
+                <div class="fuel-bar-container"><div id="fuelLevel"></div></div>
+                <button id="refuelBtn" onclick="refuelVehicle()">Refill Tank</button>
+            </div>
+
+            <div class="history-card">
+                <small style="color: var(--success); font-weight: 800;">LAST MISSION</small>
+                <div id="lastTripContent" style="margin-top: 10px; font-size: 0.8rem;"><p style="opacity:0.4;">No recent data</p></div>
+            </div>
+
+            <div style="margin-top: auto; padding-top: 20px; display: flex; flex-direction: column; gap: 8px;">
+                <button onclick="generateReport()" style="width:100%; background:var(--primary); color:white; padding:10px; border-radius:12px; cursor:pointer; font-weight:700; font-size: 0.75rem; border:none;">
+                    <i class="fas fa-file-medical"></i> Generate Shift Report
+                </button>
+                <button onclick="terminateVehicle()" style="width:100%; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2); color:var(--emergency); padding:10px; border-radius:12px; cursor:pointer; font-weight:700; font-size: 0.75rem;">
+                    Terminate Vehicle
+                </button>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div id="requestListView">
+                <h1 style="font-weight: 800; margin-bottom: 30px;">Live Requests</h1>
+                <div id="requestList"></div>
+            </div>
+
+            <div id="gpsView" style="display:none; height:100%;">
+                <button onclick="stopTracking()" style="background:none; border:none; color:#fff; cursor:pointer; margin-bottom:15px; font-weight:700;"><i class="fas fa-arrow-left"></i> Back</button>
+                <div style="height:calc(100% - 80px); border-radius:24px; overflow:hidden; position:relative;">
+                    <div id="gpsOverlay" style="position:absolute; top:20px; left:20px; width:300px; padding:25px; border-radius:24px; background:var(--sidebar); z-index:10; border:1px solid var(--border);">
+                        <h2 id="trackName" style="font-size: 1.2rem;">---</h2>
+                        <p id="trackLoc" style="opacity:0.6; font-size:0.75rem; margin-bottom:15px;"></p>
+                        
+                        <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 15px; margin-bottom: 15px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:5px; text-align:center;">
+                                <div><small style="font-size:0.5rem; opacity:0.5;">HR</small><div id="v_hr" style="font-weight:800; font-size: 0.9rem;">--</div></div>
+                                <div><small style="font-size:0.5rem; opacity:0.5;">SpO2</small><div id="v_spo2" style="font-weight:800; font-size: 0.9rem;">--</div></div>
+                                <div><small style="font-size:0.5rem; opacity:0.5;">BP</small><div id="v_bp" style="font-weight:700; font-size:0.6rem;">--</div></div>
+                            </div>
+                        </div>
+                        <button class="btn-action" style="width:100%; background:var(--success);" onclick="completeTrip()">Complete Mission</button>
+                    </div>
+                    <iframe id="mapFrame" frameborder="0" style="width:100%; height:100%; filter: invert(90%) hue-rotate(180deg);"></iframe>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SB_URL = "https://itvbhpvypgfxdksbpnnt.supabase.co";
+        const SB_KEY = "sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5";
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        let activeId = null, vitalsInterval = null, fuel = 100, isEmergency = false;
+        let sessionMissions = 0, emergencyMissions = 0, standardMissions = 0;
+
+        async function login() {
+            const id = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+            const { data, error } = await _supabase.from('ambulances').select('*').eq('id', id).eq('password', pass).single();
+
+            if (error || !data) return alert("Access Denied ❌");
+
+            document.getElementById('driver-name').innerText = data.driver_name;
+            document.getElementById('driver-hospital').innerText = data.hospital;
+            document.getElementById('monthCount').innerText = data.monthly_saves || 0;
+            document.getElementById('yearCount').innerText = data.yearly_saves || 0;
+
+            document.getElementById('loginPage').style.display = "none";
+            document.getElementById('dashboard').style.display = "grid";
+
+            fetchRequests();
+            subscribe();
+            startFuelTracker();
+        }
+
+        function startFuelTracker() {
+            setInterval(() => {
+                fuel -= isEmergency ? 0.30 : 0.05;
+                if (fuel < 0) fuel = 0;
+                const fuelBar = document.getElementById('fuelLevel');
+                const fuelText = document.getElementById('fuelText');
+                const refuelBtn = document.getElementById('refuelBtn');
+                fuelBar.style.width = fuel + "%";
+                fuelText.innerText = Math.round(fuel) + "%";
+                if (fuel < 20) { fuelBar.style.background = "var(--emergency)"; refuelBtn.style.display = "block"; }
+                else { fuelBar.style.background = "linear-gradient(90deg, var(--success), #34d399)"; refuelBtn.style.display = "none"; }
+            }, 5000);
+        }
+
+        function refuelVehicle() { fuel = 100; alert("Refilled! ⛽"); }
+
+        async function fetchRequests() {
+            const { data } = await _supabase.from('ambulance_requests').select('*').eq('status', 'pending');
+            const container = document.getElementById('requestList');
+            container.innerHTML = "";
+            data.forEach(r => {
+                container.innerHTML += `
+                    <div class="request-card ${r.type === 'Emergency' ? 'emergency' : ''}">
+                        <div><span style="font-size:0.7rem; font-weight:900; color:${r.type==='Emergency'?'var(--emergency)':'var(--primary)'}">${r.type}</span>
+                        <h2>${r.patient_name}</h2><p style="opacity:0.5; font-size:0.8rem;">${r.location}</p></div>
+                        <button class="btn-action" onclick="acceptMission('${r.id}','${r.patient_name}','${r.location}','${r.phone || '000'}','${r.type}')">Accept Mission</button>
+                    </div>`;
+            });
+        }
+
+        function subscribe() {
+            _supabase.channel('trips').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'ambulance_requests' }, payload => {
+                fetchRequests();
+                if (payload.new.type === 'Emergency') {
+                    document.getElementById('emergencyAlarm').play(); document.getElementById('emergencyOverlay').style.display = 'block';
+                    setTimeout(() => { document.getElementById('emergencyAlarm').pause(); document.getElementById('emergencyOverlay').style.display = 'none'; }, 10000);
+                } else { document.getElementById('standardBell').play(); }
+            }).subscribe();
+        }
+
+        function acceptMission(id, name, loc, phone, type) {
+            if (fuel < 5) return alert("Refuel Required!");
+            activeId = id;
+            isEmergency = (type === 'Emergency');
+            document.getElementById('requestListView').style.display = 'none';
+            document.getElementById('gpsView').style.display = 'block';
+            document.getElementById('trackName').innerText = name;
+            document.getElementById('trackLoc').innerText = loc;
+            document.getElementById('lastTripContent').innerHTML = `
+                <div style="font-weight:700; color:#fff;">${name}</div>
+                <div>${phone}</div><a href="tel:${phone}" class="btn-call">Call Patient</a>`;
+            // Fixed map URL logic
+            document.getElementById('mapFrame').src = `https://www.google.com/maps?q=${encodeURIComponent(loc)}&output=embed`;
+            startVitals();
+        }
+
+        function startVitals() {
+            vitalsInterval = setInterval(() => {
+                document.getElementById('v_hr').innerText = Math.floor(Math.random() * (105 - 60) + 60);
+                document.getElementById('v_spo2').innerText = Math.floor(Math.random() * (100 - 94) + 94);
+                document.getElementById('v_bp').innerText = `${Math.floor(Math.random()*20+115)}/${Math.floor(Math.random()*15+75)}`;
+            }, 3000);
+        }
+
+        async function completeTrip() {
+            sessionMissions++;
+            if(isEmergency) emergencyMissions++; else standardMissions++;
+
+            const mCount = parseInt(document.getElementById('monthCount').innerText) + 1;
+            const yCount = parseInt(document.getElementById('yearCount').innerText) + 1;
+            await _supabase.from('ambulances').update({ monthly_saves: mCount, yearly_saves: yCount }).eq('id', document.getElementById('user').value);
+
+            document.getElementById('monthCount').innerText = mCount;
+            document.getElementById('yearCount').innerText = yCount;
+            await _supabase.from('ambulance_requests').update({ status: 'completed' }).eq('id', activeId);
+            isEmergency = false; stopTracking(); fetchRequests();
+            alert("Mission Complete!");
+        }
+
+        function generateReport() {
+            document.getElementById('reportOverlay').style.display = 'flex';
+            document.getElementById('reportDate').innerText = new Date().toLocaleString();
+            document.getElementById('reportContent').innerHTML = `
+                <p><b>Total Missions:</b> ${sessionMissions}</p>
+                <p><b>Emergency Cases:</b> ${emergencyMissions}</p>
+                <p><b>Standard Cases:</b> ${standardMissions}</p>
+                <hr style="margin:10px 0; opacity:0.1;">
+                <p><b>Fuel Efficiency:</b> High</p>
+                <p><b>Driver:</b> ${document.getElementById('driver-name').innerText}</p>
+                <p><b>Hospital:</b> ${document.getElementById('driver-hospital').innerText}</p>
+            `;
+        }
+
+        function stopTracking() { clearInterval(vitalsInterval); document.getElementById('requestListView').style.display = 'block'; document.getElementById('gpsView').style.display = 'none'; }
+        function terminateVehicle() { if(confirm("Terminate protocol?")) document.getElementById('terminationScreen').style.display = 'flex'; }
+    </script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pediatrics & Neonatology | HealthCare+</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Warm, comforting pediatric palette */
+            --primary: #8b5cf6; 
+            --primary-light: rgba(139, 92, 246, 0.1);
+            --secondary: #ec4899;
+            --dark: #1e1b4b;
+            --text-light: #64748b;
+            --bg-subtle: #fafafa;
+            --glass: rgba(255, 255, 255, 0.85);
+            --footer-bg: #1e1b4b;
+        }
+
+        /* Standard Resets & Typography */
+        * { margin:0; padding:0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background: #fff; color: var(--dark); line-height: 1.6; overflow-x: hidden; }
+
+        /* Navigation */
+        nav { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #f1f5f9; }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        /* Buttons */
+        .btn-fill { background: var(--primary); color: white; border: none; padding: 12px 28px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 15px rgba(139, 92, 246, 0.2); text-decoration: none; display: inline-block; }
+        .btn-fill:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(139, 92, 246, 0.3); background: var(--secondary); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; text-decoration: none; }
+        .btn-outline:hover { background: var(--primary-light); }
+
+        /* Sections */
+        section { padding: 100px 8%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        .glass-card { background: var(--bg-subtle); border: 1px solid #e2e8f0; border-radius: 30px; padding: 40px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .glass-card:hover { transform: translateY(-10px); border-color: var(--primary); background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+
+        .tag { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 6px 18px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Metrics Bar */
+        .metrics-bar { background: var(--dark); padding: 60px 8%; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px; border-radius: 0 0 50px 50px; }
+        .metric-item { text-align: center; }
+        .metric-item h2 { color: var(--secondary); font-size: 2.8rem; margin-bottom: 5px; }
+        .metric-item p { color: white; opacity: 0.7; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+
+        /* Doctor Track */
+        .doc-track { display: flex; gap: 25px; overflow-x: auto; padding: 20px 0; scrollbar-width: none; }
+        .doc-track::-webkit-scrollbar { display: none; }
+        .doc-card { min-width: 280px; background: white; border-radius: 25px; border: 1px solid #f1f5f9; overflow: hidden; transition: 0.3s; }
+        .doc-img img { width: 100%; height: 280px; object-fit: cover; }
+        .doc-info { padding: 20px; }
+
+        /* Modal Profile */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30, 27, 75, 0.7); backdrop-filter: blur(8px); z-index: 2000; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.4s; }
+        .modal-content { background: white; width: 90%; max-width: 800px; padding: 40px; border-radius: 40px; position: relative; transform: scale(0.9); transition: 0.4s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .close-modal { position: absolute; top: 20px; right: 25px; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="firstpage.html" class="logo"><i class="fas fa-stethoscope"></i> Health<span>Care+ Kids</span></a>
+         <div>
+            <a href="firstpage.html" class="btn-outline">back to home</a>
+            <a href="contactus.html" class="btn-outline">Enquire Now</a>
+            <a href="booking.html" class="btn-fill" style="margin-left:15px;">Book Consultation</a>
+        </div>
+    </nav>
+    <section style="background: radial-gradient(circle at top right, #fdf4ff, #fff 50%);">
+        <div style="max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center;">
+            <div>
+                <span class="tag">Advanced Child Care Center</span>
+                <h1 style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 25px; color: var(--dark);">Big Care for <br><span style="color:var(--primary)">Little Heroes.</span></h1>
+                <p style="color: var(--text-light); font-size: 1.1rem; margin-bottom: 35px; max-width: 600px;">
+                    From neonatal intensive care to specialized adolescent medicine, we combine cutting-edge pediatric technology with a gentle, child-friendly environment.
+                </p>
+                <div style="display:flex; gap: 20px;">
+                    <a href="#services" class="btn-fill" style="padding: 18px 40px;">Our Services</a>
+                    <a href="vaccine.html" class="btn-outline" style="padding: 16px 35px;">Vaccination Chart</a>
+                </div>
+            </div>
+            <div style="position: relative;">
+                <div class="glass-card" style="padding: 15px; border-radius: 40px; background: white; box-shadow: 0 30px 60px rgba(0,0,0,0.05);">
+                    <img src="https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&q=80&w=800" alt="Pediatric Care" style="width: 100%; border-radius: 30px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="metrics-bar">
+        <div class="metric-item"><h2>50k+</h2><p>Happy Children</p></div>
+        <div class="metric-item"><h2>Level III</h2><p>NICU Facility</p></div>
+        <div class="metric-item"><h2>24/7</h2><p>Pediatric ER</p></div>
+        <div class="metric-item"><h2>99%</h2><p>Vaccination Success</p></div>
+    </div>
+
+    <section id="services">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">Comprehensive Wellness</span>
+            <h2 style="font-size: 2.5rem;">Specialized <span style="color: var(--primary);">Pediatric Units</span></h2>
+        </div>
+        <div class="grid">
+            <div class="glass-card">
+                <i class="fas fa-baby" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Neonatology (NICU)</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Advanced life-support for premature and critically ill newborns with 24/7 neonatologist cover.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-shield-virus" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Immunization Clinic</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Painless vaccination programs following international WHO and IAP protocols.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-brain" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Child Psychology</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Developmental assessments, ADHD support, and behavioral therapy in a safe space.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-heartbeat" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Pediatric Cardiology</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Screening and treatment for congenital heart defects using non-invasive pediatric echo.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-apple-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Nutrition & Growth</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Managing childhood obesity, picky eating, and metabolic growth disorders.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-ambulance" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Pediatric ER</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Dedicated emergency bay for children with trauma-specialized pediatric nurses.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tech" style="background: var(--bg-subtle);">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">Innovation in Care</span>
+            <h2 style="font-size: 2.5rem;">Smart <span style="color: var(--primary);">Pediatric Tech</span></h2>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 40px;">
+            <div class="glass-card" style="background: var(--dark); color: white; display: flex; align-items: center; gap: 50px;">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--secondary); margin-bottom: 20px;">AI-Monitored Incubators</h3>
+                    <p style="opacity: 0.8; margin-bottom: 20px;">
+                        Our NICU features smart incubators that use AI to predict respiratory changes and adjust environment settings automatically for neonates.
+                    </p>
+                    <ul style="list-style: none; opacity: 0.7; font-size: 0.9rem;">
+                        <li><i class="fas fa-check-circle" style="color: var(--secondary); margin-right: 10px;"></i> Non-invasive Vital Monitoring</li>
+                        <li><i class="fas fa-check-circle" style="color: var(--secondary); margin-right: 10px;"></i> Noise-controlled Environment</li>
+                    </ul>
+                </div>
+                <div style="flex: 0.8;">
+                    <img src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=800" style="width: 100%; border-radius: 25px;" alt="Neonatal Tech">
+                </div>
+            </div>
+
+            <div class="glass-card" style="background: white; display: flex; flex-direction: row-reverse; align-items: center; gap: 50px;">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;">VR Distraction Therapy</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">
+                        To reduce anxiety during procedures or injections, we use VR headsets that transport children into friendly animated worlds.
+                    </p>
+                    <ul style="list-style: none; color: var(--text-light); font-size: 0.9rem;">
+                        <li><i class="fas fa-vr-cardboard" style="color: var(--primary); margin-right: 10px;"></i> 70% Reduction in Procedure Anxiety</li>
+                        <li><i class="fas fa-vr-cardboard" style="color: var(--primary); margin-right: 10px;"></i> Painless Clinical Experience</li>
+                    </ul>
+                </div>
+                <div style="flex: 0.8;">
+                    <img src="https://tse2.mm.bing.net/th/id/OIP.29sV_bj3_KsnkznhvyKBbwHaE8?cb=thfvnext&rs=1&pid=ImgDetMain&o=7&rm=3" style="width: 100%; border-radius: 25px;" alt="VR Therapy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="doctors">
+    <div style="margin-bottom: 40px; text-align: center;">
+        <span class="tag">Meet the Experts</span>
+        <h2 style="font-size: 2.5rem;">Our Pediatric & <span style="color: var(--primary);">Neonatal Specialists</span></h2>
+    </div>
+
+    <div class="doc-track">
+        <div class="doc-card">
+            <div class="doc-img">
+                <img src="https://img.freepik.com/premium-vector/female-doctor-cartoon-character-with-stethoscope-vector-illustration-female-doctor-uniform_1142-72453.jpg?w=2000" alt="Dr. Shuchi Kanaujia">
+            </div>
+            <div class="doc-info">
+                <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Medanta | Consultant Pediatrics</span>
+                <h4 style="margin-bottom: 5px;">Dr. Shuchi Kanaujia</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Expert in Pediatric critical care and neonatal intensive care (NICU).</p>
+                <button onclick="openProfile('Dr. Shuchi Kanaujia', 'Consultant - Pediatrics & Neonatology', 'Dr. Shuchi Kanaujia is a dedicated Consultant at Medanta, Lucknow. She specializes in Neonatal Intensive Care and General Pediatrics, with a focus on managing complex respiratory and nutritional issues in newborns and infants.', 'https://img.freepik.com/premium-vector/female-doctor-cartoon-character-with-stethoscope-vector-illustration-female-doctor-uniform_1142-72453.jpg?w=2000')" class="btn-fill" style="width: 100%; padding: 10px; font-size: 0.8rem;">Profile</button>
+            </div>
+        </div>
+
+        <div class="doc-card">
+            <div class="doc-img">
+                <img src="https://thfvnext.bing.com/th/id/OIP._moUbNWWh98HQjLdCsUOuQHaHa?o=7&cb=thfvnextrm=3&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Dr. Priya Verma">
+            </div>
+            <div class="doc-info">
+                <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Max | Senior Neonatologist</span>
+                <h4 style="margin-bottom: 5px;">Dr. Priya Verma</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Gold Medalist with 15+ years in neonatal emergency management.</p>
+                <button onclick="openProfile('Dr. Priya Verma', 'Senior Consultant - Neonatology', 'Dr. Priya Verma is a Senior Consultant at Max Hospital. She is renowned for her expertise in the ventilation of extremely low birth weight babies and managing surgical emergencies in neonates.', 'https://thfvnext.bing.com/th/id/OIP._moUbNWWh98HQjLdCsUOuQHaHa?o=7&cb=thfvnextrm=3&rs=1&pid=ImgDetMain&o=7&rm=3')" class="btn-fill" style="width: 100%; padding: 10px; font-size: 0.8rem;">Profile</button>
+            </div>
+        </div>
+
+        <div class="doc-card">
+            <div class="doc-img">
+                <img src="https://medanta.s3.ap-south-1.amazonaws.com/all-doctor-with-slug/dr-aakash-pandita.png" alt="Dr. Aakash Pandita">
+            </div>
+            <div class="doc-info">
+                <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Medanta | Senior Consultant</span>
+                <h4 style="margin-bottom: 5px;">Dr. Aakash Pandita</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Specialist in Neonatology and Pediatric Advanced Life Support.</p>
+                <button onclick="openProfile('Dr. Aakash Pandita', 'Senior Consultant - Neonatology', 'Dr. Aakash Pandita is an Associate Director at Medanta. He has extensive experience in neonatal clinical protocols, advanced ventilation, and transport of sick neonates, ensuring world-class outcomes for tiny patients.', 'https://medanta.s3.ap-south-1.amazonaws.com/all-doctor-with-slug/dr-aakash-pandita.png')" class="btn-fill" style="width: 100%; padding: 10px; font-size: 0.8rem;">Profile</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <div class="modal-overlay" id="profileModal" onclick="closeProfile()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times close-modal" onclick="closeProfile()"></i>
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: center;">
+                <div style="border-radius: 30px; overflow: hidden; height: 350px;">
+                    <img id="modalImg" src="" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div>
+                    <span id="modalTag" class="tag"></span>
+                    <h2 id="modalName" style="font-size: 2rem; margin-bottom: 10px;"></h2>
+                    <p id="modalBio" style="color: var(--text-light); margin-bottom: 30px;"></p>
+                    <a href="booking.html" class="btn-fill">Book Visit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: var(--dark); color: white; padding: 80px 5% 40px; margin-top: 100px;">
+    <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
+        
+        <div class="footer-col">
+            <div class="logo" style="color: white; margin-bottom: 25px; font-size: 1.5rem; font-weight: 700;">
+                <i class="fas fa-hand-holding-medical" style="color: var(--primary);"></i> Health<span style="color: var(--primary);">Care+</span>
+            </div>
+            <p style="color: #94a3b8; line-height: 1.8; margin-bottom: 20px;">
+                Providing accessible, high-quality digital healthcare at your fingertips.
+            </p>
+            <div style="display: flex; gap: 15px; font-size: 1.2rem;">
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem; position: relative;">Quick Links</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="aboutus.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">About Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="#" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Find Doctors</a></li>
+                <li style="margin-bottom: 12px;"><a href="service.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Services</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Support</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="contactus.html" style="color: #94a3b8; text-decoration: none;">Contact Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="ques.html" style="color: #94a3b8; text-decoration: none;">FAQs</a></li>
+                <li style="margin-bottom: 12px;"><a href="pp.html" style="color: #94a3b8; text-decoration: none;">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Newsletter</h4>
+            <div class="newsletter" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="email" placeholder="Your Email" style="padding: 12px 15px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; outline: none;">
+                <button class="btn-fill" style="width: 100%; padding: 12px; border-radius: 8px;">Subscribe Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom" style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <p style="color: #94a3b8; font-size: 0.9rem;">&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(225, 29, 72, 0.1); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--primary);">
+            <i class="fas fa-phone-alt" style="color: var(--primary);"></i>
+            <span style="font-weight: 700; color: white;">Emergency: +91 522 123 4567</span>
+        </div>
+    </div>
+</footer>
+    <script>
+        function openProfile(name, tag, bio, img) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalTag').innerText = tag;
+            document.getElementById('modalBio').innerText = bio;
+            document.getElementById('modalImg').src = img;
+            const modal = document.getElementById('profileModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+        function closeProfile() {
+            const modal = document.getElementById('profileModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 400);
+        }
+    </script>
+</body>
+</html>

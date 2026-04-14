@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Hub | HealthCare+ X</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #6366f1; 
+            --accent: #818cf8;
+            --bg: #030712;
+            --glass: rgba(15, 23, 42, 0.4);
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --danger: #f43f5e;
+            --surface: #111827;
+            --glow: rgba(99, 102, 241, 0.4);
+            --warning: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { 
+            background: radial-gradient(circle at 0% 0%, #1e1b4b 0%, #030712 50%), radial-gradient(circle at 100% 100%, #312e81 0%, #030712 50%);
+            color: white; 
+            height: 100vh; 
+            overflow: hidden;
+        }
+
+        /* --- LOGIN PAGE STYLING --- */
+        #loginPage {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .login-card {
+            background: var(--glass);
+            backdrop-filter: blur(40px);
+            padding: 50px;
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            width: 450px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-card i.main-lock {
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            filter: drop-shadow(0 0 15px var(--glow));
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            padding: 15px 20px;
+            border-radius: 15px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--glow);
+        }
+
+        .btn-login {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #4f46e5);
+            color: white;
+            padding: 16px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* --- DASHBOARD: APPOINTMENT QUEUE --- */
+        #appointmentDashboard {
+            display: none; 
+            padding: 40px;
+            height: 100vh;
+            flex-direction: column;
+            gap: 30px;
+            overflow-y: auto;
+        }
+
+        .queue-card {
+            background: var(--glass);
+            backdrop-filter: blur(24px);
+            border-radius: 28px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .queue-card:hover { transform: scale(1.01); border-color: var(--accent); box-shadow: 0 0 30px var(--glow); }
+
+        .patient-info { display: flex; align-items: center; gap: 20px; }
+        .patient-avatar { width: 64px; height: 64px; background: linear-gradient(135deg, var(--surface), #1e293b); border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; border: 1px solid var(--border); }
+
+        .action-btns { display: flex; gap: 12px; }
+        .btn-accept { background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 14px; font-weight: 800; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); }
+        .btn-deny { background: rgba(244, 63, 94, 0.05); color: var(--danger); border: 1px solid rgba(244, 63, 94, 0.2); padding: 14px 28px; border-radius: 14px; font-weight: 800; cursor: pointer; }
+        .btn-schedule { background: rgba(245, 158, 11, 0.05); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); padding: 14px 28px; border-radius: 14px; font-weight: 800; cursor: pointer; }
+
+        /* --- CONSULTATION GRID --- */
+        .consult-grid {
+            display: none; 
+            grid-template-columns: 1fr 440px;
+            height: 100vh;
+            gap: 24px;
+            padding: 24px;
+        }
+
+        /* --- INNOVATIVE VIDEO AREA --- */
+        .video-container {
+            background: #000;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
+        }
+
+        .ai-hud {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 20px;
+            border-left: 4px solid var(--primary);
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            z-index: 30;
+        }
+
+        .video-overlay-brand {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 20;
+        }
+
+        .video-overlay-brand h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .verified-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            animation: pulse-glow 2s infinite;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        #localVideo { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1) brightness(1.1); }
+
+        .patient-pip {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 240px;
+            height: 150px;
+            background: #0f172a;
+            border-radius: 24px;
+            border: 2px solid var(--primary);
+            overflow: hidden;
+            z-index: 10;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+
+        .call-controls {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(24px);
+            padding: 16px 32px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            z-index: 20;
+        }
+
+        .control-btn {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+        .control-btn:hover { transform: translateY(-5px); background: rgba(255,255,255,0.15); }
+        .control-btn.end { background: var(--danger); box-shadow: 0 10px 20px rgba(244, 63, 94, 0.3); }
+        .control-btn.active { background: var(--primary); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
+
+        /* --- RX SIDEBAR UNIQUE STYLING --- */
+        .rx-sidebar {
+            background: var(--glass);
+            backdrop-filter: blur(50px);
+            border-radius: 40px;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .sidebar-header { padding: 30px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
+        .rx-pad { flex: 1; padding: 30px; overflow-y: auto; }
+        
+        .rx-field { 
+            background: rgba(0,0,0,0.2); 
+            border: 1px solid var(--border); 
+            border-radius: 24px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            transition: 0.3s;
+        }
+        .rx-field:focus-within { border-color: var(--primary); box-shadow: 0 0 15px var(--glow); }
+        
+        .rx-field label { font-size: 0.7rem; font-weight: 800; color: var(--accent); text-transform: uppercase; display: block; margin-bottom: 10px; opacity: 0.8; }
+        .rx-field textarea, .rx-field input { width: 100%; background: transparent; border: none; color: #fff; outline: none; font-size: 0.95rem; line-height: 1.6; }
+        
+        .tag { font-size: 0.65rem; background: var(--surface); padding: 6px 12px; border-radius: 10px; cursor: pointer; transition: 0.3s; border: 1px solid var(--border); }
+        .tag:hover { background: var(--primary); border-color: transparent; }
+
+        .btn-push { background: linear-gradient(135deg, var(--primary), #4f46e5); color: white; border: none; padding: 20px; border-radius: 24px; font-weight: 800; cursor: pointer; margin: 0 30px 30px; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px; }
+
+        #rxNotification {
+            position: fixed; bottom: 40px; left: 40px; background: var(--success); 
+            box-shadow: 0 20px 40px rgba(16, 185, 129, 0.4);
+            color: white; padding: 20px 30px; border-radius: 30px; display: none; align-items: center; gap: 20px; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div id="loginPage">
+    <div class="login-card">
+        <i class="fas fa-user-md main-lock"></i>
+        <h2 style="font-weight: 900; margin-bottom: 5px;">HealthCare + Tel Doctors Portal Access</h2>
+        <p style="opacity: 0.5; font-size: 0.85rem; margin-bottom: 30px;">Authorized Medical Personnel Only</p>
+        
+        <div class="input-group">
+            <label>License ID (Email)</label>
+            <input type="email" id="licenseID" placeholder="doctor@hospital.com">
+        </div>
+        
+        <div class="input-group">
+            <label>Secure Passcode</label>
+            <input type="password" id="passcode" placeholder="••••••••">
+        </div>
+
+        <button class="btn-login" id="loginBtn" onclick="handleLogin()">Unlock Terminal</button>
+        <p id="loginError" style="color: var(--danger); font-size: 0.75rem; margin-top: 15px; display: none;">Invalid credentials. Access denied.</p>
+    </div>
+</div>
+
+<div id="appointmentDashboard">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="font-weight: 900; font-size: 2.5rem; letter-spacing: -1px;">Dr. Khanna's <span style="color:var(--primary)">Console</span></h1>
+            <p style="opacity: 0.5; font-weight: 500;"> Lucknow Hub • Digital Intake Active</p>
+        </div>
+        <div style="display:flex; gap: 10px; align-items: center;">
+            <div style="background: var(--glass); padding: 12px 24px; border-radius: 100px; border: 1px solid var(--border); font-size: 0.8rem; font-weight: 700;">
+                <i class="fas fa-circle" style="color: var(--success); font-size: 0.6rem; margin-right: 8px;"></i> LIVE SYSTEM
+            </div>
+            <button onclick="handleLogout()" style="background:none; border: 1px solid var(--border); color: white; padding: 10px; border-radius: 50%; cursor: pointer;"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+
+    <div id="appointmentList">
+        <div class="queue-card" id="p1">
+            <div class="patient-info">
+                <div class="patient-avatar"><i class="fas fa-fingerprint" style="color: var(--primary)"></i></div>
+                <div>
+                    <h3 style="font-size: 1.2rem; font-weight: 800;">Aman Sharma</h3>
+                    <p style="font-size: 0.85rem; opacity: 0.5;">Priority: Urgent • Symptoms: Chest Pain, Fever</p>
+                </div>
+            </div>
+            <div class="action-btns">
+                <button class="btn-deny" onclick="document.getElementById('p1').style.display='none'">Decline</button>
+                <button class="btn-schedule" onclick="scheduleLater('Aman Sharma', 'p1')">Schedule Later</button>
+                <button class="btn-accept" onclick="startConsultation('Aman Sharma', 'p1')">Initialize Link</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+        <h2 style="font-weight: 900; opacity: 0.7; font-size: 1.2rem; margin-bottom: 20px; letter-spacing: 1px;">COMPLETED SESSIONS</h2>
+        <div id="historyContainer" style="opacity: 0.6;">
+            <p id="noHistory" style="font-size: 0.8rem; font-style: italic;">No previous sessions in this terminal yet.</p>
+        </div>
+    </div>
+</div>
+
+<div class="consult-grid" id="mainConsultation">
+    <div class="video-container">
+        <div class="ai-hud">
+            <div style="margin-bottom: 5px;"><i class="fas fa-microchip"></i> AI ANALYSIS: ACTIVE</div>
+            <div style="opacity: 0.6;">SCANNING VITALS...</div>
+        </div>
+
+        <div class="video-overlay-brand">
+            <h2>HealthCare+</h2>
+            <div class="verified-badge">
+                <i class="fas fa-shield-check"></i> ENCRYPTED • VERIFIED DOCTOR
+            </div>
+        </div>
+
+        <video id="localVideo" autoplay playsinline muted></video>
+
+        <div class="patient-pip">
+            <div style="width: 100%; height: 100%; background: #020617; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center;">
+                    <i class="fas fa-user-astronaut" style="font-size: 3rem; color: var(--primary); opacity: 0.5;"></i>
+                    <p style="margin-top: 10px; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px;" id="activePatientName">LINKING...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="call-controls">
+            <button class="control-btn active" id="micBtn" onclick="toggleMic()"><i class="fas fa-microphone"></i></button>
+            <button class="control-btn active" id="camBtn" onclick="toggleCam()"><i class="fas fa-video"></i></button>
+            <button class="control-btn end" onclick="endCall()"><i class="fas fa-power-off"></i></button>
+        </div>
+    </div>
+
+    <div class="rx-sidebar">
+        <div class="sidebar-header">
+            <h4 style="font-weight: 900; letter-spacing: 1px;">DIGITAL RX ENGINE</h4>
+            <p style="font-size: 0.65rem; opacity: 0.4; margin-top: 4px;">SECURE BLOCKCHAIN LOG: #LKO-99281</p>
+        </div>
+
+        <div class="rx-pad">
+            <div class="rx-field">
+                <label>Clinical Intelligence & Vitals</label>
+                <textarea id="diagField" rows="2" placeholder="Input clinical observations..."></textarea>
+            </div>
+            
+            <div class="rx-field">
+                <label>Treatment Protocol (Medications)</label>
+                <textarea id="medField" rows="5" placeholder="Specify medications & dosage..."></textarea>
+                <div class="dosage-tags" style="margin-top: 15px;">
+                    <span class="tag" onclick="addDosage('1-0-1')">Morning/Night</span>
+                    <span class="tag" onclick="addDosage('0-0-1')">Bedtime</span>
+                    <span class="tag" onclick="addDosage('Empty Stomach')">Fast State</span>
+                </div>
+            </div>
+
+            <div class="rx-field">
+                <label>Post-Consultation Directives</label>
+                <input id="instrField" type="text" placeholder="Tests or follow-up dates...">
+            </div>
+
+            <div class="pharmacy-sync">
+                <input type="checkbox" id="syncPharmacy" checked>
+                <label for="syncPharmacy" style="color: var(--success); cursor:pointer; font-weight: 700;">Deploy to Home Delivery Pharmacy</label>
+            </div>
+        </div>
+
+        <button class="btn-push" onclick="pushPrescription()">
+            Authenticate & Deploy RX
+        </button>
+    </div>
+</div>
+
+<div id="rxNotification">
+    <i class="fas fa-check-double" style="font-size: 1.5rem;"></i>
+    <div style="flex: 1;" id="notifText">
+        <h5 style="font-weight: 900;">SESSION FINALIZED</h5>
+        <p style="font-size: 0.75rem;">Prescription hashed & transmitted.</p>
+    </div>
+    <button id="notifBtn" onclick="downloadRX()" style="background: #fff; border: none; color: var(--success); padding: 10px 20px; border-radius: 12px; font-weight: 900; cursor: pointer;">GET COPY</button>
+</div>
+
+
+
+<script>
+    // 1. Initialize Supabase with your Project Credentials
+    const SUPABASE_URL = 'https://itvbhpvypgfxdksbpnnt.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let localStream;
+    let currentPatientCardId = null; 
+
+    // --- UPDATED AUTHENTICATION LOGIC ---
+    async function handleLogin() {
+        const email = document.getElementById('licenseID').value;
+        const password = document.getElementById('passcode').value;
+        const btn = document.getElementById('loginBtn');
+        const errorEl = document.getElementById('loginError');
+
+        btn.innerText = "AUTHENTICATING...";
+        btn.disabled = true;
+
+        // Try Supabase Auth
+        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+        
+        if (error) {
+            // Check for Hardcoded Admin fallback if Supabase auth fails (for testing)
+            if(email === "admin" || email === "admin@hospital.com" && password === "1234") {
+                showDashboard();
+            } else {
+                errorEl.innerText = error.message;
+                errorEl.style.display = 'block';
+                btn.innerText = "UNLOCK TERMINAL";
+                btn.disabled = false;
+                setTimeout(() => errorEl.style.display = 'none', 3000);
+            }
+        } else {
+            showDashboard();
+        }
+    }
+
+    // New Logout Function
+    async function handleLogout() {
+        await _supabase.auth.signOut();
+        window.location.reload();
+    }
+
+    function showDashboard() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('appointmentDashboard').style.display = 'flex';
+    }
+
+    // Session Listener: Keeps doctor logged in on page refresh
+    async function checkUserSession() {
+        const { data: { session } } = await _supabase.auth.getSession();
+        if (session) {
+            showDashboard();
+        }
+
+        // Listen for auth changes
+        _supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN') showDashboard();
+            if (event === 'SIGNED_OUT') window.location.reload();
+        });
+    }
+    checkUserSession();
+
+    // --- CONSULTATION LOGIC ---
+    async function startConsultation(name, cardId) {
+        currentPatientCardId = cardId; 
+        document.getElementById('appointmentDashboard').style.display = 'none';
+        document.getElementById('mainConsultation').style.display = 'grid';
+        document.getElementById('activePatientName').innerText = name.toUpperCase();
+
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('localVideo').srcObject = localStream;
+        } catch (err) {
+            alert("Secure camera link failed. Switching to encrypted audio.");
+        }
+    }
+
+    function scheduleLater(name, cardId) {
+        document.getElementById(cardId).style.display = 'none';
+        const notif = document.getElementById('rxNotification');
+        const notifText = document.getElementById('notifText');
+        const notifBtn = document.getElementById('notifBtn');
+        
+        notif.style.background = 'var(--warning)';
+        notifText.innerHTML = `<h5 style="font-weight: 900;">MOVED TO QUEUE</h5><p style="font-size: 0.75rem;">${name} scheduled for later review.</p>`;
+        notifBtn.style.display = 'none';
+        notif.style.display = 'flex';
+        
+        setTimeout(() => { 
+            notif.style.display = 'none'; 
+            notif.style.background = 'var(--success)'; 
+            notifBtn.style.display = 'block'; 
+        }, 4000);
+    }
+
+    function addDosage(val) {
+        const field = document.getElementById('medField');
+        field.value += ` [${val}] `;
+        field.focus();
+    }
+
+    function toggleMic() {
+        if(!localStream) return;
+        const audioTrack = localStream.getAudioTracks()[0];
+        audioTrack.enabled = !audioTrack.enabled;
+        document.getElementById('micBtn').classList.toggle('active');
+    }
+
+    function toggleCam() {
+        if(!localStream) return;
+        const videoTrack = localStream.getVideoTracks()[0];
+        videoTrack.enabled = !videoTrack.enabled;
+        document.getElementById('camBtn').classList.toggle('active');
+    }
+
+    function pushPrescription() {
+        if(!document.getElementById('diagField').value || !document.getElementById('medField').value) 
+            return alert("Mandatory: Please complete Clinical Intelligence fields.");
+
+        document.getElementById('rxNotification').style.display = 'flex';
+        setTimeout(() => { document.getElementById('rxNotification').style.display = 'none'; }, 8000);
+    }
+
+    async function downloadRX() {
+        const patientName = document.getElementById('activePatientName').innerText;
+        const diagnosis = document.getElementById('diagField').value;
+        const medications = document.getElementById('medField').value;
+        const advice = document.getElementById('instrField').value;
+        const syncPharmacy = document.getElementById('syncPharmacy').checked;
+        const prescriptionID = `#LKO-HC-${Math.floor(Math.random() * 9000)}`;
+
+        // Save to Supabase Table if it exists
+        const { data, error } = await _supabase
+            .from('prescriptions') 
+            .insert([
+                { 
+                    patient_id: prescriptionID,
+                    patient_name: patientName, 
+                    diagnosis: diagnosis, 
+                    medications: medications, 
+                    advice: advice,
+                    sync_pharmacy: syncPharmacy,
+                    doctor_name: "DR. SAMEER KHANNA"
+                }
+            ]);
+
+        const content = `
+============================================================
+           HEALTHCARE+ - LUCKNOW
+           NABH ACCREDITED | REG: LKO-99281
+============================================================
+DATE: ${new Date().toLocaleDateString()}
+PATIENT: ${patientName}
+ID: ${prescriptionID}
+------------------------------------------------------------
+Clinical Intelligence: ${diagnosis}
+Medications: ${medications}
+Advice: ${advice}
+------------------------------------------------------------
+DIGITALLY SIGNED BY: DR. SAMEER KHANNA (MD)
+============================================================`.trim();
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Prescription_${patientName}.txt`;
+        a.click();
+    }
+
+    function endCall() {
+        if(typeof localStream !== 'undefined' && localStream) {
+            localStream.getTracks().forEach(track => track.stop());
+        }
+
+        const patientName = document.getElementById('activePatientName').innerText;
+
+        if (patientName !== "LINKING...") {
+            const historyContainer = document.getElementById('historyContainer');
+            const noHistoryMsg = document.getElementById('noHistory');
+            if (noHistoryMsg) noHistoryMsg.remove();
+
+            const historyItem = document.createElement('div');
+            historyItem.className = 'queue-card'; 
+            historyItem.style.padding = '15px 24px';
+            historyItem.style.background = 'rgba(255,255,255,0.02)';
+            historyItem.innerHTML = `
+                <div class="patient-info">
+                    <i class="fas fa-check-circle" style="color: var(--success)"></i>
+                    <div>
+                        <h4 style="font-size: 1rem;">${patientName}</h4>
+                        <p style="font-size: 0.7rem; opacity: 0.5;">Completed: ${new Date().toLocaleTimeString()}</p>
+                    </div>
+                </div>
+                <span style="font-size: 0.6rem; border: 1px solid var(--border); padding: 4px 8px; border-radius: 5px;">ARCHIVED</span>
+            `;
+            historyContainer.prepend(historyItem);
+        }
+
+        if (currentPatientCardId) {
+            const card = document.getElementById(currentPatientCardId);
+            if (card) card.remove();
+        }
+
+        document.getElementById('activePatientName').innerText = "LINKING...";
+        document.getElementById('diagField').value = "";
+        document.getElementById('medField').value = "";
+        document.getElementById('instrField').value = "";
+        
+        document.getElementById('mainConsultation').style.display = 'none';
+        document.getElementById('appointmentDashboard').style.display = 'flex';
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us | HealthCare+ Lucknow</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --glass: rgba(255, 255, 255, 0.7);
+            --border: rgba(255, 255, 255, 0.4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- Background Animation --- */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+        }
+
+        /* --- Navigation --- */
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 90%;
+            margin: 20px 5%;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            z-index: 1000;
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        /* --- Header Section --- */
+        .hero {
+            padding: 160px 5% 60px;
+            text-align: center;
+        }
+
+        .hero h1 { font-size: 3rem; font-weight: 800; color: var(--dark); }
+        .hero p { color: var(--text-light); max-width: 600px; margin: 15px auto; }
+
+        /* --- Main Content Grid --- */
+        .contact-grid {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            padding: 0 5%;
+        }
+
+        .info-panel {
+            display: grid;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 30px;
+            border-radius: 24px;
+            border: 1px solid #eef2f6;
+            transition: 0.3s;
+        }
+
+        .info-card i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .info-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+
+        /* --- Contact Form --- */
+        .form-panel {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 32px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+        }
+
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            outline: none;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.05); }
+
+        .btn-send {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-send:hover { background: var(--dark); }
+        .btn-send:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* --- FAQ Accordion --- */
+        .faq-section {
+            max-width: 800px;
+            margin: 0 auto 100px;
+            padding: 0 5%;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #eef2f6;
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            background: #fff;
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: 0.3s ease-out;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .faq-item.active .faq-answer { padding: 0 20px 20px; max-height: 200px; }
+
+        /* --- Footer --- */
+        footer { background: var(--dark); color: white; margin: 40px 20px; border-radius: 40px; padding: 80px 8% 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 50px; margin-bottom: 50px; }
+        .footer-col h4 { margin-bottom: 25px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; }
+        .footer-col ul li a:hover { color: white; padding-left: 5px; }
+        
+        .newsletter input { padding: 15px 20px; border-radius: 50px; border: none; width: 100%; margin-bottom: 15px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        
+        .btn-fill {
+            background: var(--primary);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-fill:hover { background: var(--secondary); transform: translateY(-2px); }
+
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.85rem; }
+
+        @media (max-width: 1200px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 850px) {
+            .contact-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 2.2rem; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .footer-bottom { flex-direction: column; gap: 10px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+   <nav id="navbar">
+    <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <div style="display: flex; gap: 20px;">
+            <a href="service.html" style="text-decoration:none; color:var(--text-main); font-weight:700; font-size:0.9rem;">Services</a>
+            <a href="network.html" style="text-decoration:none; color:var(--text-main); font-weight:700; font-size:0.9rem;">Hospitals</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Get in Touch</h1>
+        <p>Whether you're a patient seeking care or a hospital looking to partner, we're here to help 24/7.</p>
+    </header>
+
+    <main class="contact-grid">
+        <div class="info-panel">
+            <div class="info-card">
+                <i class="fas fa-phone-alt"></i>
+                <h4>Emergency Helpline</h4>
+                <p style="color:var(--text-light); font-size:0.9rem;">+91 522 123 4567</p>
+                <p style="color:var(--primary); font-size:0.8rem; font-weight:700;">Available 24/7 in Lucknow</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-envelope-open-text"></i>
+                <h4>General Support</h4>
+                <p style="color:var(--text-light); font-size:0.9rem;">hello@healthcareplus.in</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-map-marked-alt"></i>
+                <h4>Main Digital Hub</h4>
+                <p style="color:var(--text-light); font-size:0.9rem;">Cyber Heights, Vibhuti Khand, Gomti Nagar, Lucknow</p>
+            </div>
+        </div>
+
+        <div class="form-panel">
+            <form id="mainContact">
+                <div class="form-group">
+                    <label>How can we help?</label>
+                    <select id="user-type">
+                        <option value="Patient">I am a Patient / Customer</option>
+                        <option value="Hospital">I am representing a Hospital</option>
+                        <option value="Pharmacy">Partner Pharmacy Inquiry</option>
+                        <option value="Feedback">General Feedback</option>
+                    </select>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="full-name" placeholder="Aman Verma" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="phone-number" placeholder="+91" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="message" rows="4" placeholder="Describe your inquiry..." required></textarea>
+                </div>
+                <button type="submit" id="submitBtn" class="btn-send">Send Inquiry</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- FAQ Section and Footer remain same... -->
+    <section class="faq-section">
+        <h2 style="text-align:center; margin-bottom: 40px;">Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+            <div class="faq-question">How fast is medicine delivery in Lucknow? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-answer">We offer 60-minute express delivery in major areas like Gomti Nagar, Aliganj, and Hazratganj.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Can I track my ambulance in real-time? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-answer">Yes, once dispatched, you receive a Leaflet-powered tracking link similar to Zomato/Uber.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Are you affiliated with Medanta Lucknow? <i class="fas fa-chevron-down"></i></div>
+            <div class="faq-answer">HealthCare+ is a digital partner for major Lucknow hospitals, facilitating bed bookings and digital reports.</div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare at your fingertips.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="aboutus.html">About Us</a></li><li><a href="#">Find Doctors</a></li><li><a href="service.html">Services</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul><li><a href="#">Contact Us</a></li><li><a href="#">FAQs</a></li><li><a href="#">Privacy Policy</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter"><input type="email" placeholder="Your Email"><button class="btn-fill">Subscribe</button></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATABASE CONFIGURATION ---
+        const _supabase = supabase.createClient(
+            'https://itvbhpvypgfxdksbpnnt.supabase.co', 
+            'sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5'
+        );
+
+        // FAQ Accordion Logic
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const item = q.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // --- DATABASE SUBMISSION LOGIC ---
+        const contactForm = document.getElementById('mainContact');
+        const submitBtn = document.getElementById('submitBtn');
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Disable button during loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+            // Collect Data
+            const formData = {
+                user_type: document.getElementById('user-type').value,
+                full_name: document.getElementById('full-name').value,
+                phone_number: document.getElementById('phone-number').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                // Send to Supabase table
+                const { error } = await _supabase
+                    .from('contact_inquiries')
+                    .insert([formData]);
+
+                if (error) throw error;
+
+                // Success
+                alert('Success! Your inquiry has been saved to our database. Our team will reach out within 2 hours.');
+                contactForm.reset();
+
+            } catch (error) {
+                console.error('Error saving to database:', error.message);
+                alert('Database Error: ' + error.message);
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Send Inquiry';
+            }
+        });
+    </script>
+
+</body>
+</html>

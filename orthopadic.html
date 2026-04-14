@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orthopedics & Robotics | HealthCare+</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0ea5e9; 
+            --primary-light: rgba(14, 165, 233, 0.1);
+            --dark: #0f172a;
+            --text-light: #64748b;
+            --bg-subtle: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.8);
+            --footer-bg: #0f172a;
+        }
+
+        * { margin:0; padding:0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background: #fff; color: var(--dark); line-height: 1.6; overflow-x: hidden; }
+
+        /* Navigation */
+        nav { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #f1f5f9; }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        /* Buttons */
+        .btn-fill { background: var(--primary); color: white; border: none; padding: 12px 28px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 15px rgba(14, 165, 233, 0.2); text-decoration: none; display: inline-block; border: 1px solid transparent; }
+        .btn-fill:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(14, 165, 233, 0.3); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; text-decoration: none; }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        /* Sections */
+        section { padding: 100px 8%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        /* Cards */
+        .glass-card { background: var(--bg-subtle); border: 1px solid #e2e8f0; border-radius: 30px; padding: 40px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .glass-card:hover { transform: translateY(-10px); border-color: var(--primary); background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+
+        .tag { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 6px 18px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Metrics Bar */
+        .metrics-bar { background: var(--dark); padding: 60px 8%; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px; border-radius: 0 0 50px 50px; }
+        .metric-item { text-align: center; }
+        .metric-item h2 { color: var(--primary); font-size: 2.8rem; margin-bottom: 5px; }
+        .metric-item p { color: white; opacity: 0.7; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+
+        /* Doctor Track */
+        .doc-track { display: flex; gap: 25px; overflow-x: auto; padding: 20px 0; scrollbar-width: none; margin-bottom: 20px; }
+        .doc-track::-webkit-scrollbar { display: none; }
+        .doc-card { min-width: 280px; background: white; border-radius: 25px; border: 1px solid #f1f5f9; overflow: hidden; transition: 0.3s; }
+        .doc-card:hover { border-color: var(--primary); }
+        .doc-img img { width: 100%; height: 280px; object-fit: cover; }
+        .doc-info { padding: 20px; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.4s;
+        }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            width: 90%; max-width: 800px; padding: 50px; border-radius: 40px;
+            position: relative; transform: scale(0.9); transition: 0.4s;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .close-modal { position: absolute; top: 25px; right: 25px; font-size: 1.5rem; cursor: pointer; }
+
+        /* Footer Refined */
+        footer {
+            background: var(--footer-bg);
+            color: white;
+            padding: 80px 8% 40px;
+            border-radius: 60px 60px 0 0;
+            margin-top: 100px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .footer-col h4 {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 12px; }
+        .footer-links a { color: #94a3b8; text-decoration: none; transition: 0.3s; font-size: 0.95rem; }
+        .footer-links a:hover { color: var(--primary); padding-left: 5px; }
+        
+        .footer-bottom {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-bottom { justify-content: center; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <a href="firstpage.html" class="logo"><i class="fas fa-bone"></i> Health<span>Care+</span></a>
+        <div>
+            <a href="firstpage.html" class="btn-outline">back to home</a>
+            <a href="contactus.html" class="btn-outline">Enquire Now</a>
+            <a href="booking.html" class="btn-fill" style="margin-left:15px;">Book Consultation</a>
+        </div>
+    </nav>
+
+    <section style="background: radial-gradient(circle at top right, #e0f2fe, #fff 50%);">
+        <div style="max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center;">
+            <div>
+                <span class="tag">Robotic Orthopedic Center</span>
+                <h1 style="font-size: 3.8rem; line-height: 1.1; margin-bottom: 25px;">Restoring Your <br><span style="color:var(--primary)">Mobility & Strength.</span></h1>
+                <p style="color: var(--text-light); font-size: 1.1rem; margin-bottom: 35px; max-width: 600px;">
+                    Experience the future of joint care with AI-guided robotic surgeries and advanced physical rehabilitation. We specialize in minimally invasive techniques for a faster return to your active life.
+                </p>
+                <div style="display:flex; gap: 20px;">
+                    <a href="#specialties" class="btn-fill" style="padding: 18px 40px;">Clinical Excellence</a>
+                    <a href="#tech" class="btn-outline" style="padding: 16px 35px;">Robotic Tech</a>
+                </div>
+            </div>
+            <div style="position: relative;">
+                <div class="glass-card" style="padding: 15px; border-radius: 40px; background: white; box-shadow: 0 30px 60px rgba(0,0,0,0.1);">
+                    <img src="https://as2.ftcdn.net/v2/jpg/07/24/18/85/1000_F_724188575_AqQhLolnfkPOGC7Ul6tSvKEq8iphT43i.jpg" alt="Orthopedic Care" style="width: 100%; border-radius: 30px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="metrics-bar">
+        <div class="metric-item"><h2>25k+</h2><p>Joint Replacements</p></div>
+        <div class="metric-item"><h2>Robotic</h2><p>Mako™ Certified</p></div>
+        <div class="metric-item"><h2>< 24h</h2><p>Post-Op Walk-Time</p></div>
+        <div class="metric-item"><h2>Sports</h2><p>Medicine Hub</p></div>
+    </div>
+
+    <section id="specialties">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">Advanced Ortho Care</span>
+            <h2 style="font-size: 2.5rem;">Clinical <span style="color: var(--primary);">Excellence</span></h2>
+        </div>
+        <div class="grid">
+            <div class="glass-card">
+                <i class="fas fa-joint" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Knee & Hip Replacement</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Robotic-assisted total and partial joint replacements with customized 3D implants for natural movement.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-running" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Sports Medicine</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Minimally invasive arthroscopic repairs for ACL, PCL, and meniscus tears using bio-absorbable anchors.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-child" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Pediatric Orthopedics</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Corrective surgeries for congenital deformities, clubfoot, and pediatric trauma by dedicated specialists.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-vial" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Regenerative Therapy</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">Platelet-Rich Plasma (PRP) and Stem Cell injections to heal chronic tendonitis and early-stage arthritis.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-crutch" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Complex Trauma</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">24/7 Level-1 trauma care for multiple fractures and pelvic-acetabular reconstructions.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-wheelchair" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Rehabilitation</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">State-of-the-art physiotherapy center with underwater treadmills and laser therapy for faster recovery.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="tech" style="background: var(--bg-subtle);">
+    <div style="text-align: center; margin-bottom: 60px;">
+        <span class="tag">Future Tech</span>
+        <h2 style="font-size: 2.5rem;">Precision <span style="color: var(--primary);">Robotics & Innovation</span></h2>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 40px;">
+        <div class="glass-card" style="background: var(--dark); color: white; display: flex; align-items: center; gap: 50px;">
+            <div style="flex: 1;">
+                <h3 style="color: var(--primary); margin-bottom: 20px;">Mako SmartRobotics™</h3>
+                <p style="opacity: 0.8; margin-bottom: 20px;">
+                    A highly advanced robotic-arm assisted system that allows surgeons to create a personalized surgical plan based on a 3D CT scan of the patient's unique anatomy.
+                </p>
+                <ul style="list-style: none; opacity: 0.7; font-size: 0.9rem;">
+                    <li><i class="fas fa-check-circle" style="color: var(--primary); margin-right: 10px;"></i> AccuStop™ Haptic Technology</li>
+                    <li><i class="fas fa-check-circle" style="color: var(--primary); margin-right: 10px;"></i> Bone-Preserving Accuracy</li>
+                </ul>
+            </div>
+            <div style="flex: 0.8;">
+                <img src="https://www.arabnews.com/sites/default/files/styles/n_670_395/public/2020/02/19/1979756-1151449154.jpg?itok=H0XNc91r" style="width: 100%; border-radius: 25px;" alt="Robotic Surgery">
+            </div>
+        </div>
+
+        <div class="glass-card" style="background: white; display: flex; flex-direction: row-reverse; align-items: center; gap: 50px;">
+            <div style="flex: 1;">
+                <h3 style="color: var(--primary); margin-bottom: 20px;">3D Printed Implants</h3>
+                <p style="color: var(--text-light); margin-bottom: 20px;">
+                    We utilize patient-specific 3D printing technology to create custom titanium implants that match the exact shape of your bone structure for a perfect fit.
+                </p>
+                <ul style="list-style: none; color: var(--text-light); font-size: 0.9rem;">
+                    <li><i class="fas fa-cube" style="color: var(--primary); margin-right: 10px;"></i> Customized Anatomical Fit</li>
+                    <li><i class="fas fa-cube" style="color: var(--primary); margin-right: 10px;"></i> Improved Long-term Outcomes</li>
+                </ul>
+            </div>
+            <div style="flex: 0.8;">
+                <img src="https://www.3dnatives.com/en/wp-content/uploads/sites/2/2-62.jpg" style="width: 100%; border-radius: 25px;" alt="3D Printing">
+            </div>
+        </div>
+
+        <div class="glass-card" style="background: var(--dark); color: white; display: flex; align-items: center; gap: 50px;">
+            <div style="flex: 1;">
+                <h3 style="color: var(--primary); margin-bottom: 20px;">Mixed Reality Navigation</h3>
+                <p style="opacity: 0.8; margin-bottom: 20px;">
+                    Surgeons use AR headsets to overlay digital 3D models of the patient's internal anatomy directly onto the surgical field, providing X-ray vision in real-time.
+                </p>
+                <ul style="list-style: none; opacity: 0.7; font-size: 0.9rem;">
+                    <li><i class="fas fa-vr-cardboard" style="color: var(--primary); margin-right: 10px;"></i> Real-time Holographic Guidance</li>
+                    <li><i class="fas fa-vr-cardboard" style="color: var(--primary); margin-right: 10px;"></i> Enhanced Spatial Awareness</li>
+                </ul>
+            </div>
+            <div style="flex: 0.8;">
+                <img src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?auto=format&fit=crop&q=80&w=800" style="width: 100%; border-radius: 25px;" alt="AR Surgery">
+            </div>
+        </div>
+
+        <div class="glass-card" style="background: white; display: flex; flex-direction: row-reverse; align-items: center; gap: 50px;">
+            <div style="flex: 1;">
+                <h3 style="color: var(--primary); margin-bottom: 20px;">IoT Recovery Tracking</h3>
+                <p style="color: var(--text-light); margin-bottom: 20px;">
+                    Post-surgery, patients are equipped with smart knee/hip braces that sync range-of-motion data to our doctors, allowing for remote physical therapy adjustments.
+                </p>
+                <ul style="list-style: none; color: var(--text-light); font-size: 0.9rem;">
+                    <li><i class="fas fa-mobile-alt" style="color: var(--primary); margin-right: 10px;"></i> 24/7 Progress Monitoring</li>
+                    <li><i class="fas fa-mobile-alt" style="color: var(--primary); margin-right: 10px;"></i> Personalized Exercise Feedback</li>
+                </ul>
+            </div>
+            <div style="flex: 0.8;">
+                <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800" style="width: 100%; border-radius: 25px;" alt="Smart Rehabilitation">
+            </div>
+        </div>
+
+        <div class="glass-card" style="background: var(--dark); color: white; display: flex; align-items: center; gap: 50px;">
+            <div style="flex: 1;">
+                <h3 style="color: var(--primary); margin-bottom: 20px;">Bio-Integrative Scaffolding</h3>
+                <p style="opacity: 0.8; margin-bottom: 20px;">
+                    We utilize advanced biological mesh and scaffolds that encourage natural bone and tissue regrowth, eventually dissolving once the body has fully healed.
+                </p>
+                <ul style="list-style: none; opacity: 0.7; font-size: 0.9rem;">
+                    <li><i class="fas fa-microscope" style="color: var(--primary); margin-right: 10px;"></i> Bio-Resorbable Materials</li>
+                    <li><i class="fas fa-microscope" style="color: var(--primary); margin-right: 10px;"></i> Minimal Long-term Foreign Bodies</li>
+                </ul>
+            </div>
+            <div style="flex: 0.8;">
+                <img src="https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&q=80&w=800" style="width: 100%; border-radius: 25px;" alt="Bio Tech">
+            </div>
+        </div>
+    </div>
+</section>
+
+    <section id="doctors">
+        <div style="margin-bottom: 40px;">
+            <span class="tag">Specialists</span>
+            <h2 style="font-size: 2.5rem;">Ortho <span style="color: var(--primary);">Surgeons</span></h2>
+        </div>
+
+        <div class="doc-track">
+            <div class="doc-card">
+                <div class="doc-img">
+                    <img src="https://imgs.search.brave.com/xb6873DeuCUKYu0SKkMQsP1edZZce32vlMgnImOnySA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly95YXBp/dGEtcHJvZHVjdGlv/bi5zMy5hcC1zb3V0/aC0xLmFtYXpvbmF3/cy5jb20vdXBsb2Fk/cy9kb2N0b3IvaW1h/Z2UvODU0NWEwOTMt/NGM4NC00YzcyLTk2/NjMtMGNhOGE5ZDll/MGQ4L2ZpbGUud2Vi/cA" alt="Dr. Ashok Rajgopal">
+                </div>
+                <div class="doc-info">
+                    <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Joint Replacement Expert</span>
+                    <h4 style="margin-bottom: 5px;">Dr. Ashok Rajgopal</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">25+ years experience in robotic knee surgery and complex hip revisions.</p>
+                    <button onclick="openProfile('Dr. Ashok Rajgopal', 'Senior Ortho Surgeon', 'Dr. Shah is a pioneer in Robotic Joint Replacement in India, with over 15,000 successful procedures. He specializes in the zero-technique surgery method.', 'https://imgs.search.brave.com/xb6873DeuCUKYu0SKkMQsP1edZZce32vlMgnImOnySA/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly95YXBp/dGEtcHJvZHVjdGlv/bi5zMy5hcC1zb3V0/aC0xLmFtYXpvbmF3/cy5jb20vdXBsb2Fk/cy9kb2N0b3IvaW1h/Z2UvODU0NWEwOTMt/NGM4NC00YzcyLTk2/NjMtMGNhOGE5ZDll/MGQ4L2ZpbGUud2Vi/cA')" class="btn-fill" style="width: 100%; text-align: center; padding: 10px; font-size: 0.8rem;">View Profile</button>
+                </div>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-img">
+                    <img src="https://cdn.hexahealth.com/Image/webp/480x480/0ca0a27f-3297-41b9-869d-b9c08e7b66e0.webp" alt="Dr. Narinder Kumar">
+                </div>
+                <div class="doc-info">
+                    <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Director - Orthopaedics & Joint Replacement</span>
+                    <h4 style="margin-bottom: 5px;">Dr. Narinder Kumar</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Former HOD - Base Hospital & Professor at AFMC Pune.</p>
+                    <button onclick="openProfile('Dr. Narinder Kumar', 'Director & Professor', 'Prof. (Col.) Narinder Kumar is a premier expert in Orthopaedics and Joint Replacement, specializing in Orthopaedic Oncology. An alumnus of AFMC Pune, he holds elite international fellowships from Flinders University, Royal Prince Alfred Hospital, and John Flynn Hospital in Australia.His distinguished career includes serving as Director of Orthopaedics at both Medanta and Apollomedics Lucknow, alongside professorships at Command Hospital and AFMC Pune. He is an active member of the IOA, ISHKS, and ISKSAA, bringing decades of veteran military and clinical expertise to complex surgical care.', 'https://cdn.hexahealth.com/Image/webp/480x480/0ca0a27f-3297-41b9-869d-b9c08e7b66e0.webp')" class="btn-fill" style="width: 100%; text-align: center; padding: 10px; font-size: 0.8rem;">View Profile</button>
+                </div>
+            </div>
+
+            <div class="doc-card">
+                <div class="doc-img">
+                    <img src="https://max-website20-images.s3.ap-south-1.amazonaws.com/medium_Dr_Narinder_with_tie_52a1e257ce.jpg" alt="Prof (Col.) Narinder Kumar">
+                </div>
+                <div class="doc-info">
+                    <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Director - Orthopaedics & Joint Replacement</span>
+                    <h4 style="margin-bottom: 5px;">Prof (Col.) Narinder Kumar</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Former AFMC Professor & HOD with 100+ International Publications.</p>
+                    <button onclick="openProfile('Prof (Col.) Narinder Kumar', 'Director & Professor', 'A distinguished veteran of the Armed Forces Medical Services, Prof (Col.) Narinder Kumar has served as HOD at Base Hospital Lucknow and Professor at AFMC Pune. He holds multiple international fellowships from the UK and Australia. With over 11,000 citations and 100+ publications, he is a global authority in Complex Knee & Hip Replacements, Bone Tumour Surgery, and Limb Salvage.', 'https://max-website20-images.s3.ap-south-1.amazonaws.com/medium_Dr_Narinder_with_tie_52a1e257ce.jpg')" class="btn-fill" style="width: 100%; text-align: center; padding: 10px; font-size: 0.8rem;">View Profile</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="profileModal" onclick="closeProfile()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times close-modal" onclick="closeProfile()"></i>
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: center;">
+                <div style="border-radius: 30px; overflow: hidden; height: 400px;">
+                    <img id="modalImg" src="" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div>
+                    <span id="modalTag" class="tag"></span>
+                    <h2 id="modalName" style="font-size: 2.2rem; margin-bottom: 10px;"></h2>
+                    <p id="modalBio" style="color: var(--text-light); margin-bottom: 30px;"></p>
+                    <a href="booking.html" class="btn-fill">Book Appointment</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer style="background: var(--dark); color: white; padding: 80px 5% 40px; margin-top: 100px;">
+    <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
+        
+        <div class="footer-col">
+            <div class="logo" style="color: white; margin-bottom: 25px; font-size: 1.5rem; font-weight: 700;">
+                <i class="fas fa-hand-holding-medical" style="color: var(--primary);"></i> Health<span style="color: var(--primary);">Care+</span>
+            </div>
+            <p style="color: #94a3b8; line-height: 1.8; margin-bottom: 20px;">
+                Providing accessible, high-quality digital healthcare at your fingertips.
+            </p>
+            <div style="display: flex; gap: 15px; font-size: 1.2rem;">
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem; position: relative;">Quick Links</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="aboutus.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">About Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="#" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Find Doctors</a></li>
+                <li style="margin-bottom: 12px;"><a href="service.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Services</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Support</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="contactus.html" style="color: #94a3b8; text-decoration: none;">Contact Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="ques.html" style="color: #94a3b8; text-decoration: none;">FAQs</a></li>
+                <li style="margin-bottom: 12px;"><a href="pp.html" style="color: #94a3b8; text-decoration: none;">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Newsletter</h4>
+            <div class="newsletter" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="email" placeholder="Your Email" style="padding: 12px 15px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; outline: none;">
+                <button class="btn-fill" style="width: 100%; padding: 12px; border-radius: 8px;">Subscribe Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom" style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <p style="color: #94a3b8; font-size: 0.9rem;">&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(225, 29, 72, 0.1); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--primary);">
+            <i class="fas fa-phone-alt" style="color: var(--primary);"></i>
+            <span style="font-weight: 700; color: white;">Emergency: +91 522 123 4567</span>
+        </div>
+    </div>
+</footer>
+    <script>
+        function openProfile(name, tag, bio, img) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalTag').innerText = tag;
+            document.getElementById('modalBio').innerText = bio;
+            document.getElementById('modalImg').src = img;
+            const modal = document.getElementById('profileModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+        function closeProfile() {
+            const modal = document.getElementById('profileModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 400);
+        }
+    </script>
+</body>
+</html>

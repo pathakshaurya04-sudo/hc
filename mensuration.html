@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare+ | Future of Digital Medicine</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --radius-xl: 40px;
+            --radius-lg: 24px;
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Background Animation --- */
+        .orb {
+            position: fixed;
+            width: 450px; height: 450px;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: moveOrb 25s infinite alternate;
+        }
+        .orb-1 { background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { background: var(--secondary); bottom: -100px; right: -100px; animation-delay: -5s; }
+
+        @keyframes moveOrb {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(120px, 120px) scale(1.1); }
+        }
+
+        /* --- Modern Glass Header --- */
+        nav {
+            padding: 25px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 92%;
+            margin: 20px 4%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px) saturate(180%);
+            -webkit-backdrop-filter: blur(12px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 15px 4%;
+            margin-top: 10px;
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        nav ul { display: flex; list-style: none; gap: 15px; align-items: center; }
+        nav ul a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.82rem; position: relative; transition: 0.3s; padding: 10px 0; }
+        
+        .dropdown { position: relative; }
+        .dropdown::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            height: 25px; 
+            display: block;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(15px);
+            min-width: 230px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-radius: 20px;
+            padding: 15px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            border: 1px solid var(--white);
+        }
+
+        .dropdown:hover .dropdown-menu { display: flex; }
+
+        .dropdown-menu a {
+            padding: 10px 20px; font-size: 0.85rem; display: flex; align-items: center; gap: 12px;
+        }
+        .dropdown-menu a i { color: var(--primary); width: 18px; text-align: center; }
+        .dropdown-menu a:hover { background: rgba(37, 99, 235, 0.05); padding-left: 25px; color: var(--primary); }
+        .view-all { font-weight: 800; border-top: 1px solid #eee; margin-top: 8px; padding-top: 15px !important; }
+
+        .btn-fill { 
+            padding: 12px 24px; border-radius: 100px; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; border: none; font-weight: 700; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 8px 15px var(--primary-glow); font-size: 0.8rem; text-transform: uppercase;
+        }
+        .btn-fill:hover { transform: translateY(-3px); box-shadow: 0 12px 20px var(--primary-glow); }
+
+        /* --- Content Sections --- */
+        .hero { padding: 220px 8% 100px; text-align: center; }
+        .hero h1 { font-size: 4.5rem; font-weight: 800; letter-spacing: -2px; line-height: 1.1; margin-bottom: 25px; }
+        .hero-badge { background: rgba(37, 99, 235, 0.1); color: var(--primary); padding: 8px 20px; border-radius: 100px; font-weight: 700; display: inline-block; margin-bottom: 20px; border: 1px solid rgba(37, 99, 235, 0.2); }
+        .hero p { color: var(--text-light); max-width: 700px; margin: 0 auto 40px; font-size: 1.2rem; }
+
+        .hero-images { display: flex; justify-content: center; gap: 25px; }
+        .hero-img-card { width: 280px; height: 380px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); transition: 0.5s; border: 4px solid white; }
+        .hero-img-card img { width: 100%; height: 100%; object-fit: cover; }
+
+        .highlight-box {
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl); padding: 60px; margin: 0 8% 80px;
+            display: flex; align-items: center; gap: 40px; border: 1px solid var(--glass-border);
+            box-shadow: 0 40px 100px rgba(0,0,0,0.03);
+        }
+
+        /* --- Flip Card Styling --- */
+        .clinical-hub-container { padding: 60px 8%; }
+        .hub-items-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 30px; 
+            max-width: 1200px; 
+            margin: 0 auto;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--glass-border);
+        }
+
+        .flip-card-front {
+            background: white;
+            color: var(--dark);
+        }
+
+        .flip-card-back {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            color: var(--primary);
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front h4, .flip-card-back h4 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
+        /* --- Model of Care Section (Animated) --- */
+        .model-of-care { padding: 100px 8%; text-align: center; overflow: hidden; }
+        .moc-wrapper { 
+            position: relative; 
+            width: 600px; 
+            height: 600px; 
+            margin: 60px auto; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            border-radius: 50%;
+            animation: rotateWrapper 60s linear infinite;
+        }
+        .moc-center-img { 
+            width: 200px; height: 200px; 
+            border-radius: 50%; object-fit: cover; 
+            border: 10px solid white; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            z-index: 1;
+            animation: pulseCenter 4s ease-in-out infinite;
+        }
+        .moc-item { 
+            position: absolute; width: 160px; 
+            text-align: center; z-index: 2;
+            animation: counterRotate 60s linear infinite;
+        }
+        .moc-item h4 { font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 5px; }
+        .moc-item a { font-size: 0.75rem; color: var(--primary); font-weight: 600; text-decoration: none; }
+
+        @keyframes rotateWrapper { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes counterRotate { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+        @keyframes pulseCenter { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); box-shadow: 0 30px 60px rgba(37, 99, 235, 0.2); } }
+
+        .item-1 { top: 50px; }
+        .item-2 { right: 50px; top: 25%; }
+        .item-3 { bottom: 50px; right: 20%; }
+        .item-4 { bottom: 50px; left: 20%; }
+        .item-5 { left: 50px; top: 25%; }
+
+        @media (max-width: 768px) {
+            .moc-wrapper { height: auto; flex-direction: column; gap: 30px; animation: none; }
+            .moc-item { position: relative; width: 100%; top: auto; right: auto; bottom: auto; left: auto; animation: none; }
+            .moc-center-img { animation: none; }
+        }
+        .pulse {
+    animation: pulse-animation 2s infinite;
+}
+
+@keyframes pulse-animation {
+    0% { box-shadow: 0 0 0 0px rgba(37, 99, 235, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+    100% { box-shadow: 0 0 0 0px rgba(37, 99, 235, 0); }
+}
+        .doctor-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    padding: 20px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.doctor-card img {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 4px solid white;
+}
+
+.consult-btn {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.consult-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+        /* --- Pioneers Section --- */
+        .pioneers-section { padding: 100px 8%; text-align: center; }
+        .pioneers-content { 
+            background: var(--glass-bg); backdrop-filter: blur(15px); 
+            border: 1px solid var(--glass-border); padding: 80px 40px; 
+            border-radius: var(--radius-xl); box-shadow: 0 30px 60px rgba(0,0,0,0.05);
+        }
+        .pioneers-section h2 { font-size: 3rem; font-weight: 800; margin-bottom: 25px; color: var(--dark); }
+        .pioneers-section p { color: var(--text-light); max-width: 900px; margin: 0 auto 50px; line-height: 1.8; font-size: 1.1rem; }
+        .doctor-group-frame { 
+            width: 100%; max-width: 1100px; margin: 0 auto; 
+            border-radius: var(--radius-lg); overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 8px solid white;
+        }
+       /* --- Services Section Styling --- */
+.services-section { padding: 100px 8%; background: rgba(241, 245, 249, 0.5); }
+
+.services-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 30px; 
+    margin-top: 50px; 
+}
+
+.service-card { 
+    background: white; padding: 40px; border-radius: 30px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center;
+    transition: 0.4s; border: 1px solid rgba(0,0,0,0.05);
+}
+
+.service-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1); }
+.service-card i { font-size: 2.5rem; color: var(--primary); margin-bottom: 20px; }
+.service-card h4 { margin-bottom: 15px; font-weight: 700; }
+.service-card p { color: var(--text-light); font-size: 0.9rem; line-height: 1.6; }
+
+@media (max-width: 900px) {
+    .services-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 20px;
+        gap: 20px;
+        /* Ensures grid doesn't break flex layout */
+        grid-template-columns: none;
+    }
+    .service-card {
+        min-width: 280px;
+        scroll-snap-align: center;
+    }
+}
+        .doctor-group-frame img { width: 100%; height: auto; display: block; }
+
+        footer { background: var(--dark); color: white; margin: 40px 20px; border-radius: 40px; padding: 80px 8% 40px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 50px; margin-bottom: 50px; }
+        .footer-col h4 { margin-bottom: 25px; color: var(--white); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; }
+        .footer-col ul li a:hover { color: white; padding-left: 5px; }
+        .newsletter input { padding: 15px 20px; border-radius: 50px; border: none; width: 100%; margin-bottom: 15px; background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; color: #64748b; font-size: 0.85rem; }
+
+        @media (max-width: 1200px) {
+            nav ul { display: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+   <!-- ================= WOMEN HEALTH AI WIDGET ================= -->
+
+<style>
+
+.women-ai{
+position:fixed;
+bottom:30px;
+right:30px;
+z-index:5000;
+font-family:'Plus Jakarta Sans',sans-serif;
+}
+
+#women-toggle{
+width:65px;
+height:65px;
+border-radius:50%;
+border:none;
+background:linear-gradient(135deg,#ec4899,#f43f5e);
+color:white;
+font-size:26px;
+cursor:pointer;
+box-shadow:0 10px 25px rgba(236,72,153,.5);
+}
+
+/* Window */
+
+#women-box{
+width:350px;
+height:500px;
+background:white;
+border-radius:18px;
+box-shadow:0 20px 40px rgba(0,0,0,.2);
+position:absolute;
+bottom:80px;
+right:0;
+display:none;
+flex-direction:column;
+overflow:hidden;
+}
+
+/* Header */
+
+.women-header{
+background:#ec4899;
+color:white;
+padding:12px;
+font-weight:600;
+}
+
+/* Tabs */
+
+.tabs{
+display:flex;
+background:#ffe4e6;
+}
+
+.tabs button{
+flex:1;
+border:none;
+padding:8px;
+background:none;
+cursor:pointer;
+font-size:12px;
+}
+
+/* Content */
+
+.tab-content{
+flex:1;
+overflow-y:auto;
+padding:12px;
+display:none;
+}
+
+.active{
+display:block;
+}
+
+/* Chat UI */
+
+.chat-area{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.msg-user{
+align-self:flex-end;
+background:#ec4899;
+color:white;
+padding:8px 12px;
+border-radius:14px 14px 0 14px;
+max-width:70%;
+}
+
+.msg-bot{
+align-self:flex-start;
+background:#f1f5f9;
+padding:8px 12px;
+border-radius:14px 14px 14px 0;
+max-width:70%;
+}
+
+/* Inputs */
+
+input,select{
+width:100%;
+padding:8px;
+margin-top:6px;
+margin-bottom:8px;
+border:1px solid #ddd;
+border-radius:6px;
+}
+
+button.action{
+background:#ec4899;
+color:white;
+border:none;
+padding:8px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.dashboard-box{
+background:#fff1f2;
+padding:8px;
+border-radius:8px;
+margin-top:6px;
+font-size:13px;
+}
+
+</style>
+
+
+<div class="women-ai">
+
+<button id="women-toggle">🌸</button>
+
+<div id="women-box">
+
+<div class="women-header">Women Health AI</div>
+
+<div class="tabs">
+<button onclick="openTab('chat')">Chat</button>
+<button onclick="openTab('cycle')">Cycle</button>
+<button onclick="openTab('hormone')">Hormone</button>
+<button onclick="openTab('risk')">Risk</button>
+<button onclick="openTab('pcos')">PCOS</button>
+</div>
+
+
+<!-- Chat -->
+
+<div id="chat" class="tab-content active">
+
+<div class="chat-area" id="chat-area">
+
+<div class="msg-bot">
+Hello 👋 Ask me about periods, PMS, cramps or women's health.
+</div>
+
+</div>
+
+<input id="chat-input" placeholder="Type message...">
+
+<button class="action" onclick="sendChat()">Send</button>
+
+</div>
+
+
+<!-- Cycle Tracker -->
+
+<div id="cycle" class="tab-content">
+
+<label>Last Period Date</label>
+<input type="date" id="lastPeriod">
+
+<label>Average Cycle Length</label>
+<input type="number" id="cycleLength" value="28">
+
+<button class="action" onclick="calculateCycle()">Calculate Next Period</button>
+
+<div id="cycleResult" class="dashboard-box"></div>
+
+</div>
+
+
+<!-- Hormone Dashboard -->
+
+<div id="hormone" class="tab-content">
+
+<label>Cycle Day</label>
+<input type="number" id="cycleDay">
+
+<button class="action" onclick="showHormone()">Show Hormone Phase</button>
+
+<div id="hormoneResult" class="dashboard-box"></div>
+
+</div>
+
+
+<!-- Pregnancy Risk -->
+
+<div id="risk" class="tab-content">
+
+<label>Unprotected sex during fertile window?</label>
+<select id="fertile">
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+
+<label>Period Late?</label>
+<select id="late">
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+
+<button class="action" onclick="pregnancyRisk()">Check Risk</button>
+
+<div id="riskResult" class="dashboard-box"></div>
+
+</div>
+
+
+<!-- PCOS Checker -->
+
+<div id="pcos" class="tab-content">
+
+<label>Irregular Periods?</label>
+<select id="irregular">
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+
+<label>Acne or Excess Hair?</label>
+<select id="hair">
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+
+<label>Weight Gain?</label>
+<select id="weight">
+<option value="yes">Yes</option>
+<option value="no">No</option>
+</select>
+
+<button class="action" onclick="pcosCheck()">Check PCOS Risk</button>
+
+<div id="pcosResult" class="dashboard-box"></div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const toggle=document.getElementById("women-toggle");
+const box=document.getElementById("women-box");
+
+toggle.onclick=()=>{
+box.style.display=box.style.display==="flex"?"none":"flex";
+}
+
+/* Tabs */
+
+function openTab(id){
+
+document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+
+document.getElementById(id).classList.add("active");
+
+}
+
+/* Chat */
+
+function sendChat(){
+
+let input=document.getElementById("chat-input");
+let msg=input.value.trim();
+
+if(!msg) return;
+
+let chat=document.getElementById("chat-area");
+
+chat.innerHTML+=`<div class="msg-user">${msg}</div>`;
+
+let reply="I can help with menstrual cycles, cramps, PMS, PCOS or pregnancy risk.";
+
+if(msg.includes("cramp")) reply="Try warm compress and hydration for cramps.";
+if(msg.includes("pms")) reply="PMS symptoms include mood swings and bloating.";
+if(msg.includes("late")) reply="Stress or hormones can delay periods.";
+
+chat.innerHTML+=`<div class="msg-bot">${reply}</div>`;
+
+input.value="";
+
+chat.scrollTop=chat.scrollHeight;
+
+}
+
+/* Cycle tracker */
+
+function calculateCycle(){
+
+let date=document.getElementById("lastPeriod").value;
+let length=parseInt(document.getElementById("cycleLength").value);
+
+let d=new Date(date);
+d.setDate(d.getDate()+length);
+
+document.getElementById("cycleResult").innerText=
+"Estimated next period: "+d.toDateString();
+
+}
+
+/* Hormone phase */
+
+function showHormone(){
+
+let day=parseInt(document.getElementById("cycleDay").value);
+
+let phase="";
+
+if(day<=5) phase="Menstrual Phase";
+else if(day<=13) phase="Follicular Phase";
+else if(day<=16) phase="Ovulation Phase";
+else phase="Luteal Phase";
+
+document.getElementById("hormoneResult").innerText="Current Phase: "+phase;
+
+}
+
+/* Pregnancy risk */
+
+function pregnancyRisk(){
+
+let fertile=document.getElementById("fertile").value;
+let late=document.getElementById("late").value;
+
+let result="Low risk";
+
+if(fertile==="yes" && late==="yes") result="Higher pregnancy risk. Consider a pregnancy test.";
+
+document.getElementById("riskResult").innerText=result;
+
+}
+
+/* PCOS */
+
+function pcosCheck(){
+
+let irregular=document.getElementById("irregular").value;
+let hair=document.getElementById("hair").value;
+let weight=document.getElementById("weight").value;
+
+let score=0;
+
+if(irregular==="yes") score++;
+if(hair==="yes") score++;
+if(weight==="yes") score++;
+
+let result="Low PCOS risk";
+
+if(score>=2) result="Possible PCOS symptoms. Consult a gynecologist.";
+
+document.getElementById("pcosResult").innerText=result;
+
+}
+
+</script>
+
+<!-- ================= END WOMEN HEALTH AI ================= -->
+</head>
+<div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+  <nav id="navbar">
+    <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+    <ul>
+        <li><a href="aboutus.html">About Us</a></li>
+        
+        <li class="dropdown">
+            <a href="#speciality">Speciality <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+            <div class="dropdown-menu">
+                <a href="cardiology.html"><i class="fas fa-heartbeat"></i> Cardiology</a>
+                <a href="nurology.html"><i class="fas fa-brain"></i> Neurology</a>
+                <a href="orthopadic.html"><i class="fas fa-bone"></i> Orthopaedics</a>
+                <a href="oncology.html"><i class="fas fa-ribbon"></i> Oncology</a>
+                <a href="gastroscience.html"><i class="fas fa-utensils"></i> Gastrosciences</a>
+                <a href="specialties.html" class="view-all" style="border-top: 1px solid #eee; margin-top: 5px; padding-top: 10px;">View All Departments</a>
+            </div>
+        </li>
+
+        <li class="dropdown">
+            <a href="#">Women's Health <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+            <div class="dropdown-menu">
+                <a href="mensuration.html"><i class="fas fa-calendar-alt"></i> Menstrual Period</a>
+                <a href="pregency.html"><i class="fas fa-person-pregnant"></i> Pregnancy Care</a>
+            </div>
+        </li>
+
+       <li class="dropdown">
+    <a href="#library">Health Library <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+    <div class="dropdown-menu">
+        <a href="treatments2.html"><i class="fas fa-stethoscope"></i> Treatments</a>
+        <a href="tech.html"><i class="fas fa-microchip"></i> Technologies</a>
+        <a href="ailments.html"><i class="fas fa-heart-circle-exclamation"></i> Ailments</a>
+        <a href="kc.html"><i class="fas fa-book-open"></i> Knowledge Center</a>
+        <a href="event.html"><i class="fas fa-calendar-check"></i> Events</a>
+        <a href="dow.html"><i class="fas fa-download"></i> Downloads</a>
+    </div>
+</li>
+        <li><a href="service.html">Services</a></li>
+        <li class="nav-item dropdown">
+    <a href="service.html" class="nav-link">
+        Store <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+    </a>
+    <div class="dropdown-menu">
+        <a href="store.html" class="dropdown-item">
+            <i class="fas fa-user-md"></i>
+            <span>For Doctors</span>
+        </a>
+        <a href="medicine.html" class="dropdown-item">
+            <i class="fas fa-user-injured"></i>
+            <span>For Patients</span>
+        </a>
+    </div>
+</li>
+        <li><a href="Careers.html">Careers</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+    </ul>
+    <a href="booking.html" style="text-decoration: none;">
+    <button class="btn-fill">Book Appointment</button>
+</a>
+</nav>
+
+
+
+
+<section class="page-header" style="padding: 180px 8% 50px; text-align: center;">
+    <span class="hero-badge" style="display: inline-block; margin-bottom: 20px; padding: 8px 20px; border-radius: 50px; background: rgba(37, 99, 235, 0.1); color: var(--primary); font-weight: 600; font-size: 0.85rem; letter-spacing: 0.5px; text-transform: uppercase;">
+        Reproductive Wellness (Menstrual Period)
+    </span>
+    
+    <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; margin-bottom: 25px; line-height: 1.1; letter-spacing: -1.5px; color: var(--dark);">
+        Navigating Your Cycle with Confidence
+    </h1>
+    
+    <p style="font-size: 1.15rem; color: var(--text-light); max-width: 650px; margin: 0 auto; line-height: 1.7; font-weight: 400;">
+        Your menstrual cycle is a vital sign—a unique rhythm that tells a story about your overall health. We’re here to help you decode those signals, turning monthly transitions into opportunities for balance, energy, and proactive self-care.
+    </p>
+</section>
+<section class="content-box" style="padding: 80px 8%; line-height: 1.8; background: white; border-radius: 40px; margin: 0 4% 60px; box-shadow: 0 20px 50px rgba(0,0,0,0.02);">
+    
+    <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; margin-bottom: 60px;">
+        <div>
+            <h2 style="font-size: 2.2rem; color: var(--dark); margin-bottom: 20px;">1. Introduction to Menstrual Health</h2>
+            <p style="color: var(--text-light); font-size: 1.15rem; margin-bottom: 25px;">
+                Menstruation, commonly known as a period, is a natural monthly process in which the body sheds the lining of the uterus. It is an important part of reproductive health and serves as a vital indicator of your overall well-being.
+            </p>
+            
+            <h3 style="font-size: 1.5rem; color: var(--dark); margin-bottom: 15px;">2. What is a Menstrual Cycle?</h3>
+            <p style="color: var(--text-light); margin-bottom: 20px;">
+                The cycle is a sophisticated hormonal journey that prepares the body for potential pregnancy. While every body is unique, a healthy cycle generally follows these parameters:
+            </p>
+            <ul style="list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <li style="background: #f8fafc; padding: 15px; border-radius: 12px; font-size: 0.95rem; border-left: 4px solid var(--secondary);">
+                    <strong>Cycle Length:</strong> Usually 21–31 days.
+                </li>
+                <li style="background: #f8fafc; padding: 15px; border-radius: 12px; font-size: 0.95rem; border-left: 4px solid var(--secondary);">
+                    <strong>Bleeding Phase:</strong> Typically lasts 3–5 days.
+                </li>
+            </ul>
+        </div>
+        
+        <div style="background: #f8fafc; border-radius: 30px; padding: 30px; border: 1px solid #e2e8f0; text-align: center;">
+            <div style="width: 100%; height: 280px; background: white; border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px solid #edf2f7; box-shadow: inset 0 0 20px rgba(0,0,0,0.02);">
+                <div style="text-align: center;">
+                    <i class="fas fa-project-diagram" style="font-size: 3rem; color: var(--primary); opacity: 0.8; margin-bottom: 15px;"></i>
+                    <p style="font-weight: 700; color: var(--dark);">Hormonal Phase Diagram</p>
+                    <p style="font-size: 0.8rem; color: var(--text-light);">Visualizing Estrogen & Progesterone</p>
+                </div>
+            </div>
+            <p style="margin-top: 15px; font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;">Clinical Visualization 1.1</p>
+        </div>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #f1f5f9; margin-bottom: 60px;">
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        <div style="background: #ffffff; padding: 40px; border-radius: 30px; border: 1px solid #f1f5f9;">
+            <h3 style="font-size: 1.6rem; color: var(--dark); margin-bottom: 25px;"><i class="fas fa-notes-medical" style="color: var(--primary); margin-right: 12px;"></i>3. Common Symptoms</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="padding: 10px; color: var(--text-light);"><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Abdominal cramps</div>
+                <div style="padding: 10px; color: var(--text-light);"><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Back pain</div>
+                <div style="padding: 10px; color: var(--text-light);"><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Mood changes</div>
+                <div style="padding: 10px; color: var(--text-light);"><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Fatigue</div>
+                <div style="padding: 10px; color: var(--text-light);"><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Bloating</div>
+                <div style="padding: 10px; color: var(--text-light);"><i class="fas fa-check" style="color: var(--secondary); margin-right: 8px;"></i> Headaches</div>
+            </div>
+        </div>
+
+        <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); padding: 40px; border-radius: 30px; border: 1px solid #bae6fd;">
+            <h3 style="font-size: 1.6rem; color: var(--dark); margin-bottom: 25px;"><i class="fas fa-sparkles" style="color: var(--secondary); margin-right: 12px;"></i>4. Menstrual Hygiene</h3>
+            <ul style="list-style: none;">
+                <li style="margin-bottom: 15px; display: flex; gap: 15px;">
+                    <i class="fas fa-shield-heart" style="color: var(--primary); margin-top: 5px;"></i>
+                    <span><strong>Product Variety:</strong> Use sanitary pads, tampons, or menstrual cups based on your activity level.</span>
+                </li>
+                <li style="margin-bottom: 15px; display: flex; gap: 15px;">
+                    <i class="fas fa-hourglass-half" style="color: var(--primary); margin-top: 5px;"></i>
+                    <span><strong>The 4-6 Hour Rule:</strong> Change pads/tampons frequently to maintain optimal freshness.</span>
+                </li>
+                <li style="display: flex; gap: 15px;">
+                    <i class="fas fa-hands-bubbles" style="color: var(--primary); margin-top: 5px;"></i>
+                    <span><strong>Sanitization:</strong> Always wash hands before and after changing products.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="content-box" style="padding: 80px 8%; line-height: 1.8; background: white; border-radius: 40px; margin: 0 4% 60px; box-shadow: 0 20px 50px rgba(0,0,0,0.02);">
+    
+    <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 40px; border-radius: 30px; margin-bottom: 60px; border: 1px solid var(--secondary);">
+        <div style="display: flex; align-items: center; gap: 30px;">
+            <div style="font-size: 3rem; color: var(--primary);"><i class="fas fa-clock-rotate-left"></i></div>
+            <div>
+                <h3 style="color: var(--dark); margin-bottom: 10px; font-size: 1.6rem;">The "4-Hour Rule" & RTI Prevention</h3>
+                <p style="color: var(--text-light); font-size: 1.05rem;">
+                    A key public health standard: Changing sanitary products every <strong>4 to 6 hours</strong> is critical to preventing **Reproductive Tract Infections (RTI)** and Toxic Shock Syndrome. Even with a light flow, bacteria can proliferate in moist environments; frequent changes maintain the natural pH balance of your body.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <h2 style="font-size: 2.2rem; color: var(--dark); margin-bottom: 15px;">Clinical Management Matrix</h2>
+    <p style="color: var(--text-light); margin-bottom: 30px;">Quick-reference guide for managing cycle-related physiological changes.</p>
+    
+    <div style="overflow-x: auto; margin-bottom: 60px; border-radius: 20px; border: 1px solid #e2e8f0;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                <tr>
+                    <th style="padding: 20px; font-weight: 700;">Condition</th>
+                    <th style="padding: 20px; font-weight: 700;">Clinical Insight</th>
+                    <th style="padding: 20px; font-weight: 700;">Recommended Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 20px; font-weight: 600;">Dysmenorrhea (Cramps)</td>
+                    <td style="padding: 20px; color: var(--text-light);">Prostaglandin-induced uterine contractions.</td>
+                    <td style="padding: 20px;"><span style="background: #dcfce7; color: #166534; padding: 5px 12px; border-radius: 50px; font-size: 0.85rem;">Heat Therapy & Magnesium</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 20px; font-weight: 600;">Hormonal Migraines</td>
+                    <td style="padding: 20px; color: var(--text-light);">Triggered by the sharp drop in Estrogen levels.</td>
+                    <td style="padding: 20px;"><span style="background: #fef9c3; color: #854d0e; padding: 5px 12px; border-radius: 50px; font-size: 0.85rem;">Hydration & Dark Room Rest</span></td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px; font-weight: 600;">Luteal Fatigue</td>
+                    <td style="padding: 20px; color: var(--text-light);">Basal body temperature rises, increasing metabolic rate.</td>
+                    <td style="padding: 20px;"><span style="background: #e0f2fe; color: #075985; padding: 5px 12px; border-radius: 50px; font-size: 0.85rem;">Iron-Rich Nutrition</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="background: #fff1f2; padding: 50px; border-radius: 35px; border: 1px solid #fda4af; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center;">
+        <div>
+            <h3 style="color: #e11d48; font-size: 1.8rem; margin-bottom: 20px;"><i class="fas fa-hand-holding-medical"></i> Medical Consultation Red Flags</h3>
+            <p style="color: #9f1239; margin-bottom: 25px; font-weight: 500;">
+                If you encounter any of the following symptoms, it may indicate underlying conditions such as PCOS, Endometriosis, or hormonal deficiencies. Early diagnosis is the key to effective management.
+            </p>
+            <ul style="list-style: none; color: #be123c;">
+                <li style="margin-bottom: 12px;"><i class="fas fa-check" style="margin-right: 10px;"></i> <strong>Menorrhagia:</strong> Soaking through a pad every hour for several hours.</li>
+                <li style="margin-bottom: 12px;"><i class="fas fa-check" style="margin-right: 10px;"></i> <strong>Amenorrhea:</strong> Absence of periods for 3+ months (excluding pregnancy).</li>
+                <li style="margin-bottom: 12px;"><i class="fas fa-check" style="margin-right: 10px;"></i> <strong>Severe Pelvic Pain:</strong> Pain that prevents daily activity or work.</li>
+                <li><i class="fas fa-check" style="margin-right: 10px;"></i> <strong>Intermenstrual Bleeding:</strong> Spotting or bleeding between cycles.</li>
+            </ul>
+        </div>
+        <div style="text-align: center; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(225, 29, 72, 0.1);">
+            <p style="font-weight: 700; color: var(--dark); margin-bottom: 15px;">Speak with a Specialist</p>
+            <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 25px;">Our reproductive health experts are available for private digital consultations.</p>
+            <a href="booking.html" style="text-decoration: none; display: block; width: 100%;">
+    <button class="btn-fill" style="background: #e11d48; width: 100%; box-shadow: 0 10px 20px rgba(225, 29, 72, 0.3); border: none; padding: 12px 24px; border-radius: 100px; color: white; font-weight: 700; cursor: pointer;">
+        Consult Now
+    </button>
+</a>
+            
+        </div>
+    </div>
+    <div style="margin: 80px 0;">
+    <h2 style="font-size: 2.2rem; color: var(--dark); margin-bottom: 40px; text-align: center;">Your Monthly Wellness Roadmap</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
+        
+        <div style="background: #f8fafc; padding: 30px; border-radius: 25px; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
+            <span style="position: absolute; top: -10px; right: -10px; font-size: 5rem; font-weight: 900; color: rgba(37, 99, 235, 0.05);">01</span>
+            <div style="width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+            <h4 style="margin-bottom: 10px;">Track & Observe</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Use a digital tracker or journal to note your start date, energy levels, and mood. Patterns emerge after 3 months.</p>
+        </div>
+
+        <div style="background: #f8fafc; padding: 30px; border-radius: 25px; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
+            <span style="position: absolute; top: -10px; right: -10px; font-size: 5rem; font-weight: 900; color: rgba(37, 99, 235, 0.05);">02</span>
+            <div style="width: 50px; height: 50px; background: var(--secondary); color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <h4 style="margin-bottom: 10px;">Choose Your Fit</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Select products based on activity: Pads for comfort, Tampons for swimming, or Menstrual Cups for 12hr protection.</p>
+        </div>
+
+        <div style="background: #f8fafc; padding: 30px; border-radius: 25px; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
+            <span style="position: absolute; top: -10px; right: -10px; font-size: 5rem; font-weight: 900; color: rgba(37, 99, 235, 0.05);">03</span>
+            <div style="width: 50px; height: 50px; background: #8b5cf6; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-hands-wash"></i>
+            </div>
+            <h4 style="margin-bottom: 10px;">The Clean Slate</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Maintain the 4-hour rule. Use unscented, pH-balanced cleansers for the external area only to protect natural flora.</p>
+        </div>
+
+        <div style="background: #f8fafc; padding: 30px; border-radius: 25px; border: 1px solid #e2e8f0; position: relative; overflow: hidden;">
+            <span style="position: absolute; top: -10px; right: -10px; font-size: 5rem; font-weight: 900; color: rgba(37, 99, 235, 0.05);">04</span>
+            <div style="width: 50px; height: 50px; background: #10b981; color: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                <i class="fas fa-apple-whole"></i>
+            </div>
+            <h4 style="margin-bottom: 10px;">Cycle Syncing</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Adjust your diet: Increase Iron in the Menstrual phase and Complex Carbs in the Luteal phase to stabilize mood.</p>
+        </div>
+
+    </div>
+</div>  
+
+   
+</section>
+<section style="padding: 60px 8%; background: rgba(241, 245, 249, 0.4); border-radius: 60px; margin: 40px 4%;">
+    <div style="text-align: center; margin-bottom: 50px;">
+        <span class="hero-badge">Expert Guidance</span>
+        <h2 style="font-size: 2.2rem; margin-top: 10px;">Consult with Our Specialists</h2>
+        <p style="color: var(--text-light); max-width: 600px; margin: 15px auto;">Speak with our top-rated gynaecologists for personalized advice on cycle regularity, hormonal health, and wellness.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        
+        <div class="doctor-card" style="background: white; border: 1px solid #e2e8f0; padding: 35px;">
+            <div style="position: relative; display: inline-block;">
+                <img src="https://medanta.s3.ap-south-1.amazonaws.com/all-doctor-with-slug/dr-neelam-vinay.png" alt="Dr. Ananya Sharma" style="width: 120px; height: 140px; border-radius: 50%; object-fit: cover; border: 4px solid #f0f7ff;">
+                <div style="position: absolute; bottom: 10px; right: 5px; width: 15px; height: 15px; background: #22c55e; border-radius: 50%; border: 2px solid white;"></div>
+            </div>
+            <h4 style="margin: 15px 0 5px; font-size: 1.25rem;">Dr. Ananya Sharma</h4>
+            <p style="color: var(--primary); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Senior Gynaecologist</p>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px;">Specializes in PCOS management and hormonal balance with 12+ years of experience.</p>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; font-size: 0.8rem; color: var(--text-main);">
+                <span><i class="fas fa-star" style="color: #fbbf24;"></i> 4.9</span>
+                <span>|</span>
+                <span><i class="fas fa-comment-medical"></i> 1.2k Reviews</span>
+            </div>
+            <a href="booking.html" style="text-decoration: none; display: block; width: 100%;">
+            <button class="consult-btn" style="width: 100%; font-weight: 700;">Book Consultation</button></a>
+        </div>
+
+        <div class="doctor-card" style="background: white; border: 1px solid #e2e8f0; padding: 35px;">
+            <div style="position: relative; display: inline-block;">
+                <img src="https://max-website20-images.s3.ap-south-1.amazonaws.com/medium_HAL_3771_f5a394eac5.JPG" alt="Dr. Bhumika Bansal" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #f0f7ff;">
+                <div style="position: absolute; bottom: 10px; right: 5px; width: 15px; height: 15px; background: #22c55e; border-radius: 50%; border: 2px solid white;"></div>
+            </div>
+            <h4 style="margin: 15px 0 5px; font-size: 1.25rem;">Dr. Meera Reddy</h4>
+            <p style="color: var(--primary); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Reproductive Health Expert</p>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px;">Expert in adolescent menstrual health and preventative screenings.</p>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; font-size: 0.8rem; color: var(--text-main);">
+                <span><i class="fas fa-star" style="color: #fbbf24;"></i> 5.0</span>
+                <span>|</span>
+                <span><i class="fas fa-comment-medical"></i> 850 Reviews</span>
+            </div>
+            <a href="booking.html" style="text-decoration: none; display: block; width: 100%;">
+            <button class="consult-btn" style="width: 100%; font-weight: 700;">Book Consultation</button></a>
+        </div>
+
+        <div class="doctor-card" style="background: white; border: 1px solid #e2e8f0; padding: 35px;">
+            <div style="position: relative; display: inline-block;">
+                <img src="https://d35oenyzp35321.cloudfront.net/Manjusha_4f75d24f94.jpg" alt="Dr. Manjusha " style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #f0f7ff;">
+                <div style="position: absolute; bottom: 10px; right: 5px; width: 15px; height: 15px; background: #22c55e; border-radius: 50%; border: 2px solid white;"></div>
+            </div>
+            <h4 style="margin: 15px 0 5px; font-size: 1.25rem;">Dr. Sarah Khan</h4>
+            <p style="color: var(--primary); font-weight: 700; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 10px;">Fertility & Wellness Specialist</p>
+            <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 20px;">Focused on holistic cycle management and dietary nutrition for wellness.</p>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; font-size: 0.8rem; color: var(--text-main);">
+                <span><i class="fas fa-star" style="color: #fbbf24;"></i> 4.8</span>
+                <span>|</span>
+                <span><i class="fas fa-comment-medical"></i> 2.1k Reviews</span>
+            </div>
+            <a href="booking.html" style="text-decoration: none; display: block; width: 100%;">
+            <button class="consult-btn" style="width: 100%; font-weight: 700;">Book Consultation</button></a>
+        </div>
+
+    </div>
+</section>
+
+<footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare at your fingertips.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="aboutus.html">About Us</a></li><li><a href="booking.html">Find Doctors</a></li><li><a href="service.html">Services</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul><li><a href="contactus.html">Contact Us</a></li><li><a href="ques.html">FAQs</a></li><li><a href="pp.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter"><input type="email" placeholder="Your Email"><button class="btn-fill" style="width: 100%;">Subscribe</button></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+<script>
+window.addEventListener('scroll',()=>{
+const nav=document.getElementById('navbar');
+nav.classList.toggle('scrolled',window.scrollY>50);
+});
+</script>
+
+</body>
+</html>

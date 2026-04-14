@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact HR | HealthCare+ Lucknow</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Background Orbs --- */
+        .orb {
+            position: fixed;
+            width: 600px; height: 600px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            opacity: 0.15;
+            animation: moveOrb 20s infinite alternate;
+        }
+        .orb-1 { background: var(--primary); top: -100px; right: -100px; }
+        .orb-2 { background: var(--secondary); bottom: -100px; left: -100px; }
+
+        @keyframes moveOrb {
+            from { transform: translate(0, 0); }
+            to { transform: translate(-50px, 50px); }
+        }
+
+        /* --- Navbar --- */
+        nav {
+            padding: 20px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 92%;
+            margin: 20px 4%;
+            top: 0;
+            z-index: 1000;
+            border-radius: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        /* --- Layout --- */
+        .container {
+            max-width: 1100px;
+            margin: 160px auto 100px;
+            padding: 0 4%;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 50px;
+            align-items: start;
+        }
+
+        /* --- Sidebar Info --- */
+        .hr-info h1 { font-size: 2.8rem; font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
+        .contact-method {
+            background: white;
+            padding: 25px;
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            border: 1px solid #f1f5f9;
+            transition: 0.3s;
+        }
+        .contact-method:hover { border-color: var(--primary); transform: translateX(10px); }
+        .icon-box {
+            width: 50px; height: 50px;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* --- Glass Form --- */
+        .contact-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        }
+
+        .form-group { margin-bottom: 25px; }
+        label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            border-radius: 100px;
+            background: var(--dark);
+            color: white;
+            border: none;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-submit:hover { background: var(--primary); transform: translateY(-2px); }
+
+        /* --- Responsive --- */
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
+            .hr-info { text-align: center; }
+            .contact-method { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <nav>
+        <a href="#" class="logo">Health<span>Care+</span></a>
+        <button onclick="window.location.href='Careers.html'" style="background:none; border:none; font-weight:700; cursor:pointer;">Back to Careers</button>
+    </nav>
+
+    <div class="container">
+        <div class="hr-info">
+            <h1>Let's Start a Conversation.</h1>
+            <p style="color: var(--text-light); margin-bottom: 40px;">Have questions about a role, our Lucknow campus, or the interview process? Our Talent Acquisition team is here to help.</p>
+
+            <div class="contact-method">
+                <div class="icon-box"><i class="fas fa-envelope"></i></div>
+                <div>
+                    <div style="font-weight: 700;">Email Us</div>
+                    <div style="font-size: 0.9rem; color: var(--text-light);">careers@healthcareplus.in</div>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="icon-box"><i class="fas fa-map-marker-alt"></i></div>
+                <div>
+                    <div style="font-weight: 700;">Visit Our HQ</div>
+                    <div style="font-size: 0.9rem; color: var(--text-light);">Gomti Nagar, Lucknow, UP</div>
+                </div>
+            </div>
+
+            <div class="contact-method">
+                <div class="icon-box"><i class="fas fa-headset"></i></div>
+                <div>
+                    <div style="font-weight: 700;">HR Helpline</div>
+                    <div style="font-size: 0.9rem; color: var(--text-light);">Mon-Fri, 10AM - 5PM</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-card">
+            <form id="hrContactForm">
+                <div class="form-group">
+                    <label>Your Name</label>
+                    <input type="text" id="name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" placeholder="john@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Regarding</label>
+                    <select id="subject">
+                        <option value="application">Application Status</option>
+                        <option value="tech">Tech Interview Query</option>
+                        <option value="medical">Medical Credentials Verification</option>
+                        <option value="internship">College Internships</option>
+                        <option value="other">Other Inquiry</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="message" rows="5" placeholder="How can we help you?"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">Send Message</button>
+            </form>
+            <div id="successMsg" style="display:none; text-align:center; color: #16a34a; font-weight:700; margin-top:20px;">
+                <i class="fas fa-check-circle"></i> Message sent! Our HR team will reply shortly.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Initialize Supabase
+        const supabaseUrl = 'https://itvbhpvypgfxdksbpnnt.supabase.co';
+        const supabaseKey = 'sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        document.getElementById('hrContactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.querySelector('.btn-submit');
+            const originalBtnText = btn.innerHTML;
+            
+            // UI Animation: Sending
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            btn.style.opacity = '0.7';
+            btn.disabled = true;
+
+            // Collect Form Data
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                created_at: new Date()
+            };
+
+            try {
+                // 2. Insert into Database
+                const { error } = await _supabase
+                    .from('hr_queries')
+                    .insert([formData]);
+
+                if (error) throw error;
+
+                // Success UI
+                document.getElementById('hrContactForm').style.display = 'none';
+                document.getElementById('successMsg').style.display = 'block';
+
+            } catch (error) {
+                console.error('Database Error:', error.message);
+                alert('Oops! Something went wrong. Please try again.');
+                
+                // Reset Button
+                btn.innerHTML = originalBtnText;
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

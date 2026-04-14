@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardiac Care | HealthCare+</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #e11d48; /* Your Red */
+            --dark: #0f172a;
+            --text-light: #64748b;
+            --bg-subtle: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.8);
+        }
+        * { margin:0; padding:0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background: #fff; color: var(--dark); line-height: 1.6; overflow-x: hidden; }
+
+        /* Navigation */
+        nav { padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #f1f5f9; }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        /* Buttons */
+        .btn-fill { background: var(--primary); color: white; border: none; padding: 12px 28px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 15px rgba(225, 29, 72, 0.2); text-decoration: none; display: inline-block; }
+        .btn-fill:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(225, 29, 72, 0.3); }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); padding: 10px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; transition: 0.3s; text-decoration: none; }
+        .btn-outline:hover { background: var(--primary); color: white; }
+
+        /* Sections */
+        section { padding: 100px 8%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        /* Cards */
+        .glass-card { background: var(--bg-subtle); border: 1px solid #e2e8f0; border-radius: 30px; padding: 40px; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .glass-card:hover { transform: translateY(-10px); border-color: var(--primary); background: white; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+
+        .tag { display: inline-block; background: rgba(225, 29, 72, 0.1); color: var(--primary); padding: 6px 18px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Metrics Bar */
+        .metrics-bar { background: var(--dark); padding: 60px 8%; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 30px; border-radius: 0 0 50px 50px; }
+        .metric-item { text-align: center; }
+        .metric-item h2 { color: var(--primary); font-size: 2.8rem; margin-bottom: 5px; }
+        .metric-item p { color: white; opacity: 0.7; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+
+        /* Doctor Track */
+        .doc-track { display: flex; gap: 25px; overflow-x: auto; padding: 20px 0; scrollbar-width: none; margin-bottom: 20px; }
+        .doc-track::-webkit-scrollbar { display: none; }
+        .doc-card { min-width: 280px; background: white; border-radius: 25px; border: 1px solid #f1f5f9; overflow: hidden; transition: 0.3s; }
+        .doc-card:hover { border-color: var(--primary); }
+        .doc-img img { width: 100%; height: 280px; object-fit: cover; }
+        .doc-info { padding: 20px; }
+
+        /* Popup Styles */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.4s;
+        }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            width: 90%; max-width: 800px; padding: 50px; border-radius: 40px;
+            position: relative; transform: scale(0.9); transition: 0.4s;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.2);
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+        .close-modal {
+            position: absolute; top: 25px; right: 25px; font-size: 1.5rem;
+            cursor: pointer; color: var(--dark); transition: 0.3s;
+        }
+        .close-modal:hover { color: var(--primary); transform: rotate(90deg); }
+
+        footer { background: var(--dark); color: white; padding: 80px 8% 40px; border-radius: 60px 60px 0 0; margin-top: 50px; }
+        .footer-link { color: rgba(255, 255, 255, 0.6); text-decoration: none; transition: 0.3s; display: block; margin-bottom: 10px; font-size: 0.9rem; }
+        .footer-link:hover { color: var(--primary); padding-left: 5px; }
+    </style>
+</head>
+<body>
+
+   <nav id="navbar">
+    <a href="#" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <div>
+            <a href="firstpage.html" class="btn-outline">back to home</a>
+            <a href="contactus.html" class="btn-outline">Enquire Now</a>
+            <a href="booking.html" class="btn-fill" style="margin-left:15px;">Find A Doctor</a>
+        </div>
+    </nav>
+
+    <section style="background: radial-gradient(circle at top right, #fff5f7, #fff 50%);">
+        <div style="max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center;">
+            <div>
+                <span class="tag">Compassionate Care & Team Approach</span>
+                <h1 style="font-size: 3.8rem; line-height: 1.1; margin-bottom: 25px;">Expert Solutions for <br><span style="color:var(--primary)">Holistic Heart Health.</span></h1>
+                <p style="color: var(--text-light); font-size: 1.1rem; margin-bottom: 35px; max-width: 600px;">
+                    HealthCare+ Institute integrates advanced medical technology with a compassionate team approach to ensure comprehensive cardiac wellness and recovery.
+                </p>
+                <div style="display:flex; gap: 20px;">
+    <a href="#treatments" class="btn-fill" style="padding: 18px 40px;">Our Treatments</a>
+    
+    <a href="#tech" class="btn-outline" style="padding: 16px 35px;">Advanced Tech</a>
+</div>
+            </div>
+            <div style="position: relative;">
+                <div class="glass-card" style="padding: 15px; border-radius: 40px; background: white; box-shadow: 0 30px 60px rgba(0,0,0,0.1);">
+                    <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800" alt="Cardiac Unit" style="width: 100%; border-radius: 30px;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="metrics-bar">
+        <div class="metric-item"><h2>50k+</h2><p>Successful Surgeries</p></div>
+        <div class="metric-item"><h2>200+</h2><p>Heart Transplants</p></div>
+        <div class="metric-item"><h2>99.2%</h2><p>Survival Rate</p></div>
+        <div class="metric-item"><h2>35+</h2><p>Clinical Specialties</p></div>
+    </div>
+
+    <section id="treatments">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">Clinical Expertise</span>
+            <h2 style="font-size: 2.5rem;">Leading Cardiac <span style="color: var(--primary);">Treatments</span></h2>
+        </div>
+        <div class="grid">
+            <div class="glass-card">
+                <i class="fas fa-heart-pulse" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">TAVI (TAVR)</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">
+                    TAVI is a surgical procedure performed to replace a blocked or narrowed aortic valve in people who are at greater risk or too sick for open heart surgery.
+                </p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-microchip" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Coronary Artery Bypass (CABG)</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">
+                    A critical surgical procedure (CABG) used to treat coronary artery disease by redirecting blood flow around section of a blocked artery.
+                </p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-stethoscope" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Peripheral Angioplasty</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">
+                    Utilizing minimally invasive techniques to open narrowed or blocked blood vessels that supply the legs and other peripheral organs.
+                </p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-shield-heart" style="font-size: 2rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3 style="margin-bottom: 15px;">Aneurysm Repair</h3>
+                <p style="font-size: 0.9rem; color: var(--text-light);">
+                    Specialized surgical and endovascular repairs to treat bulging or weakened areas in the blood vessels, ensuring structural integrity.
+                </p>
+            </div>
+        </div>
+    </section>
+<section id="ailments" style="background: var(--bg-subtle);">
+    <div style="text-align: center; margin-bottom: 60px;">
+        <span class="tag">Clinical Scope</span>
+        <h2 style="font-size: 2.5rem;">Comprehensive Heart <span style="color: var(--primary);">Conditions</span></h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+        
+        <div class="glass-card" style="background: white; grid-column: span 2;">
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: center;">
+                <img src="https://tse4.mm.bing.net/th/id/OIP.Eh2GsVWNoNJ5DohXEIEw4QHaEK?rs=1&pid=ImgDetMain&o=7&rm=3" style="width: 100%; border-radius: 20px;" alt="CAD Diagnosis">
+                <div>
+                    <h3 style="margin-bottom: 15px;">Coronary Artery Disease (CAD)</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">
+                        The narrowing of the coronary arteries usually caused by plaque buildup. Our center provides specialized intravascular ultrasound (IVUS) to map blockages with micron-level accuracy.
+                    </p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span class="tag" style="font-size: 0.65rem; margin-bottom: 0;">Stable Angina</span>
+                        <span class="tag" style="font-size: 0.65rem; margin-bottom: 0;">Heart Attack Prevention</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card" style="background: white;">
+            <img src="https://th.bing.com/th/id/OIP.0yi8diemImejQ64tQu7NOAHaDy?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;" alt="Heart Valve">
+            <h4 style="color: var(--primary); margin-bottom: 10px;">Valvular Heart Disease</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Damage or defect in one of the four heart valves. We specialize in TAVI and minimally invasive valve repair.</p>
+        </div>
+
+        <div class="glass-card" style="background: white;">
+            <img src="https://tse2.mm.bing.net/th/id/OIP.hjeGcr1p3_p2VMzhm7EWFwHaEw?rs=1&pid=ImgDetMain&o=7&rm=3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;" alt="ECG Rhythm">
+            <h4 style="color: var(--primary); margin-bottom: 10px;">Arrhythmia & AFib</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Irregular heart rhythms treated using advanced electrophysiology and radiofrequency ablation.</p>
+        </div>
+
+        <div class="glass-card" style="background: white;">
+            <img src="https://i.pinimg.com/originals/9e/cd/33/9ecd33f6614f460be60ede986a53c1d9.jpg" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;" alt="Pediatric Care">
+            <h4 style="color: var(--primary); margin-bottom: 10px;">Congenital Heart Defects</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Structural problems present from birth, managed by our specialized pediatric cardiac surgical wing.</p>
+        </div>
+
+        <div class="glass-card" style="background: white;">
+            <img src="https://th.bing.com/th/id/OIP.kRdZQ45ArBagLb_9iwu6dgHaEO?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;" alt="Patient Monitoring">
+            <h4 style="color: var(--primary); margin-bottom: 10px;">Advanced Heart Failure</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Chronic condition where the heart doesn't pump blood as well as it should, requiring VAD or transplant evaluation.</p>
+        </div>
+
+        <div class="glass-card" style="background: white;">
+            <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=500" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;" alt="Scanning">
+            <h4 style="color: var(--primary); margin-bottom: 10px;">Aortic Aneurysm</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">A dangerous bulge in the wall of the aorta, treated via high-precision endovascular stent-grafting.</p>
+        </div>
+
+        <div class="glass-card" style="background: white;">
+            <img src="https://images.unsplash.com/photo-1631815587646-b85a1bb027e1?auto=format&fit=crop&q=80&w=500" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px; margin-bottom: 20px;" alt="Microscopic View">
+            <h4 style="color: var(--primary); margin-bottom: 10px;">Cardiomyopathy</h4>
+            <p style="font-size: 0.9rem; color: var(--text-light);">Genetic or acquired diseases of the heart muscle that can lead to heart failure or systemic complications.</p>
+        </div>
+
+    </div>
+</section>
+
+    <section id="tech">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">Infrastructure</span>
+            <h2 style="font-size: 2.5rem;">Advanced <span style="color: var(--primary);">Technology</span></h2>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 40px;">
+            <div class="glass-card" style="background: var(--dark); color: white; display: flex; align-items: center; gap: 50px;">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;">Artis-Zeego Cath Lab</h3>
+                    <p style="opacity: 0.8; margin-bottom: 20px;">
+                        HealthCare+ is equipped with the Artis-Zeego robotic imaging system. This technology provides unparalleled 3D road-mapping, allowing our surgeons to navigate complex vascular structures with laser-like precision.
+                    </p>
+                    <ul style="list-style: none; opacity: 0.7; font-size: 0.9rem;">
+                        <li><i class="fas fa-check-circle" style="color: var(--primary); margin-right: 10px;"></i> Robotic-assisted Angiography</li>
+                        <li><i class="fas fa-check-circle" style="color: var(--primary); margin-right: 10px;"></i> Real-time 3D Reconstruction</li>
+                    </ul>
+                </div>
+                <div style="flex: 0.8;">
+                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600" style="width: 100%; border-radius: 25px;" alt="Artis-Zeego">
+                </div>
+            </div>
+
+            <div class="glass-card" style="background: var(--bg-subtle); display: flex; flex-direction: row-reverse; align-items: center; gap: 50px;">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;">AI-Driven Cardiac MRI</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">
+                        We utilize advanced Artificial Intelligence algorithms to analyze cardiac scans. This allows for early detection of heart failure and valve issues that might be invisible to the naked eye.
+                    </p>
+                    <ul style="list-style: none; color: var(--text-light); font-size: 0.9rem;">
+                        <li><i class="fas fa-microchip" style="color: var(--primary); margin-right: 10px;"></i> Predictive Plaque Analysis</li>
+                        <li><i class="fas fa-microchip" style="color: var(--primary); margin-right: 10px;"></i> Automated Ejection Fraction Calculation</li>
+                    </ul>
+                </div>
+                <div style="flex: 0.8;">
+                    <img src="https://www.philips.com/c-dam/corporate/newscenter/global/standard/resources/healthcare/2025/mr-cardiac-innovations/header-philips-mr-workspace-smartheart.jpg" style="width: 100%; border-radius: 25px;" alt="AI Diagnostics">
+                </div>
+            </div>
+
+            <div class="glass-card" style="background: var(--dark); color: white; display: flex; align-items: center; gap: 50px;">
+                <div style="flex: 1;">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;">Modular Hybrid OT</h3>
+                    <p style="opacity: 0.8; margin-bottom: 20px;">
+                        Our Hybrid Operating Theatres combine high-end surgical facilities with advanced imaging. This enables doctors to switch from minimally invasive to open-heart surgery instantly if needed.
+                    </p>
+                    <ul style="list-style: none; opacity: 0.7; font-size: 0.9rem;">
+                        <li><i class="fas fa-shield-virus" style="color: var(--primary); margin-right: 10px;"></i> HEPA-filtered Sterile Environment</li>
+                        <li><i class="fas fa-shield-virus" style="color: var(--primary); margin-right: 10px;"></i> Multi-specialty Integration</li>
+                    </ul>
+                </div>
+                <div style="flex: 0.8;">
+                    <img src="https://entrepreneuronemedia.com/wp-content/uploads/2023/02/Hybrid-Modular-Green-OT-1024x682.webp" style="width: 100%; border-radius: 25px;" alt="Hybrid OT">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="doctors">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px;">
+        <div>
+            <span class="tag">Medical Faculty</span>
+            <h2 style="font-size: 2.5rem;">Meet Our <span style="color: var(--primary);">Global Experts</span></h2>
+        </div>
+    </div>
+
+    <div class="doc-track">
+        <div class="doc-card">
+            <div class="doc-img">
+                <img src="https://cdn.hexahealth.com/Image/webp/480x480/c95373a7-943a-428d-9b8a-31def1f1eea4.webp" alt="Dr. Sushil Gattani">
+            </div>
+            <div class="doc-info">
+                <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Chairman - Cardiac Sciences</span>
+                <h4 style="margin-bottom: 5px;">Dr. Sushil Gattani</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Clinical expertise includes Cardiology, Internal Medicine, Advanced Cardiac Care, Advanced Therapeutics for Heart.</p>
+                <button onclick="openProfile('Dr. Sushil Gattani', 'Chairman', 'Dr. Gattani, Founder & Co-Chairman and Chief Consultant & Chairman of Cardiology, holds a specialization in Cardiology from GSVM College, Kanpur, with over 30 years of extensive clinical experience. He is the Founder & Cardiologist at Avadh Hospital & Heart Centre, Lucknow, and serves as Director at Care Diagnostics Pvt. Ltd., Lucknow. His clinical expertise includes Cardiology, Internal Medicine, Advanced Cardiac Care, Advanced Therapeutics for Heart Failure, Cardiogeriatrics, and the management of Structured Heart Diseases.', 'https://cdn.hexahealth.com/Image/webp/480x480/c95373a7-943a-428d-9b8a-31def1f1eea4.webp')" class="btn-fill" style="width: 100%; text-align: center; padding: 10px; font-size: 0.8rem;">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doc-card">
+            <div class="doc-img">
+                <img src="https://medanta.s3.ap-south-1.amazonaws.com/all-doctor-with-slug/dr-naresh-trehan.png" alt="Dr. Savitri Shrivastava">
+            </div>
+            <div class="doc-info">
+                <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Chairman &amp; Managing Director, Medanta- Pediatric Cardiology</span>
+                <h4 style="margin-bottom: 5px;">Dr. Naresh Trehan</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Expert in congenital heart disease and non-surgical closure</p>
+                <button onclick="openProfile('Dr. Naresh Trehan', 'Chairman &amp; Managing Director, Medanta', 'Dr.Naresh Trehan is a globally renowned cardiovascular and cardiothoracic surgeon with 56+ years of experience, serving as Chairman and Managing Director of Medanta - The Medicity. He has performed over 48,000 successful heart surgeries and is a pioneer in advanced cardiac care in India. Honored with the Padma Shri and Padma Bhushan, he is widely trusted for his patient-centric and ethical approach.', 'https://medanta.s3.ap-south-1.amazonaws.com/all-doctor-with-slug/dr-naresh-trehan.png')" class="btn-fill" style="width: 100%; text-align: center; padding: 10px; font-size: 0.8rem;">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doc-card">
+            <div class="doc-img">
+                <img src="https://max-website20-images.s3.ap-south-1.amazonaws.com/medium_Dr_Rajneesh_Malhotra_2_a43f0d88cb.jpg" alt="Dr. Rajneesh Malhotra">
+            </div>
+            <div class="doc-info">
+                <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Chairman - Cardiac Sciences, Cardiac Surgery (CTVS), Robotic Surgery</span>
+                <h4 style="margin-bottom: 5px;">Dr. Rajneesh Malhotra</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Advanced procedures including heart failure surgery, ECMO support, LVAD implantation, heart transplants, robotic cardiac surgery, and minimally invasive procedures such as CABG, mitral and aortic valve repair/replacement, and ASD closure.</p>
+                <button onclick="openProfile('Dr. Rajneesh Malhotra', 'Chairman & Head - CTVS', 'Dr. Rajneesh Malhotra holds an M.B.B.S. and M.S. from King George’s Medical College, Lucknow, and an M.Ch in Cardiology from GSVM Medical College, Kanpur, along with advanced fellowships and international training in Sweden and the USA, including robotic and minimally invasive cardiac surgery. He is a member of leading global and Indian cardiac associations such as STS, EACTS, ISMICS, IACTS, and IMA. His specialties include heart failure surgery, ECMO, LVAD, heart transplantation, robotic cardiac procedures, and minimally invasive surgeries like CABG, valve repair/replacement, and ASD closure.', 'https://max-website20-images.s3.ap-south-1.amazonaws.com/medium_Dr_Rajneesh_Malhotra_2_a43f0d88cb.jpg')" class="btn-fill" style="width: 100%; text-align: center; padding: 10px; font-size: 0.8rem;">View Profile</button>
+            </div>
+        </div>
+
+        <div class="doc-card">
+            <div class="doc-img">
+                <img src="https://max-website20-images.s3.ap-south-1.amazonaws.com/medium_dr_nakul_sinha_2fefd42158.jpg" alt="Dr. Nakul Sinha">
+            </div>
+            <div class="doc-info">
+                <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Executive Director - CTVS</span>
+                <h4 style="margin-bottom: 5px;">Dr. Nakul Sinha</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Specialist in Heart Transplants and Left Ventricular Assist Devices.</p>
+                <button onclick="openProfile('Dr. Nakul Sinha', 'Executive Director', 'Over 30 years of experience in heart transplants and complex bypass surgeries.', 'https://max-website20-images.s3.ap-south-1.amazonaws.com/medium_dr_nakul_sinha_2fefd42158.jpg')" class="btn-fill" style="width: 100%; text-align: center; padding: 10px; font-size: 0.8rem;">View Profile</button>
+            </div>
+        </div>
+    </div>
+</section>
+    <div class="modal-overlay" id="profileModal" onclick="closeProfile()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <i class="fas fa-times close-modal" onclick="closeProfile()"></i>
+            <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: center;">
+                <div style="border-radius: 30px; overflow: hidden; height: 400px;">
+                    <img id="modalImg" src="" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div>
+                    <span id="modalTag" class="tag"></span>
+                    <h2 id="modalName" style="font-size: 2.2rem; margin-bottom: 10px;"></h2>
+                    <p id="modalBio" style="color: var(--text-light); margin-bottom: 30px;"></p>
+                    <div style="display:flex; gap:15px;">
+                        <a href="booking.html" class="btn-fill">Book Appointment</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <footer style="background: var(--dark); color: white; padding: 80px 5% 40px; margin-top: 100px;">
+    <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
+        
+        <div class="footer-col">
+            <div class="logo" style="color: white; margin-bottom: 25px; font-size: 1.5rem; font-weight: 700;">
+                <i class="fas fa-hand-holding-medical" style="color: var(--primary);"></i> Health<span style="color: var(--primary);">Care+</span>
+            </div>
+            <p style="color: #94a3b8; line-height: 1.8; margin-bottom: 20px;">
+                Providing accessible, high-quality digital healthcare at your fingertips.
+            </p>
+            <div style="display: flex; gap: 15px; font-size: 1.2rem;">
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem; position: relative;">Quick Links</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="aboutus.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">About Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="#" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Find Doctors</a></li>
+                <li style="margin-bottom: 12px;"><a href="service.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Services</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Support</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="#" style="color: #94a3b8; text-decoration: none;">Contact Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="#" style="color: #94a3b8; text-decoration: none;">FAQs</a></li>
+                <li style="margin-bottom: 12px;"><a href="#" style="color: #94a3b8; text-decoration: none;">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Newsletter</h4>
+            <div class="newsletter" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="email" placeholder="Your Email" style="padding: 12px 15px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; outline: none;">
+                <button class="btn-fill" style="width: 100%; padding: 12px; border-radius: 8px;">Subscribe Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom" style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <p style="color: #94a3b8; font-size: 0.9rem;">&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(225, 29, 72, 0.1); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--primary);">
+            <i class="fas fa-phone-alt" style="color: var(--primary);"></i>
+            <span style="font-weight: 700; color: white;">Emergency: +91 522 123 4567</span>
+        </div>
+    </div>
+</footer>
+
+    <script>
+        function openProfile(name, tag, bio, img) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalTag').innerText = tag;
+            document.getElementById('modalBio').innerText = bio;
+            document.getElementById('modalImg').src = img;
+            const modal = document.getElementById('profileModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+        function closeProfile() {
+            const modal = document.getElementById('profileModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 400);
+        }
+    </script>
+
+</body>
+</html>

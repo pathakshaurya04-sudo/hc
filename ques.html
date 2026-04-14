@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            padding-top: 120px;
+        }
+
+        /* --- Navigation (Global) --- */
+        nav {
+            padding: 15px 4%; display: flex; justify-content: space-between; align-items: center;
+            position: fixed; width: 92%; left: 4%; top: 20px; z-index: 9999;
+            border-radius: 100px; background: var(--glass-bg); backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- FAQ Header --- */
+        .faq-header {
+            text-align: center;
+            padding: 60px 8%;
+        }
+        .faq-header h1 { font-size: 3rem; color: var(--dark); margin-bottom: 15px; }
+        .faq-header p { color: var(--text-light); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* --- FAQ Search Bar --- */
+        .search-container {
+            max-width: 600px;
+            margin: -30px auto 50px;
+            position: relative;
+            z-index: 10;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 20px 30px;
+            border-radius: 100px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        .search-container input:focus { border-color: var(--primary); box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1); }
+
+        /* --- FAQ Accordion --- */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto 100px;
+            padding: 0 20px;
+        }
+
+        .faq-item {
+            background: white;
+            margin-bottom: 15px;
+            border-radius: 18px;
+            border: 1px solid #f1f5f9;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .faq-question {
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--dark);
+            user-select: none;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            background: #fcfdfe;
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .faq-answer p { padding: 0 30px 24px; }
+
+        .faq-item.active { border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
+        .faq-item.active .faq-answer { max-height: 300px; }
+        .faq-item.active i { transform: rotate(180deg); color: var(--primary); }
+        
+        i { transition: 0.3s; color: var(--text-light); }
+
+        /* --- Contact CTA --- */
+        .contact-cta {
+            background: var(--dark);
+            color: white;
+            padding: 60px;
+            border-radius: 40px;
+            text-align: center;
+            margin: 0 8% 100px;
+        }
+        .btn-white {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 35px;
+            background: white;
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 100px;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .btn-white:hover { background: var(--primary); color: white; }
+
+    </style>
+</head>
+<body>
+
+    <nav id="navbar">
+        <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+        <a href="booking.html" style="text-decoration: none;"><button style="padding: 12px 28px; border-radius: 100px; background: var(--primary); color: white; border: none; font-weight: 700; cursor: pointer;">Book Appointment</button></a>
+    </nav>
+
+    <header class="faq-header">
+        <h1>Common <span style="color: var(--primary);">Questions</span></h1>
+        <p>Everything you need to know about our medical services, digital consultations, and patient care.</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" placeholder="Search for answers (e.g. 'insurance', 'appointment')...">
+    </div>
+
+    <div class="faq-container">
+        <div class="faq-item">
+            <div class="faq-question">
+                How do I book a video consultation?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>You can book a video consultation by clicking the "Book Appointment" button. Select "Online Consultation" as your visit type, choose your preferred doctor and time slot, and complete the secure payment process.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                Do you accept major health insurance?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Yes, HealthCare+ partners with most major insurance providers. During registration, you can upload your insurance details, and our billing team will verify your coverage automatically.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                Can I get my prescriptions delivered?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Absolutely. After your consultation, digital prescriptions are sent to our integrated pharmacy. You can opt for home delivery through our "Store" section, usually arriving within 2-4 hours in Lucknow.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                How do I access my lab test results?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>All laboratory and imaging results are uploaded directly to your "Health Library" portal. You will receive an SMS and email notification as soon as your reports are ready for download.</p>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">
+                What is your policy on emergency care?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>For life-threatening emergencies, please call our 24/7 hotline at +91 522 123 4567 immediately. We have a dedicated ambulance fleet and a Level 1 Trauma Center ready for urgent admissions.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-cta">
+        <h2>Still have questions?</h2>
+        <p style="opacity: 0.8; margin-top: 10px;">Our support team is available 24/7 to help you with your needs.</p>
+        <a href="contactus.html" class="btn-white">Contact Support</a>
+    </div>
+
+    <script>
+        // Simple Accordion Toggle Logic
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Close all other items
+                faqItems.forEach(i => i.classList.remove('active'));
+                
+                // Toggle clicked item
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

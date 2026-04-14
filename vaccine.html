@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immunization Schedule | HealthCare+</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #8b5cf6;
+            --secondary: #ec4899;
+            --dark: #1e1b4b;
+            --bg-subtle: #f8fafc;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-subtle);
+            color: var(--dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+            line-height: 1.2;
+        }
+
+        .header span { color: var(--primary); }
+
+        .vax-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow: hidden;
+            border-radius: 15px;
+        }
+
+        .vax-table thead {
+            background: var(--primary);
+            color: white;
+        }
+
+        .vax-table th, .vax-table td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .vax-table tbody tr:hover {
+            background-color: #fdf4ff;
+        }
+
+        .age-tag {
+            font-weight: 700;
+            color: var(--secondary);
+            background: #fdf2f8;
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .vax-name {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .vax-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .disclaimer {
+            margin-top: 30px;
+            padding: 20px;
+            background: #eff6ff;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #1e40af;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            line-height: 1.5;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 700;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-5px);
+            color: var(--secondary);
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin: 10px; }
+            .vax-table th:nth-child(3), .vax-table td:nth-child(3) { display: none; } /* Hide descriptions on small mobile */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="pc.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Department
+    </a>
+    
+    <div class="header">
+        <h1>Immunization <br><span>Schedule 2026</span></h1>
+        <p style="color: #64748b;">Following IAP & WHO International Standards</p>
+    </div>
+
+    <table class="vax-table">
+        <thead>
+            <tr>
+                <th>Age</th>
+                <th>Vaccines</th>
+                <th>Protects Against</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="age-tag">Birth</span></td>
+                <td><span class="vax-name">BCG, Hep B, OPV</span></td>
+                <td class="vax-desc">Tuberculosis, Hepatitis B, Polio</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">6 Weeks</span></td>
+                <td><span class="vax-name">DTwP/DTaP 1, IPV 1, PCV 1</span></td>
+                <td class="vax-desc">Diphtheria, Tetanus, Polio, Pneumonia</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">10 Weeks</span></td>
+                <td><span class="vax-name">DTwP 2, IPV 2, Hib 2</span></td>
+                <td class="vax-desc">Second dose of primary infant series</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">14 Weeks</span></td>
+                <td><span class="vax-name">DTwP 3, IPV 3, PCV 3</span></td>
+                <td class="vax-desc">Completion of primary infant series</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">6 Months</span></td>
+                <td><span class="vax-name">OPV 1, Hep B 3</span></td>
+                <td class="vax-desc">Polio booster & Hepatitis B completion</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">9 Months</span></td>
+                <td><span class="vax-name">MMR 1</span></td>
+                <td class="vax-desc">Measles, Mumps, Rubella</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">12 Months</span></td>
+                <td><span class="vax-name">Hep A 1</span></td>
+                <td class="vax-desc">Hepatitis A prevention</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">15 Months</span></td>
+                <td><span class="vax-name">MMR 2, Varicella 1</span></td>
+                <td class="vax-desc">Chickenpox & Viral protection</td>
+            </tr>
+            <tr>
+                <td><span class="age-tag">18 Months</span></td>
+                <td><span class="vax-name">DTwP B1, IPV B1</span></td>
+                <td class="vax-desc">First childhood booster series</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="disclaimer">
+        <i class="fas fa-info-circle"></i>
+        <p><strong>Medical Note:</strong> This chart is a general guideline for HealthCare+ Lucknow. Special vaccines like Influenza or Typhoid may be added based on your doctor's advice.</p>
+    </div>
+</div> </body>
+</html>

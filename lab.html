@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab Portal | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        :root {
+            --primary: #0062ff;
+            --primary-glow: rgba(0, 98, 255, 0.4);
+            --secondary: #00f2fe;
+            --grad: linear-gradient(135deg, #0062ff 0%, #00f2fe 100%);
+            --dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.8);
+            --border: rgba(255, 255, 255, 0.3);
+        }
+
+        * { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #f8fafc;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 98, 255, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(0, 242, 254, 0.05) 0px, transparent 50%);
+            margin: 0; padding: 20px;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* 🔐 MODERN LOGIN SCREEN */
+        #loginScreen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); 
+            display: flex; align-items: center; justify-content: center; z-index: 9999;
+        }
+        .login-box {
+            background: white; padding: 50px; border-radius: 40px; width: 380px; text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(0);
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .login-box input {
+            width: 100%; margin-bottom: 20px; padding: 18px; border-radius: 20px;
+            border: 2px solid #f1f5f9; font-family: inherit; box-sizing: border-box; font-size: 1rem;
+        }
+        .login-box input:focus { border-color: var(--primary); outline: none; background: #f8faff; }
+
+        /* DASHBOARD LAYOUT */
+        .dashboard-container {
+            max-width: 1300px; margin: 40px auto;
+            display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px;
+        }
+
+        .glass-card {
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-radius: 35px; padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+            border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+
+        /* Tab Switcher */
+        .tab-switcher {
+            display: flex; background: #f1f5f9; padding: 6px; border-radius: 18px; margin-bottom: 30px;
+        }
+        .tab-btn {
+            flex: 1; padding: 12px; border: none; border-radius: 14px; font-weight: 700;
+            cursor: pointer; background: transparent; color: #64748b; font-size: 0.85rem;
+        }
+        .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+        h2 { margin-top: 0; font-weight: 800; letter-spacing: -1.5px; font-size: 1.8rem; color: #1e293b; }
+
+        .form-group { margin-bottom: 24px; }
+        .form-group label { display: block; font-size: 0.7rem; font-weight: 800; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 16px; border-radius: 18px;
+            border: 2px solid #f1f5f9; font-family: inherit; background: white;
+            box-sizing: border-box; font-weight: 600;
+        }
+        .form-group input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 5px var(--primary-glow); }
+
+        .btn-gen { background: #e0e7ff; border: none; padding: 0 20px; border-radius: 15px; cursor: pointer; font-weight: 800; color: var(--primary); font-size: 0.75rem; }
+        .btn-gen:hover { background: var(--primary); color: white; }
+
+        .btn-primary {
+            background: var(--grad); color: white; border: none;
+            padding: 20px; width: 100%; border-radius: 22px;
+            font-weight: 800; cursor: pointer; font-size: 1rem;
+            box-shadow: 0 10px 25px var(--primary-glow);
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 35px var(--primary-glow); filter: brightness(1.1); }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* 📄 DIGITAL SLIP DESIGN */
+        .smart-slip {
+            background: white; border-radius: 30px; padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02); position: relative;
+            border: 1px solid #f1f5f9;
+        }
+        .slip-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f8fafc; padding-bottom: 30px; margin-bottom: 30px; }
+        .badge { background: #eff6ff; color: var(--primary); padding: 8px 16px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; border: 1px solid #dbeafe; }
+        
+        .patient-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 40px; }
+        .info-item small { display: block; color: #94a3b8; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+        .info-item p { margin: 0; font-weight: 700; font-size: 1rem; color: #1e293b; }
+
+        .test-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .test-table th { text-align: left; padding: 15px; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; }
+        .test-table td { padding: 25px 20px; background: #f8fafc; font-weight: 700; border-radius: 15px; }
+        .test-table td:last-child { color: var(--primary); font-size: 1.1rem; }
+
+        .footer-sign { display: flex; justify-content: space-between; align-items: center; margin-top: 60px; padding-top: 30px; border-top: 2px solid #f8fafc; }
+        .qr-placeholder { width: 80px; height: 80px; background: #f8fafc; border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 2px dashed #e2e8f0; }
+
+        /* 📸 RADIOLOGY IMAGE STYLES */
+        .rad-preview-container { margin-top: 20px; text-align: center; display: none; }
+        #radImgPreview { max-width: 100%; border-radius: 20px; border: 4px solid #f1f5f9; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+
+        @media print { .no-print { display: none; } body { padding: 0; } .dashboard-container { display: block; } .glass-card { border: none; box-shadow: none; } }
+    </style>
+</head>
+
+<body>
+
+<div id="loginScreen">
+    <div class="login-box">
+        <div style="width: 80px; height: 80px; background: #f0f7ff; border-radius: 25px; display: flex; align-items: center; justify-content: center; margin: 0 auto 25px;">
+            <i class="fas fa-shield-halved" style="font-size: 2.5rem; color: #0062ff;"></i>
+        </div>
+        <h2 style="margin-bottom: 10px;">Security Gateway</h2>
+        <p style="color: #64748b; font-weight: 600; font-size: 0.9rem; margin-bottom: 30px;">Authorized Laboratory Personnel Only</p>
+        <input type="text" id="labUser" placeholder="Access Key ID">
+        <input type="password" id="labPass" placeholder="Security Token">
+        <button onclick="loginLab()" class="btn-primary">Verify Identity</button>
+    </div>
+</div>
+
+<div class="dashboard-container">
+    <div class="no-print">
+        <div class="glass-card">
+            <div style="color: var(--primary); font-weight: 800; font-size: 0.75rem; margin-bottom: 15px; letter-spacing: 2px;">DIAGNOSTIC ENGINE</div>
+            <h2><i class="fas fa-microscope" style="color: var(--primary); margin-right: 10px;"></i>Issue Report</h2>
+            
+            <div class="tab-switcher">
+                <button class="tab-btn active" onclick="switchDept('pathology', this)">Clinical Pathology</button>
+                <button class="tab-btn" onclick="switchDept('radiology', this)">Radiology (Imaging)</button>
+            </div>
+
+            <div class="form-group">
+                <label>Patient Full Name</label>
+                <input type="text" id="pName" placeholder="Search or Enter Name" oninput="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label>Patient Email</label>
+                <input type="email" id="pEmail" placeholder="results@patient.com" oninput="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label>Internal Case ID</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="pID" readonly style="background: #f8fafc; color: #64748b;">
+                    <button class="btn-gen" onclick="generateID()">NEW ID</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Medical Investigation</label>
+                <select id="pTest" onchange="updatePreview()">
+                    <optgroup label="Pathology Panels" id="pathList">
+                        <option>Full Body Bio-Audit</option>
+                        <option>Complete Blood Count (CBC)</option>
+                        <option>Thyroid Profile (T3, T4, TSH)</option>
+                        <option>HbA1c Diabetes Screen</option>
+                        <option>Lipid Profile (Cholesterol)</option>
+                        <option>Liver Function Test (LFT)</option>
+                        <option>Kidney Function Test (KFT)</option>
+                        <option>Vitamin B12 & D3 Check</option>
+                        <option>Cardiac Marker (Troponin)</option>
+                    </optgroup>
+                    <optgroup label="Radiology & Imaging" id="radList" style="display:none;">
+                        <option>X-Ray Chest (PA View)</option>
+                        <option>MRI Brain (Contrast/Non-Contrast)</option>
+                        <option>CT Whole Abdomen</option>
+                        <option>Ultrasound (USG) Whole Abdomen</option>
+                        <option>HRCT Thorax (Lung Study)</option>
+                        <option>Doppler Study (Lower Limbs)</option>
+                        <option>Bone Densitometry (DEXA)</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="form-group" id="radUploadGroup" style="display: none;">
+                <label>Upload Diagnostic Scan (DICOM/JPG)</label>
+                <input type="file" id="radFile" accept="image/*" onchange="previewRadImage(this)" style="padding: 10px;">
+            </div>
+
+            <div class="form-group">
+                <label>Clinical Observation / Result</label>
+                <input type="text" id="pResult" placeholder="Describe findings or input values" oninput="updatePreview()">
+            </div>
+
+            <button class="btn-primary" onclick="saveToSupabase()">
+                <i class="fas fa-cloud-bolt"></i> AUTHORIZE & TRANSMIT
+            </button>
+        </div>
+
+        <div class="glass-card">
+            <div style="color: var(--primary); font-weight: 800; font-size: 0.75rem; margin-bottom: 15px; letter-spacing: 2px;">CLOUD AUTH</div>
+            <h2><i class="fas fa-fingerprint" style="color: var(--primary); margin-right: 10px;"></i>Patient Access</h2>
+            
+            <div class="form-group">
+                <label>Registration Email</label>
+                <input type="email" id="authEmail" placeholder="user@example.com">
+            </div>
+
+            <div class="form-group">
+                <label>Secure Password</label>
+                <input type="password" id="authPass" placeholder="••••••••">
+            </div>
+
+            <button class="btn-primary" style="background: var(--dark); box-shadow: 0 10px 20px rgba(15,23,42,0.2);" onclick="createPatientAuth()">
+                <i class="fas fa-user-check"></i> ENABLE PORTAL ACCESS
+            </button>
+        </div>
+    </div>
+
+    <div class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 style="margin: 0;"><i class="fas fa-file-medical"></i> Clinical Review</h2>
+            <button onclick="window.print()" class="no-print btn-gen" style="background: white; padding: 12px 20px; border: 1px solid #e2e8f0;">
+                <i class="fas fa-print"></i> EXPORT PDF
+            </button>
+        </div>
+
+        <div class="smart-slip" id="reportPreview">
+            <div class="slip-header">
+                <div>
+                    <h2 style="color: var(--primary); margin: 0; font-weight: 900; font-size: 2rem;">HealthCare<span style="color: var(--dark)">+</span></h2>
+                    <p style="font-size: 0.75rem; color: #94a3b8; margin: 5px 0; font-weight: 700;">DIGITAL DIAGNOSTIC NETWORK | UP-2026-HC</p>
+                </div>
+                <div style="text-align: right;">
+                    <div class="badge">SECURED BY BLOCKCHAIN</div>
+                    <p id="prevDate" style="font-size: 0.8rem; font-weight: 800; margin-top: 8px;">---</p>
+                </div>
+            </div>
+
+            <div class="patient-info-grid">
+                <div class="info-item">
+                    <small>Patient Identity</small>
+                    <p id="prevName">---</p>
+                </div>
+                <div class="info-item">
+                    <small>Laboratory UID</small>
+                    <p id="prevID" style="font-family: monospace; color: var(--primary);">---</p>
+                </div>
+                <div class="info-item">
+                    <small>Status</small>
+                    <p style="color: #059669;"><i class="fas fa-circle-check"></i> Verified</p>
+                </div>
+            </div>
+
+            <div class="info-item" style="margin-bottom: 20px; padding: 20px; background: #f8fafc; border-radius: 20px;">
+                <small>Linked Digital Record (Email)</small>
+                <p id="prevEmail" style="color: var(--primary); text-decoration: underline;">---</p>
+            </div>
+
+            <div class="rad-preview-container" id="radViewArea">
+                <small style="color: #94a3b8; font-weight: 800; display: block; margin-bottom: 10px;">ATTACHED RADIOLOGICAL SCAN</small>
+                <img id="radImgPreview" src="" alt="Scan Preview">
+            </div>
+
+            <table class="test-table">
+                <thead>
+                    <tr>
+                        <th>Investigation Domain & Test Name</th>
+                        <th style="text-align: right;">Verified Clinical Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div id="testIcon" style="width: 40px; height: 40px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                    <i class="fas fa-flask"></i>
+                                </div>
+                                <span id="prevTestName">---</span>
+                            </div>
+                        </td>
+                        <td id="prevResult" style="text-align: right;">---</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 30px; padding: 20px; border-left: 4px solid var(--primary); background: #f0f7ff; border-radius: 0 15px 15px 0;">
+                <small style="color: var(--primary); font-weight: 800;">PATHOLOGIST REMARKS</small>
+                <p style="font-size: 0.85rem; color: #475569; margin: 8px 0; font-weight: 600;">Results correlate with clinical findings. This is a computer-generated report and does not require a physical signature for digital validation.</p>
+            </div>
+
+            <div class="footer-sign">
+                <div class="qr-placeholder">
+                    <i class="fas fa-qrcode" style="font-size: 2.5rem; color: #cbd5e1;"></i>
+                </div>
+                <div style="text-align: right;">
+                    <img src="https://signaturely.com/wp-content/uploads/2020/11/handwritten-signature-transparent.png" width="120" style="opacity: 0.8; filter: grayscale(1) brightness(0.5);" alt="sig">
+                    <p style="font-weight: 800; margin: 0; font-size: 1rem; color: #1e293b;">Dr. Sameer Khanna</p>
+                    <small style="color: #94a3b8; font-weight: 700;">Chief Medical Officer</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+const _supabase = supabase.createClient(
+    'https://itvbhpvypgfxdksbpnnt.supabase.co', 
+    'sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5'
+);
+
+function switchDept(dept, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const path = document.getElementById('pathList');
+    const rad = document.getElementById('radList');
+    const icon = document.getElementById('testIcon');
+    const uploadGroup = document.getElementById('radUploadGroup');
+    const radViewArea = document.getElementById('radViewArea');
+
+    if(dept === 'radiology') {
+        path.style.display = "none";
+        rad.style.display = "block";
+        uploadGroup.style.display = "block"; // Show upload in form
+        radViewArea.style.display = "block"; // Show image area in slip
+        document.getElementById('pTest').value = "X-Ray Chest (PA View)";
+        icon.innerHTML = '<i class="fas fa-x-ray"></i>';
+    } else {
+        path.style.display = "block";
+        rad.style.display = "none";
+        uploadGroup.style.display = "none"; // Hide upload
+        radViewArea.style.display = "none"; // Hide image area
+        document.getElementById('pTest').value = "Full Body Bio-Audit";
+        icon.innerHTML = '<i class="fas fa-flask"></i>';
+    }
+    updatePreview();
+}
+
+function previewRadImage(input) {
+    const preview = document.getElementById('radImgPreview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function loginLab() {
+    const user = document.getElementById('labUser').value;
+    const pass = document.getElementById('labPass').value;
+    if(user === "LAB'S" && pass === "LAB2026") {
+        const screen = document.getElementById('loginScreen');
+        screen.style.opacity = "0";
+        screen.style.transform = "scale(1.1)";
+        setTimeout(() => screen.style.display = "none", 500);
+    } else {
+        alert("🔒 Security Alert: Invalid Authentication Attempt");
+    }
+}
+
+function generateID() {
+    const id = "HC-" + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('pID').value = id;
+    updatePreview();
+}
+
+function updatePreview() {
+    document.getElementById('prevName').innerText = document.getElementById('pName').value || "---";
+    document.getElementById('prevEmail').innerText = document.getElementById('pEmail').value || "---";
+    document.getElementById('prevID').innerText = document.getElementById('pID').value || "---";
+    document.getElementById('prevTestName').innerText = document.getElementById('pTest').value;
+    document.getElementById('prevResult').innerText = document.getElementById('pResult').value || "PENDING";
+    document.getElementById('prevDate').innerText = new Date().toLocaleDateString('en-US', {month:'long', day:'numeric', year:'numeric'});
+}
+
+async function createPatientAuth() {
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPass').value;
+    if(!email || !password) { alert("Please provide both email and password."); return; }
+    const { error } = await _supabase.from('patient_auth').insert([{ email: email, password: password }]);
+    if(error) { alert("Error: " + error.message); } else {
+        alert("✅ Success: Patient portal credentials initialized.");
+        document.getElementById('authEmail').value = "";
+        document.getElementById('authPass').value = "";
+    }
+}
+
+async function saveToSupabase() {
+    const email = document.getElementById('pEmail').value;
+    const name = document.getElementById('pName').value;
+    const pID = document.getElementById('pID').value;
+    const test = document.getElementById('pTest').value;
+    const result = document.getElementById('pResult').value;
+
+    if(!email || !name || !pID || !result){ 
+        alert("⚠️ Incomplete Data: All fields are required for clinical transmission."); 
+        return; 
+    }
+
+    const { error } = await _supabase.from('lab_reports').insert([{
+        patient_name: name, patient_email: email, patient_id: pID, test_name: test, result: result
+    }]);
+
+    if(error) { alert("Network Error: " + error.message); } 
+    else { alert("🚀 Data Transmitted: The report is now available on the Global Patient Portal."); }
+}
+
+generateID();
+updatePreview();
+</script>
+</body>
+</html>

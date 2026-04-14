@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Events & Webinars | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-glow: rgba(37, 99, 235, 0.4);
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --radius-lg: 24px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* --- Navigation Fixes --- */
+        nav {
+            padding: 15px 4%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 92%;
+            left: 4%;
+            top: 20px;
+            z-index: 9999;
+            border-radius: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        .logo { font-weight: 800; font-size: 1.4rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo span { background: linear-gradient(to right, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        nav ul { display: flex; list-style: none; gap: 15px; align-items: center; }
+        nav ul a { text-decoration: none; color: var(--text-main); font-weight: 600; font-size: 0.85rem; transition: 0.3s; padding: 10px 5px; }
+        nav ul a:hover { color: var(--primary); }
+
+        /* Dropdown Logic */
+        .dropdown { position: relative; }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 220px;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+        .dropdown-menu a:hover { background: #f1f5f9; }
+
+        .btn-fill { 
+            padding: 12px 28px; border-radius: 100px; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; border: none; font-weight: 700; cursor: pointer; transition: 0.4s;
+            box-shadow: 0 8px 15px var(--primary-glow); font-size: 0.8rem;
+        }
+
+        /* --- Hero & Events --- */
+        .hero-events {
+            padding: 220px 8% 100px;
+            background: radial-gradient(circle at 90% 10%, rgba(37, 99, 235, 0.08), transparent 40%), #fff;
+            text-align: center;
+        }
+        .badge { 
+            background: rgba(37, 99, 235, 0.1); color: var(--primary); 
+            padding: 8px 20px; border-radius: 100px; font-weight: 700; 
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .container { padding: 0 8% 100px; }
+        .event-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); 
+            gap: 30px; 
+        }
+
+        .event-card {
+            background: white; border-radius: var(--radius-lg); overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f1f5f9;
+            transition: 0.4s; position: relative; display: flex; flex-direction: column;
+        }
+        .event-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .event-img { width: 100%; height: 230px; object-fit: cover; }
+        .event-content { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+        
+        .event-date {
+            position: absolute; top: 20px; right: 20px;
+            background: white; padding: 10px 15px; border-radius: 15px;
+            text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); z-index: 10;
+        }
+        .event-date span { display: block; font-weight: 800; color: var(--primary); font-size: 1.2rem; line-height: 1; }
+        .event-date small { font-weight: 700; font-size: 0.7rem; color: var(--text-light); text-transform: uppercase; }
+        
+        .event-tag { 
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; 
+            color: var(--accent); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+        }
+
+        .btn-reg {
+            display: inline-block; width: 100%; padding: 15px; margin-top: auto;
+            background: var(--dark); color: white; text-align: center;
+            text-decoration: none; border-radius: 15px; font-weight: 700; transition: 0.3s;
+        }
+        .btn-reg:hover { background: var(--primary); }
+
+        .cta-box {
+            background: var(--dark); color: white; padding: 80px 40px;
+            border-radius: 40px; text-align: center; margin: 60px 0;
+            position: relative; overflow: hidden;
+        }
+
+        /* --- Footer Fixes --- */
+        footer { background: var(--dark); color: #94a3b8; padding: 80px 8% 40px; border-radius: 40px 40px 0 0; }
+        .footer-grid { 
+            display: grid; 
+            grid-template-columns: 2fr 1fr 1fr 1.5fr; 
+            gap: 40px; 
+        }
+        .footer-col h4 { color: white; margin-bottom: 20px; font-size: 1.1rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { color: #94a3b8; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
+        .footer-col ul li a:hover { color: white; padding-left: 5px; }
+        
+        .newsletter input {
+            width: 100%; padding: 12px 20px; border-radius: 10px; border: none;
+            background: rgba(255,255,255,0.05); color: white; margin-bottom: 10px;
+        }
+
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; margin-top: 40px; display: flex; justify-content: space-between; font-size: 0.85rem; }
+
+        @media (max-width: 992px) {
+            nav ul { display: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .hero-events { padding-top: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav id="navbar">
+    <a href="firstpage.html" class="logo"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></a>
+    <ul>
+        <li><a href="aboutus.html">About Us</a></li>
+        
+        <li class="dropdown">
+            <a href="#speciality">Speciality <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+            <div class="dropdown-menu">
+                <a href="cardiology.html"><i class="fas fa-heartbeat"></i> Cardiology</a>
+                <a href="nurology.html"><i class="fas fa-brain"></i> Neurology</a>
+                <a href="orthopadic.html"><i class="fas fa-bone"></i> Orthopaedics</a>
+                <a href="oncology.html"><i class="fas fa-ribbon"></i> Oncology</a>
+                <a href="gastroscience.html"><i class="fas fa-utensils"></i> Gastrosciences</a>
+                <a href="specialties.html" class="view-all" style="border-top: 1px solid #eee; margin-top: 5px; padding-top: 10px;">View All Departments</a>
+            </div>
+        </li>
+
+        <li class="dropdown">
+            <a href="#">Women's Health <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+            <div class="dropdown-menu">
+                <a href="mensuration.html"><i class="fas fa-calendar-alt"></i> Menstrual Period</a>
+                <a href="pregency.html"><i class="fas fa-person-pregnant"></i> Pregnancy Care</a>
+            </div>
+        </li>
+
+       <li class="dropdown">
+    <a href="#library">Health Library <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i></a>
+    <div class="dropdown-menu">
+        <a href="treatments2.html"><i class="fas fa-stethoscope"></i> Treatments</a>
+        <a href="tech.html"><i class="fas fa-microchip"></i> Technologies</a>
+        <a href="ailments.html"><i class="fas fa-heart-circle-exclamation"></i> Ailments</a>
+        <a href="kc.html"><i class="fas fa-book-open"></i> Knowledge Center</a>
+        <a href="event.html"><i class="fas fa-calendar-check"></i> Events</a>
+        <a href="dow.html"><i class="fas fa-download"></i> Downloads</a>
+    </div>
+</li>
+        <li><a href="service.html">Services</a></li>
+        <li class="nav-item dropdown">
+    <a href="service.html" class="nav-link">
+        Store <i class="fas fa-chevron-down" style="font-size: 0.7rem; margin-left: 5px;"></i>
+    </a>
+    <div class="dropdown-menu">
+        <a href="store.html" class="dropdown-item">
+            <i class="fas fa-user-md"></i>
+            <span>For Doctors</span>
+        </a>
+        <a href="medicine.html" class="dropdown-item">
+            <i class="fas fa-user-injured"></i>
+            <span>For Patients</span>
+        </a>
+    </div>
+</li>
+        <li><a href="Careers.html">Careers</a></li>
+        <li><a href="contactus.html">Contact Us</a></li>
+    </ul>
+    <a href="eventreg.html" style="text-decoration: none;">
+    <button class="btn-fill">Event Register</button>
+</a>
+</nav>
+
+<header class="hero-events">
+    <span class="badge">Health Excellence 2026</span>
+    <h1 style="font-size: 3.5rem; margin-top: 20px; color: var(--dark);">Events & <span style="color:var(--primary)">Opportunities</span></h1>
+    <p style="max-width: 600px; margin: 20px auto; color: var(--text-light); line-height: 1.8;">Participate in our upcoming medical summits, community health drives, and behind-the-scenes laboratory tours.</p>
+</header>
+
+<div class="container">
+   <div class="event-grid">
+    <div class="event-card">
+        <div class="event-date"><span>24</span><small>APR</small></div>
+        <img src="https://imgs.search.brave.com/h5ufjfBdRhhObPS5FY0-CqBZPPFuv6P4Bx-Fs2KXFeg/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9wYXJr/aG9zcGl0YWwuaW4v/c3RvcmFnZS9hcHAv/cHVibGljL3VwbG9h/ZC9SWDMxNk1Ha3lr/clJSNXhEOTdWb1Vs/aXNmVUhVMnh4eWtw/Q3ZmR2kzLndlYnA" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-video"></i> Live Webinar</span>
+            <h3>Future of Bone Marrow Transplants</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Exploring CAR-T cell integration breakthroughs.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="far fa-clock"></i> 06:00 PM</div>
+            <a href="reg.html" class="btn-reg">Book My Seat</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>05</span><small>MAY</small></div>
+        <img src="https://images.unsplash.com/photo-1628348068343-c6a848d2b6dd?auto=format&fit=crop&q=80&w=600" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-heartbeat"></i> Conference</span>
+            <h3>Modern Cardiology Summit</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Non-invasive surgical techniques and heart health AI diagnostics.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-map-marker-alt"></i> Grand Hall</div>
+            <a href="reg.html" class="btn-reg">Register Now</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>12</span><small>MAY</small></div>
+        <img src="https://imgs.search.brave.com/GZ5Pg2Lj2HJV2fXXs2Qlj3_yr-0_f4giqANOeXDoQoc/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9taW5k/LW92ZXItbWF0dGVy/LXdvcmQtbmV4dC10/by1odW1hbi1icmFp/bi1tb2RlbC1taW5k/LW92ZXItbWF0dGVy/LXdvcmQtbmV4dC10/by1odW1hbi1icmFp/bi1tb2RlbC0yNzA5/NzE0ODUuanBn" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-brain"></i> Wellness</span>
+            <h3>Mind Over Matter Workshop</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Coping mechanisms for workplace stress and anxiety management.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-video"></i> Virtual Event</div>
+            <a href="reg.html" class="btn-reg">Join Session</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>18</span><small>MAY</small></div>
+        <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&q=80&w=600" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-robot"></i> Tech Live</span>
+            <h3>Robotic Surgery Live Demo</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Watch our Da Vinci robot perform a precision simulation.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-microscope"></i> Surgical Wing</div>
+            <a href="reg.html" class="btn-reg">Request Invite</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>22</span><small>MAY</small></div>
+        <img src="https://imgs.search.brave.com/0IayGgORDcjN1L4IJEonz6kQ-qlLbPT9iGWQdv4ij2A/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/Y3JlYXRlLnZpc3Rh/LmNvbS9hcGkvbWVk/aWEvc21hbGwvNzky/MjA0NTk2L3N0b2Nr/LXZpZGVvLWNoaWxk/LWJlYW1pbmctaGFw/cGluZXNzLWNoZWVy/ZnVsLWRlbnRhbC1v/ZmZpY2UtY2hlY2t1/cC1mcmllbmRseS1k/ZW50aXN0P3ZpZGVv/U3RhdGljUHJldmll/dz10cnVlJnRva2Vu/PQ" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-baby"></i> Community</span>
+            <h3>Free Pediatric Screening</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Essential health checkups and vaccination for kids under 12.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-hospital"></i> OPD Block</div>
+            <a href="reg.html" class="btn-reg">Book Slot</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>01</span><small>JUN</small></div>
+        <img src="https://imgs.search.brave.com/FvSTl5FjnpqOL8O_Z4V-dPCxnCmTc56F1FOLuE9l8rs/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93d3cu/Y2FuY2VyLmdvdi9z/aXRlcy9nL2ZpbGVz/L3hucnpkbTIxMS9m/aWxlcy9zdHlsZXMv/Y2dvdl9hcnRpY2xl/L3B1YmxpYy9jZ292/X2ltYWdlL21lZGlh/X2ltYWdlLzIwMjEt/MDUvb21mX21haW5f/dHJhbnNwYXJlbnQl/MjAoMSkucG5nP2l0/b2s9cndrLUVaY2c" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-microscope"></i> Research</span>
+            <h3>Oncology Research Forum</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Discussions on early detection and liquid biopsy technology.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-laptop"></i> Hybrid Session</div>
+            <a href="reg.html" class="btn-reg">Access Portal</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>07</span><small>JUN</small></div>
+        <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&q=80&w=600" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-tint"></i> Health Camp</span>
+            <h3>Diabetes Awareness Day</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Free blood sugar testing and diet consultation with experts.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-map-pin"></i> Main Plaza</div>
+            <a href="reg.html" class="btn-reg">Volunteer</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>15</span><small>JUN</small></div>
+        <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=600" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-mobile-alt"></i> Launch</span>
+            <h3>HealthCare+ 2.0 Launch</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Unveiling our new AI-driven patient monitoring system.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-broadcast-tower"></i> Live Stream</div>
+            <a href="reg.html" class="btn-reg">Watch Live</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>20</span><small>JUN</small></div>
+        <img src="https://imgs.search.brave.com/rcj4PBAk2ZwZkZ5_AYFXTt7M3LY_OLOBu0mALBY1knQ/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9leGNs/dXNpdmUubXVsdGli/cmllZnMuY29tL2lt/YWdlcy9leGNsdXNp/dmUvc3BvcnRzLWlu/anVyeS1wcmV2ZW50/aW9uLmpwZw" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-running"></i> Orthopedics</span>
+            <h3>Sports Injury Prevention</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Exercises and techniques for athletes to avoid ACL injuries.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-dumbbell"></i> Rehab Center</div>
+            <a href="reg.html" class="btn-reg">Sign Up</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>25</span><small>JUN</small></div>
+        <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&q=80&w=600" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-utensils"></i> Lifestyle</span>
+            <h3>Sustainable Diet Planning</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Beyond fad diets: how to maintain a healthy gut and weight.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-video"></i> Webinar</div>
+            <a href="reg.html" class="btn-reg">Get Reminder</a>
+        </div>
+    </div>
+
+    <div class="event-card">
+        <div class="event-date"><span>30</span><small>JUN</small></div>
+        <img src="https://imgs.search.brave.com/lUt3x8qoC_WLtbZyIOGskI99qG6P5jRcfExzbFB8vp4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudG9paW1nLmNv/bS90aHVtYi9tc2lk/LTk0MDYyNTM1LGlt/Z3NpemUtNzE2MTMw/LHdpZHRoLTQwMCxo/ZWlnaHQtMjI1LHJl/c2l6ZW1vZGUtNzIv/OTQwNjI1MzUuanBn" class="event-img">
+        <div class="event-content">
+            <span class="event-tag"><i class="fas fa-droplet"></i> Emergency</span>
+            <h3>Mega Blood Donation Drive</h3>
+            <p style="color:var(--text-light); font-size: 0.9rem; margin: 10px 0;">Help us replenish the city's blood bank. Gift a life today.</p>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--dark); margin-bottom: 15px;"><i class="fas fa-ambulance"></i> Parking Lot B</div>
+            <a href="reg.html" class="btn-reg">Pledge Now</a>
+        </div>
+    </div>
+</div>
+        </div>
+        </div>
+
+    <div class="cta-box">
+        <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Corporate Health Seminars</h2>
+        <p style="margin-bottom: 30px; opacity: 0.8;">We partner with schools and offices for health awareness drives.</p>
+        <a href="contactus.html" style="background:var(--primary); color:white; padding:15px 40px; border-radius:50px; text-decoration:none; font-weight:700;">Partner With Us</a>
+    </div>
+</div>
+
+<footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="color: white; margin-bottom: 25px;"><i class="fas fa-hand-holding-medical"></i> Health<span>Care+</span></div>
+                <p style="color: #94a3b8; line-height: 1.8;">Providing accessible, high-quality digital healthcare at your fingertips.</p>
+            </div>
+            <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="aboutus.html">About Us</a></li><li><a href="booking.html">Find Doctors</a></li><li><a href="service.html">Services</a></li></ul></div>
+            <div class="footer-col"><h4>Support</h4><ul><li><a href="contactus.html">Contact Us</a></li><li><a href="ques.html">FAQs</a></li><li><a href="pp.html">Privacy Policy</a></li></ul></div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <div class="newsletter"><input type="email" placeholder="Your Email"><button class="btn-fill" style="width: 100%;">Subscribe</button></div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+            <p>Emergency: +91 522 123 4567</p>
+        </div>
+    </footer>
+
+</body>
+</html>

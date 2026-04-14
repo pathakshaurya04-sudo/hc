@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Command Center | HealthCare+</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Colors adjusted to match the Logo (Blue & Teal/Green) */
+            --primary: #2563eb;
+            --secondary: #10b981; /* Teal/Green from the leaf */
+            --primary-light: #eff6ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg: #f8fafc;
+            --sidebar-width: 280px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text-main); display: flex; }
+
+        /* --- Sidebar --- */
+        aside {
+            width: var(--sidebar-width);
+            background: white;
+            height: 100vh;
+            position: fixed;
+            border-right: 1px solid #e2e8f0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        /* Integrated Logo Image */
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            text-decoration: none;
+        }
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+        .logo-text span { color: var(--primary); }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-radius: 12px;
+            transition: 0.3s;
+            margin-bottom: 8px;
+        }
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        /* --- Main Content --- */
+        main {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            padding: 40px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .admin-profile { display: flex; align-items: center; gap: 15px; }
+        .admin-profile img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+
+        /* --- Stats Grid --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+        }
+        .stat-card h3 { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
+
+        /* --- Medical Team Banner (Staff Photo) --- */
+        .team-banner {
+            width: 100%;
+            height: 300px;
+            background: white;
+            border-radius: 30px;
+            margin-bottom: 40px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+        }
+        .team-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.9);
+        }
+        .team-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            color: white;
+        }
+
+        /* --- Table Section --- */
+        .content-block {
+            background: white;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            border: 1px solid #f1f5f9;
+        }
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid #f1f5f9; }
+        td { padding: 20px 15px; border-bottom: 1px solid #f8fafc; font-size: 0.95rem; }
+
+        .status { padding: 6px 12px; border-radius: 100px; font-size: 0.75rem; font-weight: 700; }
+        .status-admitted { background: #dcfce7; color: #15803d; }
+        .status-emergency { background: #fee2e2; color: #b91c1c; }
+
+        .btn-action {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-action:hover { background: var(--primary); color: white; }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <!-- Replace 'logo.png' with your actual logo file path -->
+        <a href="#" class="logo-container">
+            <img src="logo.png" alt="H+" class="logo-img"> 
+            <div class="logo-text">Health<span>Care+</span></div>
+        </a>
+
+        <nav>
+            <a href="#" class="nav-link active"><i class="fas fa-th-large"></i> Dashboard</a>
+            <a href="#" class="nav-link"><i class="fas fa-user-injured"></i> Patients</a>
+            <a href="#" class="nav-link"><i class="fas fa-user-md"></i> Doctors Hub</a>
+            <a href="#" class="nav-link"><i class="fas fa-procedures"></i> Bed Allotment</a>
+            <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+        </nav>
+
+        <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+            <a href="#" class="nav-link" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </aside>
+
+    <main>
+        <header>
+            <div>
+                <h1 style="font-weight: 800; font-size: 1.8rem;">Hospital Overview</h1>
+                <p id="current-date" style="color: var(--text-muted); font-weight: 500;"></p>
+            </div>
+            <div class="admin-profile">
+                <div style="text-align: right;">
+                    <p style="font-weight: 700; font-size: 0.9rem;">Dr. Sameer Khan</p>
+                    <p style="color: var(--text-muted); font-size: 0.75rem;">Chief Administrator</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=100" alt="Admin">
+            </div>
+        </header>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <i class="fas fa-users" style="color: var(--primary); margin-bottom: 15px; display: block;"></i>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Total Patients</p>
+                <h3>1,284</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-bed" style="color: var(--secondary); margin-bottom: 15px; display: block;"></i>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Beds Available</p>
+                <h3>42</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-check" style="color: #7c3aed; margin-bottom: 15px; display: block;"></i>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Appts Today</p>
+                <h3>156</h3>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-microscope" style="color: #f59e0b; margin-bottom: 15px; display: block;"></i>
+                <p style="color: var(--text-muted); font-size: 0.85rem;">Lab Reports</p>
+                <h3>84</h3>
+            </div>
+        </div>
+
+        <!-- Team Section with your Staff Photo -->
+        <!-- Replace 'staff.jpg' with your actual medical team photo path -->
+        <div class="team-banner">
+            <img src="staff.jpg" alt="Our Medical Team">
+            <div class="team-overlay">
+                <h2 style="font-weight: 800;">Our Medical Experts</h2>
+                <p style="font-size: 0.9rem; opacity: 0.9;">Connected via Lucknow's most advanced healthcare network.</p>
+            </div>
+        </div>
+
+        <div class="content-block">
+            <div class="block-header">
+                <h2 style="font-weight: 800; font-size: 1.2rem;">Recent Patient Admissions</h2>
+                <button class="btn-action">View All</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>ID</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 700;">Amit Sharma</td>
+                        <td style="color: var(--text-muted);">#HC-9021</td>
+                        <td>Cardiology</td>
+                        <td><span class="status status-admitted">Admitted</span></td>
+                        <td><button class="btn-action">Details</button></td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 700;">Priya Verma</td>
+                        <td style="color: var(--text-muted);">#HC-8842</td>
+                        <td>Neurology</td>
+                        <td><span class="status status-emergency">Emergency</span></td>
+                        <td><button class="btn-action">Details</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function updateDate() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date();
+            document.getElementById('current-date').innerHTML = today.toLocaleDateString('en-US', options);
+        }
+        updateDate();
+    </script>
+</body>
+</html>

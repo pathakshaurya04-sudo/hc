@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liver Transplant Center | HealthCare+</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #f59e0b; 
+            --primary-dark: #b45309;
+            --accent: #ef4444;
+            --primary-light: rgba(245, 158, 11, 0.1);
+            --dark: #451a03;
+            --text-light: #71717a;
+            --bg-subtle: #fffbeb;
+            --glass: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(245, 158, 11, 0.2);
+            --footer-bg: #1c1917;
+            --card-border: rgba(245, 158, 11, 0.15);
+        }
+
+        * { margin:0; padding:0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+        body { background: #fff; color: var(--dark); line-height: 1.6; overflow-x: hidden; }
+
+        /* --- Navigation --- */
+        nav { 
+            padding: 0 8%; height: 90px; display: flex; justify-content: space-between; align-items: center; 
+            background: var(--glass); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 1000; 
+            border-bottom: 1px solid var(--glass-border); 
+        }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--dark); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo span { background: linear-gradient(90deg, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+
+        .btn-fill { 
+            background: linear-gradient(135deg, var(--primary), var(--accent)); 
+            color: white; border: none; padding: 12px 28px; border-radius: 14px; 
+            font-weight: 700; cursor: pointer; transition: 0.4s; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2); 
+            text-decoration: none; display: inline-block; font-size: 0.9rem; text-align: center;
+        }
+        .btn-fill:hover { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(239, 68, 68, 0.3); }
+        
+        .btn-outline { 
+            background: transparent; border: 2px solid var(--primary-light); 
+            color: var(--primary-dark); padding: 10px 22px; border-radius: 14px; 
+            font-weight: 700; cursor: pointer; transition: 0.3s; text-decoration: none; font-size: 0.85rem;
+        }
+
+        /* --- Sections --- */
+        section { padding: 80px 8%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        
+        .glass-card { 
+            background: white; border: 1px solid var(--card-border); border-radius: 32px; 
+            padding: 40px; transition: 0.5s; position: relative;
+        }
+        .glass-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+
+        .tag { 
+            display: inline-block; background: var(--primary-light); color: var(--primary-dark); 
+            padding: 8px 20px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; 
+            margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1.5px; 
+        }
+
+        .metrics-bar { 
+            background: var(--footer-bg); padding: 60px 8%; display: flex; justify-content: space-around; 
+            flex-wrap: wrap; gap: 40px; border-radius: 60px; margin: 0 4%; 
+        }
+        .metric-item h2 { color: var(--primary); font-size: 3rem; font-weight: 800; }
+        .metric-item p { color: #a1a1aa; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+
+        .tech-img { width: 100%; height: 200px; object-fit: cover; border-radius: 24px; margin-top: 20px; }
+
+        .doc-track { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+        .doc-card { background: #fff; border: 1px solid var(--card-border); border-radius: 32px; overflow: hidden; }
+        .doc-img img { width: 100%; height: 320px; object-fit: cover; }
+        .doc-info { padding: 30px; }
+
+        /* --- Modal --- */
+        .modal-overlay { 
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); 
+            z-index: 2000; display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content { 
+            background: white; width: 100%; max-width: 750px; padding: 40px; 
+            border-radius: 40px; position: relative; max-height: 90vh; overflow-y: auto; 
+        }
+
+        footer { background: #1c1917; color: #e7e5e4; padding: 80px 8% 40px; border-radius: 60px 60px 0 0; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+
+        @media (max-width: 768px) { nav { height: auto; padding: 20px; flex-direction: column; } }
+    </style>
+</head>
+
+<body>
+<nav id="navbar">
+    <a href="index.html" class="logo">
+        <i class="fas fa-heart-pulse" style="color: var(--primary);"></i> 
+        Liver<span>Transplant</span>
+        <div>
+            <a href="firstpage.html" class="btn-outline">back to home</a>
+            <a href="contactus.html" class="btn-outline">Enquire Now</a>
+            <a href="booking.html" class="btn-fill" style="margin-left:15px;">Book Consultation</a>
+        </div>
+    </nav>  
+
+    <section>
+        <div style="max-width: 1300px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 60px; align-items: center;">
+            <div>
+                <span class="tag">Global Destination for Care</span>
+                <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1.1; margin-bottom: 30px;">Expert Hands. <br><span style="color:var(--primary)">Life-Saving Results.</span></h1>
+                <p style="color: var(--text-light); font-size: 1.1rem; margin-bottom: 40px;">Leading the way in Living Donor (LDLT) and complex pediatric transplants with robotic precision.</p>
+                <a href="#specialties" class="btn-fill">View Specialties</a>
+            </div>
+            <div class="glass-card" style="padding: 15px;">
+                <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&q=80&w=800" style="width:100%; border-radius: 25px;" alt="Operation Theater">
+            </div>
+        </div>
+    </section>
+
+    <div class="metrics-bar">
+        <div class="metric-item"><h2>95%</h2><p>Survival Rate</p></div>
+        <div class="metric-item"><h2>400+</h2><p>Successful Cases</p></div>
+        <div class="metric-item"><h2>24/7</h2><p>Transplant ICU</p></div>
+    </div>
+
+    <section id="specialties">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">Clinical Expertise</span>
+            <h2 style="font-size: 2.5rem;">Diseases We <span style="color: var(--primary);">Treat</span></h2>
+        </div>
+        <div class="grid">
+            <div class="glass-card">
+                <i class="fas fa-users" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>01. Living Donor (LDLT)</h3>
+                <p style="color: var(--text-light);">Advanced surgery allowing a healthy relative to donate a portion of their liver.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-child" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>02. Pediatric Transplant</h3>
+                <p style="color: var(--text-light);">Life-saving care for infants with Biliary Atresia and metabolic disorders.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-divide" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>03. Split Liver Surgery</h3>
+                <p style="color: var(--text-light);">Using one deceased donor liver to save two separate recipients (Adult + Child).</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-shield-virus" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>04. ABO Incompatible</h3>
+                <p style="color: var(--text-light);">Specialized protocols for transplants where donor/recipient blood groups don't match.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-microscope" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>05. Liver Cancer (HCC)</h3>
+                <p style="color: var(--text-light);">Early-stage Hepatocellular Carcinoma management through curative transplant.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-weight" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>06. NASH & Fatty Liver</h3>
+                <p style="color: var(--text-light);">Treating end-stage cirrhosis caused by Non-Alcoholic Steatohepatitis.</p>
+            </div>
+            <div class="glass-card">
+                <i class="fas fa-dna" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 15px;"></i>
+                <h3>07. Metabolic Disorders</h3>
+                <p style="color: var(--text-light);">Correction of genetic liver diseases like Wilson's and Urea Cycle disorders.</p>
+            </div>
+        </div>
+    </section>
+
+    <section style="background: var(--bg-subtle);">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">The Edge</span>
+            <h2 style="font-size: 2.5rem;">5 Pillars of <span style="color: var(--primary);">Technology</span></h2>
+        </div>
+        <div class="grid">
+            <div class="glass-card">
+                <h3>01. Machine Perfusion</h3>
+                <p style="color: var(--text-light);">"Organ-care" tech that keeps livers functioning outside the body before transplant.</p>
+                <img src="https://tse2.mm.bing.net/th/id/OIP.0ZCYfSwxXaQiOaSggs4lpwHaDt?rs=1&pid=ImgDetMain&o=7&rm=3" class="tech-img">
+            </div>
+            <div class="glass-card">
+                <h3>02. Da Vinci Robotics</h3>
+                <p style="color: var(--text-light);">Robot-assisted donor surgery for minimal pain and ultra-fast recovery times.</p>
+                <img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?auto=format&fit=crop&q=80&w=500" class="tech-img">
+            </div>
+            <div class="glass-card">
+                <h3>03. AI 3D Volumetry</h3>
+                <p style="color: var(--text-light);">Precise 3D reconstruction of liver anatomy to ensure perfect donor-recipient matching.</p>
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=500" class="tech-img">
+            </div>
+            <div class="glass-card">
+                <h3>04. MARS Therapy</h3>
+                <p style="color: var(--text-light);">Molecular Adsorbent System for artificial liver support in acute failure cases.</p>
+                <img src="https://tse2.mm.bing.net/th/id/OIP.JaUX-kUecpr18gv7_bLBNQHaFb?rs=1&pid=ImgDetMain" class="tech-img">
+            </div>
+            <div class="glass-card" style="background: var(--primary); color: white;">
+                <h3 style="color: white;">05. Flow Cytometry</h3>
+                <p style="opacity: 0.9;">Real-time immune monitoring to prevent rejection and manage drug levels.</p>
+                <img src="https://microbenotes.com/wp-content/uploads/2020/05/Flow-Cytometry-Definition-Principle-Parts-Steps-Types-Uses.jpg" class="tech-img" style="filter: brightness(0.8);">
+            </div>
+        </div>
+    </section>
+
+    <section id="doctors">
+        <div style="text-align: center; margin-bottom: 60px;">
+            <span class="tag">The Team</span>
+            <h2 style="font-size: 2.5rem;">Leading <span style="color: var(--primary);">Surgeons</span></h2>
+        </div>
+        <div class="doc-track">
+            <div class="doc-card">
+                <div class="doc-img"><img src="https://peacemedicaltourism.com/assets/uploads/doctors/dr-arvinder-singh-soin-livertransplant-surgeon-in-india.jpg"></div>
+                <div class="doc-info">
+                    <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Medanta | Chairman</span>
+                    <h4>Dr. Arvinder Singh Soin</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Padma Shri awardee. India's top liver transplant surgeon.</p>
+                    <button onclick="openProfile('Dr. Arvinder Singh Soin', 'Chairman - Liver Institute', 'Pioneered liver transplantation in India with over 2,500 successful surgeries.', 'https://peacemedicaltourism.com/assets/uploads/doctors/dr-arvinder-singh-soin-livertransplant-surgeon-in-india.jpg', 'LDLT, Complex Multi-organ Transplant')" class="btn-fill" style="width: 100%;">View Profile</button>
+                </div>
+            </div>
+            <div class="doc-card">
+                <div class="doc-img"><img src="https://d35oenyzp35321.cloudfront.net/Dr_Subhash_Gupta_49d09e88d0.jpg"></div>
+                <div class="doc-info">
+                    <span style="color: var(--primary); font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Max | Chairman</span>
+                    <h4>Dr. Subhash Gupta</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Global expert in high-risk donor surgeries and LDLT.</p>
+                    <button onclick="openProfile('Dr. Subhash Gupta', 'Chairman - Liver Sciences', 'Renowned for making liver transplants safe and achieving world-class success rates.', 'https://d35oenyzp35321.cloudfront.net/Dr_Subhash_Gupta_49d09e88d0.jpg', 'Living Donor Surgery, Pediatric Transplant')" class="btn-fill" style="width: 100%;">View Profile</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal-overlay" id="profileModal" onclick="this.classList.remove('active')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div style="display: flex; gap: 30px; align-items: flex-start; margin-bottom: 25px; flex-wrap: wrap;">
+                <img id="modalImg" src="" style="width: 150px; height: 150px; border-radius: 20px; object-fit: cover;">
+                <div style="flex: 1; min-width: 250px;">
+                    <h2 id="modalName"></h2>
+                    <h4 id="modalTitle" style="color: var(--primary); margin-bottom: 10px;"></h4>
+                    <div style="background: var(--bg-subtle); padding: 10px; border-radius: 8px;">
+                        <strong style="font-size: 0.7rem;">SPECIALTIES:</strong>
+                        <p id="modalSpecs" style="font-size: 0.85rem; font-weight: 600;"></p>
+                    </div>
+                </div>
+            </div>
+            <p id="modalBio" style="color: var(--text-light); margin-bottom: 20px;"></p>
+            <button class="btn-fill" style="width: 100%;" onclick="document.getElementById('profileModal').classList.remove('active')">Close Profile</button>
+        </div>
+    </div>
+
+    <script>
+        function openProfile(name, title, bio, img, specs) {
+            document.getElementById('modalName').innerText = name;
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalBio').innerText = bio;
+            document.getElementById('modalImg').src = img;
+            document.getElementById('modalSpecs').innerText = specs;
+            document.getElementById('profileModal').classList.add('active');
+        }
+    </script>
+
+    <footer style="background: var(--dark); color: white; padding: 80px 5% 40px; margin-top: 100px;">
+    <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto;">
+        
+        <div class="footer-col">
+            <div class="logo" style="color: white; margin-bottom: 25px; font-size: 1.5rem; font-weight: 700;">
+                <i class="fas fa-hand-holding-medical" style="color: var(--primary);"></i> Health<span style="color: var(--primary);">Care+</span>
+            </div>
+            <p style="color: #94a3b8; line-height: 1.8; margin-bottom: 20px;">
+                Providing accessible, high-quality digital healthcare at your fingertips.
+            </p>
+            <div style="display: flex; gap: 15px; font-size: 1.2rem;">
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-twitter"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-linkedin-in"></i></a>
+                <a href="#" style="color: #94a3b8;"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem; position: relative;">Quick Links</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="aboutus.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">About Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="#" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Find Doctors</a></li>
+                <li style="margin-bottom: 12px;"><a href="service.html" style="color: #94a3b8; text-decoration: none; transition: 0.3s;">Services</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Support</h4>
+            <ul style="list-style: none; padding: 0;">
+                <li style="margin-bottom: 12px;"><a href="contactus.html" style="color: #94a3b8; text-decoration: none;">Contact Us</a></li>
+                <li style="margin-bottom: 12px;"><a href="ques.html" style="color: #94a3b8; text-decoration: none;">FAQs</a></li>
+                <li style="margin-bottom: 12px;"><a href="pp.html" style="color: #94a3b8; text-decoration: none;">Privacy Policy</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-col">
+            <h4 style="margin-bottom: 25px; font-size: 1.1rem;">Newsletter</h4>
+            <div class="newsletter" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="email" placeholder="Your Email" style="padding: 12px 15px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; outline: none;">
+                <button class="btn-fill" style="width: 100%; padding: 12px; border-radius: 8px;">Subscribe Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom" style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <p style="color: #94a3b8; font-size: 0.9rem;">&copy; 2026 HealthCare+ Lucknow. All rights reserved.</p>
+        <div style="display: flex; align-items: center; gap: 10px; background: rgba(225, 29, 72, 0.1); padding: 10px 20px; border-radius: 50px; border: 1px solid var(--primary);">
+            <i class="fas fa-phone-alt" style="color: var(--primary);"></i>
+            <span style="font-weight: 700; color: white;">Emergency: +91 522 123 4567</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>

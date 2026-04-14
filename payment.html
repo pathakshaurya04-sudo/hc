@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HealthPay | Secure Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #2563eb; --primary-dark: #1d4ed8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { background: #f8fafc; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        
+        /* Background Elements */
+        .orb { position: fixed; width: 500px; height: 500px; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.2; animation: float 20s infinite alternate; }
+        .orb-1 { background: var(--primary); top: -100px; left: -100px; }
+        @keyframes float { 0% { transform: translate(0,0); } 100% { transform: translate(100px, 50px); } }
+
+        .card { 
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px);
+            padding: 40px; border-radius: 40px; width: 90%; max-width: 450px;
+            border: 1px solid rgba(255,255,255,0.5); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1);
+        }
+
+        .summary-box { background: rgba(255,255,255,0.6); padding: 15px; border-radius: 20px; margin-bottom: 20px; font-size: 0.9rem; }
+        
+        .pay-option { 
+            border: 2px solid rgba(226, 232, 240, 0.8); padding: 15px; margin: 10px 0; 
+            border-radius: 20px; cursor: pointer; display: flex; align-items: center; 
+            transition: 0.4s; font-weight: 600;
+        }
+        .pay-option:hover, .pay-option.active { border-color: var(--primary); background: rgba(255,255,255,0.5); transform: scale(1.02); }
+
+        .input-field { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #e2e8f0; margin-top: 10px; outline: none; }
+        
+        .btn-pay { 
+            width: 100%; padding: 18px; border: none; border-radius: 20px; 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; font-weight: 700; cursor: pointer; margin-top: 20px;
+            transition: 0.4s; box-shadow: 0 10px 15px -3px rgba(37,99,235,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="orb orb-1"></div>
+
+    <div class="card">
+        <h2>HealthPay</h2>
+        <div class="summary-box" id="summary">Loading details...</div>
+        
+        <p style="color: #64748b; font-size: 0.8rem; margin-bottom: 10px;">Select Payment Mode:</p>
+        
+        <div class="pay-option" onclick="selectMethod(this, 'UPI')"><i class="fas fa-mobile-alt" style="margin-right:15px; color:var(--primary)"></i> UPI / Wallet</div>
+        <div class="pay-option" onclick="selectMethod(this, 'Card')"><i class="fas fa-credit-card" style="margin-right:15px; color:var(--primary)"></i> Credit / Debit Card</div>
+        <div class="pay-option" onclick="selectMethod(this, 'Visit')"><i class="fas fa-hospital-user" style="margin-right:15px; color:var(--primary)"></i> Pay on Visit</div>
+        
+        <div id="dynamic-fields"></div>
+        <button class="btn-pay" onclick="confirmBooking()">Complete Booking</button>
+    </div>
+
+   <script>
+    // 1. Safely load and check for data
+    const rawData = localStorage.getItem('bookingData');
+    const summaryEl = document.getElementById('summary');
+    
+    if (rawData) {
+        const data = JSON.parse(rawData);
+        summaryEl.innerHTML = `
+            <strong>Doctor:</strong> ${data.name}<br>
+            <strong>Hospital:</strong> ${data.hosp}<br>
+            <strong>Fee to Pay:</strong> <span style="color:var(--primary); font-weight:800;">${data.fee}</span>`;
+    } else {
+        summaryEl.innerHTML = `<em>No booking selection found.</em><br>
+                               <a href="booking.html" style="color:var(--primary); font-size:0.8rem;">Go back to Select Doctor</a>`;
+    }
+
+    let selectedMode = "";
+
+    function selectMethod(el, mode) { 
+        document.querySelectorAll('.pay-option').forEach(opt => opt.classList.remove('active'));
+        el.classList.add('active');
+        selectedMode = mode; 
+        
+        const fields = document.getElementById('dynamic-fields');
+        if (mode === 'UPI') {
+            fields.innerHTML = `<input type="text" id="upi-id" class="input-field" placeholder="Enter UPI ID (e.g. name@upi)">`;
+        } else if (mode === 'Card') {
+            fields.innerHTML = `<input type="number" class="input-field" placeholder="Card Number">
+                                <div style="display:flex; gap:10px;">
+                                    <input type="text" class="input-field" placeholder="MM/YY">
+                                    <input type="number" class="input-field" placeholder="CVV">
+                                </div>`;
+        } else {
+            fields.innerHTML = `<p style="font-size:0.8rem; color:var(--primary); margin-top:10px;">
+                                <i class="fas fa-info-circle"></i> Please pay at the hospital reception.</p>`;
+        }
+    }
+    
+    // Fixed function name to match HTML button
+    function confirmBooking() {
+        // 1. Validation: Ensure a mode is selected
+        if (!selectedMode) {
+            alert("Please select a payment method.");
+            return;
+        }
+
+        // 2. Save actual selected payment mode to local storage
+        localStorage.setItem('paymentMode', selectedMode); 
+        
+        // 3. UI feedback
+        const payBtn = document.querySelector('.btn-pay'); 
+        if(payBtn) {
+            payBtn.innerText = "Processing...";
+            payBtn.disabled = true;
+        }
+
+        // 4. Redirect back to booking.html with status=success
+        setTimeout(() => {
+            window.location.href = 'booking.html?status=success'; 
+        }, 1500);
+    }
+</script>
+</body>
+</html>

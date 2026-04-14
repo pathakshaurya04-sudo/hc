@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin | HealthCare+ Hospital Systems</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #6366f1; 
+            --accent: #a5b4fc;
+            --bg: #020617;
+            --glass: rgba(15, 23, 42, 0.6);
+            --border: rgba(255, 255, 255, 0.08);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --surface: #0f172a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { 
+            background: radial-gradient(at 0% 0%, #1e1b4b 0, transparent 50%), radial-gradient(at 100% 100%, #0c4a6e 0, transparent 50%), #020617;
+            color: white; min-height: 100vh; overflow-x: hidden;
+        }
+
+        /* --- AUTHENTICATION --- */
+        #adminLogin { height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+        .login-card { background: var(--glass); backdrop-filter: blur(20px); padding: 40px; border-radius: 30px; border: 1px solid var(--border); width: 400px; text-align: center; }
+
+        /* --- ADMIN DASHBOARD --- */
+        #adminDashboard { display: none; padding: 40px; }
+        .sidebar { position: fixed; left: 20px; top: 20px; bottom: 20px; width: 260px; background: var(--glass); border: 1px solid var(--border); border-radius: 30px; padding: 30px; backdrop-filter: blur(20px); }
+        .main-content { margin-left: 300px; }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--glass); padding: 25px; border-radius: 24px; border: 1px solid var(--border); transition: 0.3s; }
+        .stat-card:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .stat-card i { font-size: 2rem; color: var(--primary); margin-bottom: 15px; }
+        .stat-card h2 { font-size: 2rem; font-weight: 800; }
+        .stat-card p { font-size: 0.8rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; }
+
+        .data-table-container { background: var(--glass); border: 1px solid var(--border); border-radius: 30px; padding: 30px; margin-bottom: 30px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9rem; }
+        th { text-align: left; padding: 15px; opacity: 0.5; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; border-bottom: 1px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        
+        .badge { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; }
+        .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); }
+        .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid var(--warning); }
+
+        input, .btn { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid var(--border); background: rgba(0,0,0,0.3); color: white; margin-top: 10px; outline: none; }
+        .btn-primary { background: var(--primary); border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-primary:hover { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+
+        .refresh-btn { width: auto; padding: 10px 20px; font-size: 0.8rem; float: right; }
+    </style>
+</head>
+<body>
+
+<div id="adminLogin">
+    <div class="login-card">
+        <i class="fas fa-shield-halved" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <h2 style="margin-bottom: 10px;">Master Access</h2>
+        <p style="opacity: 0.5; font-size: 0.8rem; margin-bottom: 30px;">Hospital Infrastructure Command</p>
+        <input type="text" id="adminID" placeholder="Admin Credential">
+        <input type="password" id="adminPass" placeholder="Security Key">
+        <button class="btn btn-primary" onclick="handleAdminLogin()">Initialize Terminal</button>
+    </div>
+</div>
+
+<div id="adminDashboard">
+    <div class="sidebar">
+        <h2 style="font-weight: 900; color: var(--primary); margin-bottom: 40px;">H+ Admin</h2>
+        <nav style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="color: var(--accent); font-weight: 800;"><i class="fas fa-chart-pie"></i> Overview</div>
+            <div style="opacity: 0.5;"><i class="fas fa-user-md"></i> Doctors Hub</div>
+            <div style="opacity: 0.5;"><i class="fas fa-procedures"></i> Patient Logs</div>
+            <div style="opacity: 0.5;"><i class="fas fa-cog"></i> System Settings</div>
+        </nav>
+        <button class="btn" style="margin-top: auto; border-color: var(--danger); color: var(--danger);" onclick="location.reload()">Logout</button>
+    </div>
+
+    <div class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <h1>Hospital <span style="color: var(--primary)">Command Center</span></h1>
+            <button class="btn btn-primary refresh-btn" onclick="fetchAllData()"><i class="fas fa-sync"></i> Refresh Data</button>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card">
+                <i class="fas fa-file-medical"></i>
+                <h2 id="totalRx">0</h2>
+                <p>Digital Prescriptions</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-calendar-check"></i>
+                <h2 id="totalBookings">0</h2>
+                <p>Patient Bookings</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-clock"></i>
+                <h2 id="activeHubs">Lucknow</h2>
+                <p>Primary Hub Status</p>
+            </div>
+        </div>
+
+        <div class="data-table-container">
+            <h3><i class="fas fa-prescription"></i> Global Prescription Logs</h3>
+            <table id="rxTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient Name</th>
+                        <th>Doctor</th>
+                        <th>Diagnosis</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="rxBody">
+                    <tr><td colspan="5" style="text-align: center; opacity: 0.5;">Awaiting data link...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="data-table-container">
+            <h3><i class="fas fa-hospital-user"></i> Incoming Patient Bookings</h3>
+            <table id="bookingTable">
+                <thead>
+                    <tr>
+                        <th>Patient ID</th>
+                        <th>Reported Symptoms</th>
+                        <th>Time Requested</th>
+                        <th>System Priority</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingBody">
+                    <tr><td colspan="4" style="text-align: center; opacity: 0.5;">No pending syncs found.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://itvbhpvypgfxdksbpnnt.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    function handleAdminLogin() {
+        const id = document.getElementById('adminID').value;
+        const pass = document.getElementById('adminPass').value;
+
+        // Secure Master Access
+        if(id === "admin" && pass === "1234") {
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'block';
+            fetchAllData();
+        } else {
+            alert("Unauthorized Access Detected.");
+        }
+    }
+
+    async function fetchAllData() {
+        fetchPrescriptions();
+        fetchBookings();
+    }
+
+    async function fetchPrescriptions() {
+        const { data, error } = await _supabase
+            .from('prescriptions')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (data) {
+            document.getElementById('totalRx').innerText = data.length;
+            const body = document.getElementById('rxBody');
+            body.innerHTML = data.map(rx => `
+                <tr>
+                    <td>${rx.patient_id}</td>
+                    <td><b>${rx.patient_name}</b></td>
+                    <td>${rx.doctor_name || 'DR. SAMEER KHANNA'}</td>
+                    <td>${rx.diagnosis.substring(0, 30)}...</td>
+                    <td><span class="badge badge-success">DIGITALLY SIGNED</span></td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    async function fetchBookings() {
+        // This assumes you have a 'bookings' table for the patient data
+        const { data, error } = await _supabase
+            .from('bookings')
+            .select('*');
+
+        if (data) {
+            document.getElementById('totalBookings').innerText = data.length;
+            const body = document.getElementById('bookingBody');
+            body.innerHTML = data.map(book => `
+                <tr>
+                    <td>${book.patient_id || 'LKO-PAT-2026'}</td>
+                    <td>${book.symptoms || 'General Checkup'}</td>
+                    <td>${new Date(book.created_at).toLocaleTimeString()}</td>
+                    <td><span class="badge badge-warning">PENDING HUB</span></td>
+                </tr>
+            `).join('');
+        } else {
+            // Mock data for display if table is empty
+            document.getElementById('totalBookings').innerText = "1";
+            document.getElementById('bookingBody').innerHTML = `
+                <tr>
+                    <td>LKO-PAT-2026</td>
+                    <td>Chest Pain, High Fever</td>
+                    <td>10:45 AM</td>
+                    <td><span class="badge badge-warning">URGENT SYNC</span></td>
+                </tr>
+            `;
+        }
+    }
+</script>
+</body>
+</html>

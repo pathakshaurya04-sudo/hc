@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Portal | HealthCare+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #0ea5e9;
+            --dark: #0f172a;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --emergency: #ef4444;
+            --admin-hr: #6366f1; 
+            --admin-hosp: #10b981; /* Emerald for Hospital Admin */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: #f1f5f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            padding: 40px 0;
+        }
+
+        /* --- Animated Background --- */
+        .orb {
+            position: fixed;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.2;
+            animation: move 20s infinite alternate;
+        }
+        .orb-1 { background: var(--primary); top: -100px; left: -100px; }
+        .orb-2 { background: var(--secondary); bottom: -100px; right: -100px; }
+
+        @keyframes move {
+            from { transform: translate(0,0); }
+            to { transform: translate(50px, 50px); }
+        }
+
+        .login-container {
+            width: 95%;
+            max-width: 1400px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .login-header { margin-bottom: 50px; }
+        .login-header h1 { font-size: 2.5rem; color: var(--dark); font-weight: 800; letter-spacing: -1px; }
+        .login-header p { color: var(--text-light); margin-top: 10px; font-weight: 500; }
+
+        /* Updated Grid for 5 items */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        /* --- Portal Cards --- */
+        .portal-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            padding: 35px 20px;
+            border-radius: 32px;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-12px);
+            background: white;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.08);
+            border-color: rgba(0,0,0,0.1);
+        }
+
+        .icon-circle {
+            width: 65px; height: 65px;
+            border-radius: 22px; /* Squircle shape */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        /* Role Colors */
+        .doctor .icon-circle { background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .patient .icon-circle { background: rgba(14, 165, 233, 0.1); color: var(--secondary); }
+        .ambulance .icon-circle { background: rgba(239, 68, 68, 0.1); color: var(--emergency); }
+        .hr-admin .icon-circle { background: rgba(99, 102, 241, 0.1); color: var(--admin-hr); }
+        .hosp-admin .icon-circle { background: rgba(16, 185, 129, 0.1); color: var(--admin-hosp); }
+
+        .portal-card h2 { color: var(--dark); margin-bottom: 12px; font-weight: 800; font-size: 1.2rem; }
+        .portal-card p { color: var(--text-light); font-size: 0.8rem; line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
+
+        .btn-enter {
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-weight: 800;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: 0.3s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .doctor .btn-enter { background: var(--primary); color: white; }
+        .patient .btn-enter { background: var(--secondary); color: white; }
+        .ambulance .btn-enter { background: var(--emergency); color: white; }
+        .hr-admin .btn-enter { background: var(--admin-hr); color: white; }
+        .hosp-admin .btn-enter { background: var(--admin-hosp); color: white; }
+
+        .portal-card:hover .btn-enter { filter: brightness(1.1); transform: scale(1.02); }
+
+        .back-home {
+            margin-top: 50px;
+            display: inline-block;
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .back-home:hover { color: var(--primary); transform: translateX(-5px); }
+
+        @media (max-width: 1024px) {
+            .portal-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .portal-grid { grid-template-columns: 1fr; }
+            .login-header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Healthcare Ecosystem</h1>
+            <p>Select your authorized department to access the command center</p>
+        </div>
+
+        <div class="portal-grid">
+            <a href="telecomdoc.html" class="portal-card doctor">
+                <div class="icon-circle"><i class="fas fa-user-md"></i></div>
+                <h2>Doctor Portal</h2>
+                <p>Digital consultation tools, patient health history, and electronic prescriptions.</p>
+                <span class="btn-enter">Provider Login</span>
+            </a>
+
+            <a href="telecomcust.html" class="portal-card patient">
+                <div class="icon-circle"><i class="fas fa-hospital-user"></i></div>
+                <h2>Patient Portal</h2>
+                <p>Manage appointments, download lab reports, and chat with specialists.</p>
+                <span class="btn-enter">Member Login</span>
+            </a>
+
+            <a href="ambulance.html" class="portal-card ambulance">
+                <div class="icon-circle"><i class="fas fa-ambulance"></i></div>
+                <h2>Emergency Res</h2>
+                <p>Dispatch control, route optimization, and pre-hospital patient data entry.</p>
+                <span class="btn-enter">Rescue Login</span>
+            </a>
+
+            <a href="admin1.html" class="portal-card hosp-admin">
+                <div class="icon-circle"><i class="fas fa-hospital-symbol"></i></div>
+                <h2>Hospital Admin</h2>
+                <p>Operational oversight, ward management, and hospital resource tracking.</p>
+                <span class="btn-enter">Command Login</span>
+            </a>
+
+            <a href="hr-dashboard.html" class="portal-card hr-admin">
+                <div class="icon-circle"><i class="fas fa-user-shield"></i></div>
+                <h2>HR & Staff</h2>
+                <p>Payroll processing, recruitment pipeline, and staff attendance records.</p>
+                <span class="btn-enter">Staff Login</span>
+            </a>
+        </div>
+
+        <a href="firstpage.html" class="back-home">
+            <i class="fas fa-arrow-left"></i> Return to Gateway
+        </a>
+    </div>
+
+</body>
+</html>

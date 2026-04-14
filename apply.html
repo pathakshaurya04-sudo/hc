@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Our Team | HealthCare+</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root { 
+            --primary: #2563eb; 
+            --primary-dark: #1d4ed8;
+            --dark: #0f172a; 
+            --bg: #f8fafc;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px; 
+        }
+
+        .card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+            width: 100%; 
+            max-width: 500px; 
+        }
+
+        h2 { 
+            margin-bottom: 10px; 
+            color: var(--dark); 
+            font-weight: 800;
+            font-size: 1.8rem;
+        }
+
+        p.subtitle {
+            color: #64748b;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 700; 
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        input, select { 
+            width: 100%; 
+            padding: 14px; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 12px; 
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 1rem;
+            cursor: pointer; 
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+
+        #msg {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Submit Application</h2>
+        <p class="subtitle">Join the HealthCare+ Lucknow team.</p>
+
+        <form id="applyForm">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="fullName" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="john@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label>Target Position</label>
+                <select id="role">
+                    <option value="Staff Nurse">Staff Nurse</option>
+                    <option value="Medical Officer">Medical Officer</option>
+                    <option value="IT Support">IT Support</option>
+                    <option value="Administration">Administration</option>
+                    <option value="Administration">Senior Frontend Developer</option>
+                    <option value="Administration">Consultant Cardiologist</option>
+                    <option value="Administration">Logistics Manager</option>
+                    <option value="Administration">HR Operations Lead</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Resume (PDF format only)</label>
+                <input type="file" id="resumeFile" accept=".pdf" required>
+            </div>
+
+            <button type="submit" class="btn" id="submitBtn">Submit Application</button>
+        </form>
+
+        <div id="msg"></div>
+    </div>
+
+    <script>
+        // 1. Initialize Supabase
+        const supabaseUrl = 'https://itvbhpvypgfxdksbpnnt.supabase.co';
+        const supabaseKey = 'sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        const form = document.getElementById('applyForm');
+        const btn = document.getElementById('submitBtn');
+        const msg = document.getElementById('msg');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // UI: Start loading
+            btn.innerText = "Uploading Resume...";
+            btn.disabled = true;
+            msg.style.display = 'none';
+
+            try {
+                const fileInput = document.getElementById('resumeFile');
+                const file = fileInput.files[0];
+                
+                if (!file) throw new Error("Please select a file.");
+
+                // Create a clean filename (timestamp + name without spaces)
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+
+                // 2. Upload File to 'resumes' bucket
+                const { data: uploadData, error: uploadError } = await _supabase.storage
+                    .from('resumes')
+                    .upload(filePath, file);
+
+                if (uploadError) throw uploadError;
+
+                // 3. Get the Public URL of the uploaded file
+                const { data: urlData } = _supabase.storage
+                    .from('resumes')
+                    .getPublicUrl(filePath);
+
+                const publicResumeUrl = urlData.publicUrl;
+
+                // 4. Insert Applicant data into Database
+                const { error: dbError } = await _supabase
+                    .from('applicants')
+                    .insert([{
+                        full_name: document.getElementById('fullName').value,
+                        email: document.getElementById('email').value,
+                        role: document.getElementById('role').value,
+                        resume_url: publicResumeUrl
+                    }]);
+
+                if (dbError) throw dbError;
+
+                // SUCCESS STATE
+                form.reset();
+                msg.style.display = 'block';
+                msg.style.background = '#f0fdf4';
+                msg.style.color = '#16a34a';
+                msg.innerText = "Application submitted successfully!";
+
+            } catch (err) {
+                console.error(err);
+                msg.style.display = 'block';
+                msg.style.background = '#fef2f2';
+                msg.style.color = '#dc2626';
+                msg.innerText = "Error: " + err.message;
+            } finally {
+                btn.innerText = "Submit Application";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

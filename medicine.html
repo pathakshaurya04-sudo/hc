@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login | HealthCare+ X</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb; 
+            --accent: #3b82f6;
+            --bg: #f0f4f8;
+            --white: #ffffff;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --glass: rgba(255, 255, 255, 0.8);
+            --shadow-sm: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text-dark); overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.33); opacity: 1; } 80%, 100% { opacity: 0; } }
+
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        /* --- AUTH PAGE --- */
+        #authPage {
+            position: fixed; inset: 0; z-index: 5000; 
+            background: #020617;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.25) 0px, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(59, 130, 246, 0.2) 0px, transparent 50%);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .auth-card {
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(25px); 
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 50px 40px; border-radius: 40px; width: 440px; text-align: center; color: white;
+            box-shadow: var(--shadow-lg);
+        }
+        .auth-input { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            color: white; width: 100%; padding: 16px 20px; margin: 12px 0; border-radius: 16px; 
+            outline: none; transition: 0.3s;
+        }
+        .auth-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.1); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2); }
+
+        /* --- DASHBOARD --- */
+        header {
+            background: var(--glass); backdrop-filter: blur(10px); padding: 18px 8%; border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 1000; transition: 0.3s;
+        }
+        .logo { font-weight: 800; font-size: 1.6rem; color: var(--text-dark); letter-spacing: -0.5px; }
+        .logo span { color: var(--primary); }
+
+        .hero-section {
+            background: #0f172a; padding: 100px 8% 140px; text-align: center; color: white;
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+        .hero-section h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 15px; }
+        .hero-section p { opacity: 0.8; font-size: 1.1rem; }
+        
+        .search-container {
+            max-width: 700px; margin: 40px auto 0; background: var(--white); border-radius: 24px; 
+            padding: 10px; display: flex; align-items: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            transform: translateY(0); transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .search-container:focus-within { transform: translateY(-5px); box-shadow: 0 30px 60px -12px rgba(0,0,0,0.6); }
+        .search-container input { flex: 1; border: none; padding: 15px 25px; outline: none; font-size: 1.1rem; color: var(--text-dark); }
+
+        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; padding: 0 8%; margin-top: -60px; }
+        .action-card { 
+            background: var(--white); padding: 25px; border-radius: 28px; box-shadow: var(--shadow-sm); 
+            display: flex; align-items: center; gap: 18px; cursor: pointer; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            border: 1px solid transparent; 
+        }
+        .action-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+        .action-card i { font-size: 2rem; transition: 0.3s; }
+        .action-card:hover i { transform: scale(1.1) rotate(-5deg); }
+
+        /* --- MEDICINE GRID --- */
+        .med-grid { padding: 80px 8%; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .med-card { 
+            background: var(--white); border: 1px solid var(--border); border-radius: 32px; 
+            padding: 24px; transition: 0.4s; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; gap: 12px;
+        }
+        .med-card:hover { transform: translateY(-12px); border-color: var(--primary); box-shadow: var(--shadow-lg); }
+        
+        .cat-tag { font-size: 0.7rem; font-weight: 700; background: #eff6ff; color: var(--primary); padding: 5px 12px; border-radius: 10px; display: inline-block; width: fit-content; }
+        .discount-badge { position: absolute; top: 20px; left: 20px; background: var(--danger); color: white; padding: 6px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 800; }
+        .rx-badge { position: absolute; top: 20px; right: 20px; background: #fef2f2; color: #dc2626; padding: 6px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; border: 1px solid #fee2e2; }
+
+        .btn-search { 
+            background: var(--primary); color: white; border: none; padding: 14px 28px; border-radius: 18px; 
+            font-weight: 700; cursor: pointer; transition: 0.3s; overflow: hidden; position: relative;
+        }
+        .btn-search:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
+        .btn-search:active { transform: translateY(0); }
+
+        .overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); display: none; align-items: center; justify-content: center; z-index: 2000; animation: fadeIn 0.3s ease; }
+        .modal { background: white; padding: 40px; border-radius: 40px; width: 90%; max-width: 500px; text-align: center; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
+
+        /* DRONE UI REFINED */
+        #droneOverlay { position: fixed; inset: 0; background: #020617; z-index: 6000; display: none; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        #droneOverlay i { animation: float 3s ease-in-out infinite; }
+        .gps-map-sim { width: 320px; height: 140px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; margin-top: 30px; position: relative; }
+        .gps-dot { position: absolute; width: 14px; height: 14px; background: #3b82f6; border-radius: 50%; left: 10%; top: 50%; transition: 4.5s linear; box-shadow: 0 0 20px #3b82f6; }
+        .gps-dot::after { content: ''; position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 2px solid #3b82f6; animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
+        .loading-bar { width: 320px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 40px; overflow: hidden; }
+        .loading-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary), #60a5fa); transition: 4.5s linear; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+<div id="authPage">
+    <div class="auth-card fade-in">
+        <div class="logo" style="color: white; margin-bottom: 15px; font-size: 2.8rem;">HealthCare<span>+ X</span></div>
+        <p style="opacity: 0.6; margin-bottom: 30px;">Digital Bio-Pharmacy & Express Delivery</p>
+        <div id="loginFields">
+            <input type="text" id="patientID" class="auth-input" placeholder="Patient ID (e.g., LKO-01)">
+            <input type="password" id="patientPin" class="auth-input" placeholder="Security PIN">
+            <button class="btn-search" onclick="handleLogin('user')" style="width: 100%; margin-top: 20px;">Secure Login</button>
+            <div style="margin: 25px 0; opacity: 0.3; font-size: 0.8rem; letter-spacing: 2px;">SECURE BY HEALTHCLOUD</div>
+            <button class="btn-search" onclick="showGuestFields()" style="width: 100%; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1);">Continue as Guest</button>
+        </div>
+        <div id="guestFields" style="display: none;">
+            <input type="text" id="guestName" class="auth-input" placeholder="Full Name">
+            <input type="text" id="guestPhone" class="auth-input" placeholder="Phone Number">
+            <button class="btn-search" onclick="handleLogin('guest')" style="width: 100%; margin-top: 20px;">Start Session</button>
+            <p onclick="location.reload()" style="margin-top:20px; cursor:pointer; font-size:0.85rem; opacity:0.6;">← Back to login</p>
+        </div>
+    </div>
+</div>
+
+<div id="dashboard" style="display: none;">
+    <header>
+        <div class="logo">HealthCare<span>+ X</span></div>
+        <div style="display: flex; gap: 30px; align-items: center;">
+            <div style="text-align: right; display: flex; align-items: center; gap: 12px;">
+                <div>
+                    <p id="userDisplay" style="font-weight: 800; font-size: 0.95rem;">User</p>
+                    <p style="font-size: 0.75rem; color: var(--success); font-weight: 600;">System Active</p>
+                </div>
+                <div style="width: 45px; height: 45px; background: var(--primary); border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white;">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+            </div>
+            <div style="position: relative; cursor: pointer;" onclick="toggleCart()">
+                <i class="fas fa-shopping-bag" style="font-size: 1.6rem; color: var(--text-dark);"></i>
+                <span id="cartCount" style="position: absolute; top: -8px; right: -8px; background: var(--danger); color: white; font-size: 0.7rem; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid white; font-weight: 800;">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="hero-section">
+        <h1 class="fade-in">Express Bio-Pharmacy</h1>
+        <p class="fade-in">Autonomous Drone Dispatch • Lucknow Local Hub</p>
+        <div class="search-container fade-in">
+            <i class="fas fa-search" style="margin-left: 20px; color: var(--text-light);"></i>
+            <input type="text" id="medSearch" placeholder="Search medicines, categories, or brands..." onkeyup="searchMeds()">
+            <button class="btn-search" style="margin-right: 5px; padding: 10px 30px;">Find</button>
+        </div>
+    </div>
+
+    <div class="quick-actions">
+        <div class="action-card fade-in" onclick="openUpload()" style="animation-delay: 0.1s;">
+            <div style="width: 50px; height: 50px; background: #eff6ff; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-qrcode" style="color: var(--primary); font-size: 1.4rem;"></i>
+            </div>
+            <div><h4 style="font-size: 1rem;">Verify RX</h4><p style="font-size: 0.7rem; color: var(--text-light);" id="rxStatusLabel">Not Verified</p></div>
+        </div>
+        <div class="action-card fade-in" onclick="openHistory()" style="animation-delay: 0.2s;">
+            <div style="width: 50px; height: 50px; background: #fdf2f8; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-history" style="color: #db2777; font-size: 1.4rem;"></i>
+            </div>
+            <div><h4 style="font-size: 1rem;">Past Orders</h4><p style="font-size: 0.7rem; color: var(--text-light);">Express History</p></div>
+        </div>
+        <div class="action-card fade-in" onclick="alert('Connecting to AI Doctor...')" style="animation-delay: 0.3s;">
+            <div style="width: 50px; height: 50px; background: #f0fdf4; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-robot" style="color: var(--success); font-size: 1.4rem;"></i>
+            </div>
+            <div><h4 style="font-size: 1rem;">AI Consult</h4><p style="font-size: 0.7rem; color: var(--text-light);">Medical AI-Bot</p></div>
+        </div>
+        <div class="action-card fade-in" onclick="location.reload()" style="animation-delay: 0.4s;">
+            <div style="width: 50px; height: 50px; background: #fef2f2; border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-sign-out-alt" style="color: var(--danger); font-size: 1.4rem;"></i>
+            </div>
+            <div><h4 style="font-size: 1rem;">End Session</h4><p style="font-size: 0.7rem; color: var(--text-light);">Secure Logout</p></div>
+        </div>
+    </div>
+
+    <div class="med-grid" id="medGrid"></div>
+</div>
+
+<div class="overlay" id="uploadModal">
+    <div class="modal">
+        <div style="width: 70px; height: 70px; background: #eff6ff; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            <i class="fas fa-file-medical" style="font-size: 2rem; color: var(--primary);"></i>
+        </div>
+        <h3>AI Prescription Scanner</h3>
+        <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 25px;">Upload your digital RX to unlock restricted medicines.</p>
+        <div id="dropZone" style="border: 2px dashed var(--border); padding: 50px 20px; border-radius: 24px; cursor: pointer; background: #f8fafc; transition: 0.3s;" onclick="document.getElementById('rxFile').click()">
+            <p id="fileNameDisplay" style="font-weight: 600; color: var(--text-dark);">Click to select RX Image/PDF</p>
+            <input type="file" id="rxFile" style="display: none;" onchange="simulateScan(this)">
+        </div>
+        <div id="scanProgress" style="display: none; margin-top: 25px;">
+            <p style="font-size: 0.8rem; margin-bottom: 10px; font-weight: 700;" id="scanLabel">Scanning Handwritten Notes...</p>
+            <div class="loading-bar" style="width: 100%; height: 10px; background: #f1f5f9; margin: 0;"><div id="scanFill" style="width: 0%; height: 100%; background: var(--primary); transition: 2s cubic-bezier(0.65, 0, 0.35, 1);"></div></div>
+        </div>
+        <button class="btn-search" style="width:100%; margin-top:25px; background: var(--text-dark);" onclick="closeModal('uploadModal')">Dismiss</button>
+    </div>
+</div>
+
+<div id="droneOverlay">
+    <i class="fas fa-helicopter-symbol" style="font-size: 6rem; color: var(--accent);"></i>
+    <h2 style="margin-top: 30px; font-size: 2rem; letter-spacing: 2px;">DISPATCHING DRONE</h2>
+    <p id="statusMsg" style="opacity: 0.7;">Calibrating GPS Coordinates...</p>
+    <div class="gps-map-sim"><div id="gpsDot" class="gps-dot"></div></div>
+    <div class="loading-bar"><div class="loading-fill" id="lFill"></div></div>
+</div>
+
+<div class="overlay" id="cartModal">
+    <div class="modal">
+        <h3>Medical Basket</h3>
+        <div id="cartItems" style="margin: 25px 0; text-align: left; max-height: 300px; overflow-y: auto;"></div>
+        <div style="display: flex; justify-content: space-between; font-weight: 800; border-top: 2px solid #f1f5f9; padding-top: 20px; font-size: 1.2rem;">
+            <span>Total Payable</span><span id="totalPrice" style="color: var(--primary);">₹0.00</span>
+        </div>
+        <button class="btn-search" style="width: 100%; margin-top: 25px;" onclick="openCheckout()">Proceed to Checkout</button>
+    </div>
+</div>
+
+<div class="overlay" id="checkoutModal">
+    <div class="modal">
+        <h3>Secure Dispatch</h3>
+        <div style="text-align: left; margin-top: 20px;">
+            <label style="font-size: 0.85rem; font-weight: 800; color: var(--text-light);">DELIVERY ADDRESS</label>
+            <input type="text" id="custAddr" class="auth-input" style="color: black; border: 1px solid var(--border); background: #f8fafc;" placeholder="Lucknow Address (e.g., Gomti Nagar)">
+            
+            <label style="font-size: 0.85rem; font-weight: 800; color: var(--text-light); margin-top: 15px; display: block;">PAYMENT GATEWAY</label>
+            <select id="payMethod" class="auth-input" style="color: black; border: 1px solid var(--border); background: #f8fafc;">
+                <option value="UPI">UPI / Instant QR</option>
+                <option value="Card">Credit / Debit Card</option>
+                <option value="COD">Pay on Delivery</option>
+            </select>
+        </div>
+        <button class="btn-search" style="width: 100%; margin-top: 30px;" onclick="processOrder()">Confirm & Dispatch Drone</button>
+    </div>
+</div>
+
+<div class="overlay" id="historyModal">
+    <div class="modal">
+        <h3>Order Timeline</h3>
+        <div id="historyContent" style="margin-top: 20px; text-align: left;"></div>
+        <button class="btn-search" style="width:100%; margin-top:20px; background:#64748b;" onclick="closeModal('historyModal')">Close Window</button>
+    </div>
+</div>
+
+
+<script>
+    const medicines = [];
+    const categories = ["Pain Relief", "Antibiotic", "Vitamins", "Diabetes", "Heart Care"];
+    for(let i=1; i<=55; i++) {
+        medicines.push({
+            id: i,
+            name: i === 1 ? "Dolo 650" : (i === 2 ? "Azithral 500" : "Med-Life " + i),
+            cat: categories[Math.floor(Math.random() * categories.length)],
+            price: Math.floor(Math.random() * 500) + 50,
+            discount: Math.floor(Math.random() * 20),
+            rx: (i === 2 || Math.random() > 0.85), 
+            stock: Math.floor(Math.random() * 50),
+            icon: "fa-pills"
+        });
+    }
+
+    let cart = [];
+    let currentUserName = "";
+    let isPrescriptionVerified = false;
+
+    function showGuestFields() {
+        document.getElementById('loginFields').style.display = 'none';
+        document.getElementById('guestFields').style.display = 'block';
+    }
+
+    function handleLogin(type) {
+        if(type === 'user') {
+            currentUserName = document.getElementById('patientID').value || "User";
+        } else {
+            currentUserName = document.getElementById('guestName').value || "Guest";
+        }
+        document.getElementById('authPage').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        document.getElementById('userDisplay').innerText = currentUserName;
+        renderMeds();
+    }
+
+    function renderMeds(filter = '') {
+        const grid = document.getElementById('medGrid');
+        const filtered = medicines.filter(m => m.name.toLowerCase().includes(filter.toLowerCase()) || m.cat.toLowerCase().includes(filter.toLowerCase()));
+        grid.innerHTML = filtered.map((m, idx) => `
+            <div class="med-card fade-in" style="animation-delay: ${idx * 0.05}s">
+                ${m.discount > 0 ? `<div class="discount-badge">${m.discount}% OFF</div>` : ''}
+                ${m.rx ? `<div class="rx-badge" id="badge-${m.id}">${isPrescriptionVerified ? '<i class="fas fa-check-circle"></i> VERIFIED' : 'RX REQUIRED'}</div>` : ''}
+                <div class="cat-tag">${m.cat}</div>
+                <h4 style="margin: 10px 0; font-size: 1.1rem; font-weight: 800;">${m.name}</h4>
+                <p style="font-size: 0.75rem; color: ${m.stock < 10 ? 'var(--danger)' : 'var(--success)'}; font-weight: 700;">
+                    ${m.stock < 10 ? 'Only ' + m.stock + ' Left' : 'Available in Hub'}
+                </p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top: 15px; border-top: 1px solid #f1f5f9;">
+                    <span style="font-weight:800; font-size: 1.2rem;">₹${m.price}</span>
+                    <button class="btn-search" style="padding:8px 20px; font-size:0.8rem;" onclick="addToCart(${m.id})">Add to Cart</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function openUpload() { document.getElementById('uploadModal').style.display = 'flex'; }
+
+    function simulateScan(input) {
+        if (!input.files[0]) return;
+        document.getElementById('fileNameDisplay').innerText = "Selected: " + input.files[0].name;
+        document.getElementById('scanProgress').style.display = 'block';
+        const fill = document.getElementById('scanFill');
+        fill.style.width = "100%";
+        
+        setTimeout(() => {
+            document.getElementById('scanLabel').innerText = "Prescription Authenticated!";
+            document.getElementById('scanLabel').style.color = "var(--success)";
+            isPrescriptionVerified = true;
+            document.getElementById('rxStatusLabel').innerText = "Verified ✅";
+            document.getElementById('rxStatusLabel').style.color = "var(--success)";
+            renderMeds(); 
+            setTimeout(() => { closeModal('uploadModal'); }, 1500);
+        }, 2200);
+    }
+
+    function addToCart(id) {
+        const med = medicines.find(m => m.id === id);
+        if (med.rx && !isPrescriptionVerified) {
+            alert("This medicine requires a prescription. Please use the 'Verify RX' scanner.");
+            openUpload();
+            return;
+        }
+        cart.push(med);
+        document.getElementById('cartCount').innerText = cart.length;
+        // Animation for cart counter
+        document.getElementById('cartCount').style.transform = "scale(1.5)";
+        setTimeout(() => { document.getElementById('cartCount').style.transform = "scale(1)"; }, 200);
+    }
+
+    function toggleCart() {
+        const m = document.getElementById('cartModal');
+        m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        let total = 0;
+        document.getElementById('cartItems').innerHTML = cart.length ? cart.map(i => {
+            total += i.price;
+            return `<div style="display:flex; justify-content:space-between; margin-bottom:15px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;">
+                <div><p style="font-weight: 700;">${i.name}</p><small style="color: var(--text-light);">${i.cat}</small></div>
+                <b>₹${i.price}</b>
+            </div>`;
+        }).join('') : "<p style='text-align:center; color:var(--text-light);'>Your basket is empty.</p>";
+        document.getElementById('totalPrice').innerText = `₹${total}`;
+    }
+
+    function openCheckout() {
+        if(cart.length === 0) return alert("Your basket is empty.");
+        document.getElementById('cartModal').style.display = 'none';
+        document.getElementById('checkoutModal').style.display = 'flex';
+    }
+
+    function openHistory() {
+        const history = JSON.parse(localStorage.getItem('hc_orders') || "[]");
+        const container = document.getElementById('historyContent');
+        container.innerHTML = history.length ? history.map(o => `
+            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 20px; padding: 15px; margin-bottom: 12px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 5px;">
+                    <small style="color: var(--text-light);">${o.date}</small>
+                    <span style="font-size: 0.7rem; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 5px; font-weight: 800;">DELIVERED</span>
+                </div>
+                <strong>${o.items} Medicine(s)</strong> • ₹${o.total} <br>
+                <span style="font-size:0.75rem; color:var(--primary); font-weight: 600;"><i class="fas fa-map-marker-alt"></i> ${o.addr}</span>
+            </div>`).join('') : "<p>No previous orders found.</p>";
+        document.getElementById('historyModal').style.display = 'flex';
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+    function processOrder() {
+        const addr = document.getElementById('custAddr').value;
+        if(!addr) return alert("Please specify the delivery location.");
+        
+        const history = JSON.parse(localStorage.getItem('hc_orders') || "[]");
+        history.unshift({ date: new Date().toLocaleString(), items: cart.length, total: cart.reduce((a, b) => a + b.price, 0), addr: addr });
+        localStorage.setItem('hc_orders', JSON.stringify(history));
+
+        document.getElementById('checkoutModal').style.display = 'none';
+        document.getElementById('droneOverlay').style.display = 'flex';
+        
+        setTimeout(() => {
+            document.getElementById('lFill').style.width = "100%";
+            document.getElementById('gpsDot').style.left = "85%";
+            setTimeout(() => {
+                alert("Order Successful! Express drone is navigating to " + addr);
+                document.getElementById('droneOverlay').style.display = 'none';
+                cart = []; document.getElementById('cartCount').innerText = "0";
+            }, 4600);
+        }, 100);
+    }
+
+    function searchMeds() { renderMeds(document.getElementById('medSearch').value); }
+</script>
+</body>
+</html>

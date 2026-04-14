@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthCare+ | Ultra Modern Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --glass: rgba(255, 255, 255, 0.4);
+            --glass-heavy: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --primary: #0062ff;
+            --accent: #00f2fe;
+            --dark: #0f172a;
+            --grad: linear-gradient(135deg, #0062ff 0%, #00f2fe 100%);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #fdfdfe;
+            background-image: radial-gradient(at 0% 0%, rgba(0, 98, 255, 0.08) 0px, transparent 40%), radial-gradient(at 100% 100%, rgba(0, 242, 254, 0.08) 0px, transparent 40%);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Views Control */
+        .view { display: none; animation: fadeInUp 0.5s ease-out forwards; }
+        .view.active { display: block; }
+
+        /* --- Navbar --- */
+        .navbar {
+            backdrop-filter: blur(20px) saturate(180%);
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 12px 30px;
+            position: fixed; top: 20px; left: 50%;
+            transform: translateX(-50%);
+            width: 90%; max-width: 1200px;
+            z-index: 1000; display: flex; justify-content: space-between; align-items: center; border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; text-decoration: none; color: var(--dark); cursor: pointer; }
+        .logo span { background: var(--grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .container { max-width: 1250px; margin: 140px auto 60px; padding: 0 25px; }
+
+        /* --- Cards & Buttons --- */
+        .service-card, .cart-card, .auth-card, .dash-card {
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); border-radius: 32px;
+            padding: 40px; transition: 0.4s;
+        }
+
+        .btn-book, .btn-action {
+            background: var(--grad); color: white; border: none;
+            padding: 14px 28px; border-radius: 18px; font-weight: 700;
+            cursor: pointer; transition: 0.3s; text-decoration: none;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+        .btn-book:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0, 98, 255, 0.2); }
+
+        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
+
+        /* --- Prescription UI --- */
+        .presc-box {
+            background: white; border-radius: 24px; padding: 30px;
+            border-left: 10px solid var(--primary); margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .presc-header { display: flex; justify-content: space-between; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px; }
+
+        /* --- Auth Form --- */
+        .input-group { margin-bottom: 20px; }
+        .input-group input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #ddd; outline: none; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a onclick="showView('home')" class="logo">HealthCare<span>+</span></a>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <a onclick="showView('cart')" style="cursor:pointer; text-decoration: none; color: var(--dark); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-shopping-cart" style="color: var(--primary);"></i> Cart (<span id="cartCount">₹0</span>)
+            </a>
+            <span id="userStatus">
+                <a onclick="showView('auth')" class="btn-book">Login / Sign Up <i class="fas fa-user-circle"></i></a>
+            </span>
+        </div>
+    </nav>
+
+    <!-- VIEW: HOME / SERVICES -->
+    <div id="home" class="view active container">
+        <div style="text-align: center; margin-bottom: 50px;">
+            <h1 style="font-size: 3rem; font-weight: 800;">Premium Medical Services</h1>
+            <p>Select advanced diagnostic services for secure booking.</p>
+        </div>
+        <div class="services-grid" id="serviceGrid">
+            <!-- Items injected by JS -->
+        </div>
+    </div>
+
+    <!-- VIEW: CART -->
+    <div id="cart" class="view container">
+        <div class="cart-card" style="max-width: 800px; margin: 0 auto;">
+            <h1>Your Selection</h1>
+            <div id="cartItems"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #f1f5f9;">
+                <span style="font-size: 1.5rem; font-weight: 700;">Grand Total</span>
+                <span id="grandTotal" style="font-size: 2rem; font-weight: 800; color: var(--primary);">₹0</span>
+            </div>
+            <button class="btn-checkout" style="width: 100%; margin-top: 20px; background: var(--grad); color: white; padding: 20px; border-radius: 20px; font-weight: 800; border:none; cursor:pointer;" onclick="checkout()">Secure Checkout Now</button>
+        </div>
+    </div>
+
+    <!-- VIEW: AUTH -->
+    <div id="auth" class="view container">
+        <div class="auth-card" style="max-width: 450px; margin: 0 auto;">
+            <h2 id="authTitle">Login to HealthCare+</h2><br>
+            <div class="input-group"><input type="email" id="email" placeholder="Email Address"></div>
+            <div class="input-group"><input type="password" id="password" placeholder="Password"></div>
+            <button class="btn-book" style="width:100%" onclick="handleAuth()">Submit</button>
+            <p style="text-align: center; margin-top: 20px; cursor: pointer; color: var(--primary);" onclick="toggleAuthMode()">Don't have an account? Sign Up</p>
+        </div>
+    </div>
+
+    <!-- VIEW: DASHBOARD -->
+    <div id="dashboard" class="view container">
+        <div class="dash-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+                <h1>User Dashboard</h1>
+                <button class="btn-book" style="background: #ff4757;" onclick="logout()">Logout</button>
+            </div>
+            <h3>My Digital Prescriptions & Orders</h3>
+            <div id="orderHistory" style="margin-top: 20px;">
+                <!-- Orders injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- SUPABASE CONFIG ---
+        const SB_URL = "https://itvbhpvypgfxdksbpnnt.supabase.co";
+        const SB_KEY = "sb_publishable_Y3gIaNrudZomj23OaA-QEQ_ZJa1oGR5";
+        const _supabase = supabase.createClient(SB_URL, SB_KEY);
+
+        // --- APP STATE ---
+        let cart = [];
+        let isSignUp = false;
+        let userLocation = "Detecting nearest hospital...";
+        const medicalServices = [
+            { id: 1, name: "AI Cardiology Audit", price: 1200, icon: "fa-heartbeat" },
+            { id: 2, name: "Telemedicine Global", price: 499, icon: "fa-video" },
+            { id: 3, name: "Genomic Decoding", price: 8500, icon: "fa-dna" },
+            { id: 4, name: "Mobile CT Scan", price: 4500, icon: "fa-truck-medical" },
+            { id: 5, name: "CyberKnife Robotic", price: 150000, icon: "fa-robot" },
+            { id: 6, name: "Da Vinci Surgery", price: 210000, icon: "fa-microchip" }
+        ];
+
+        // --- CORE FUNCTIONS ---
+        function showView(viewId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            if(viewId === 'cart') renderCart();
+            if(viewId === 'dashboard') fetchOrders();
+        }
+
+        // --- SERVICES LOGIC ---
+        function renderServices() {
+            const grid = document.getElementById('serviceGrid');
+            grid.innerHTML = medicalServices.map(s => `
+                <div class="service-card">
+                    <div style="font-weight:800; color:var(--primary); float:right">₹${s.price.toLocaleString()}</div>
+                    <div style="width:50px; height:50px; background:var(--grad); border-radius:12px; display:flex; align-items:center; justify-content:center; color:white; margin-bottom:20px;">
+                        <i class="fas ${s.icon}"></i>
+                    </div>
+                    <h3>${s.name}</h3>
+                    <p>Advanced healthcare solution powered by next-gen medical tech.</p>
+                    <button class="btn-book" onclick="addToCart(${s.id})">Book Now</button>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const item = medicalServices.find(s => s.id === id);
+            cart.push(item);
+            localStorage.setItem('hc_cart', JSON.stringify(cart));
+            updateCartCounter();
+            showView('cart');
+        }
+
+        function updateCartCounter() {
+            const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+            document.getElementById('cartCount').innerText = `₹${total.toLocaleString()}`;
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding:40px;">No medical services selected.</p>';
+                return;
+            }
+            container.innerHTML = cart.map(item => `
+                <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #eee;">
+                    <span>${item.name}</span>
+                    <span style="font-weight:700">₹${item.price.toLocaleString()}</span>
+                </div>
+            `).join('');
+            const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+            document.getElementById('grandTotal').innerText = `₹${total.toLocaleString()}`;
+        }
+
+        // --- GEOLOCATION ---
+        function getNearestHospital() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((pos) => {
+                    // Simulation of finding nearest hospital based on lat/lng
+                    const hospitals = ["City General Hospital", "Apollo Ultra Lucknow", "Medanta Super Speciality", "Mayo Medical Center"];
+                    userLocation = hospitals[Math.floor(Math.random() * hospitals.length)];
+                });
+            }
+        }
+
+        // --- AUTH LOGIC ---
+        async function handleAuth() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if(isSignUp) {
+                const { data, error } = await _supabase.auth.signUp({ email, password });
+                if(error) alert(error.message); else alert("Check email for verification!");
+            } else {
+                const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+                if(error) alert(error.message); else {
+                    checkSession();
+                    showView('home');
+                }
+            }
+        }
+
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            document.getElementById('authTitle').innerText = isSignUp ? "Create Your Account" : "Login to HealthCare+";
+        }
+
+        async function checkSession() {
+            const { data: { session } } = await _supabase.auth.getSession();
+            if (session) {
+                document.getElementById('userStatus').innerHTML = `
+                    <button class="btn-book" onclick="showView('dashboard')">Dashboard <i class="fas fa-columns"></i></button>
+                `;
+                return session.user;
+            }
+            return null;
+        }
+
+        async function logout() {
+            await _supabase.auth.signOut();
+            window.location.reload();
+        }
+
+        // --- CHECKOUT & DATABASE ---
+        async function checkout() {
+            const user = await checkSession();
+            if(!user) {
+                alert("Please login first to secure your medical node.");
+                showView('auth');
+                return;
+            }
+
+            const total = cart.reduce((acc, curr) => acc + curr.price, 0);
+            const { data, error } = await _supabase.from('orders').insert([{
+                user_id: user.id,
+                items: cart,
+                total: total,
+                hospital_name: userLocation
+            }]);
+
+            if(error) alert(error.message);
+            else {
+                alert("Order confirmed! Your prescription is generated in your dashboard.");
+                cart = [];
+                localStorage.removeItem('hc_cart');
+                updateCartCounter();
+                showView('dashboard');
+            }
+        }
+
+        async function fetchOrders() {
+            const user = await checkSession();
+            if(!user) return;
+
+            const { data, error } = await _supabase
+                .from('orders')
+                .select('*')
+                .eq('user_id', user.id)
+                .order('created_at', { ascending: false });
+
+            const container = document.getElementById('orderHistory');
+            if(data.length === 0) {
+                container.innerHTML = "<p>No orders yet.</p>";
+                return;
+            }
+
+            container.innerHTML = data.map(order => `
+                <div class="presc-box">
+                    <div class="presc-header">
+                        <div>
+                            <h2 style="color:var(--primary)">Rx</h2>
+                            <small>Order ID: ${order.id.substring(0,8)}</small>
+                        </div>
+                        <div style="text-align:right">
+                            <strong>${order.hospital_name}</strong><br>
+                            <small>${new Date(order.created_at).toLocaleDateString()}</small>
+                        </div>
+                    </div>
+                    <div style="margin:15px 0">
+                        <strong>Services Provided:</strong>
+                        <ul style="margin-left:20px; margin-top:10px;">
+                            ${order.items.map(i => `<li>${i.name} - Verified Service</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div style="text-align:right; font-weight:800; font-size:1.2rem;">
+                        Grand Total: ₹${order.total.toLocaleString()}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- INIT ---
+        window.onload = () => {
+            const savedCart = localStorage.getItem('hc_cart');
+            if(savedCart) cart = JSON.parse(savedCart);
+            updateCartCounter();
+            renderServices();
+            checkSession();
+            getNearestHospital();
+        };
+    </script>
+</body>
+</html>
